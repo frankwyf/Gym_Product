@@ -1,0 +1,47 @@
+<template name="no-goods">
+    <view class="title-box">
+        Shopping Cart is empty
+    </view>
+    <view class="to-index-btn" bindtap="toIndexPage">
+            Add some items now !
+    </view>
+</template>
+
+<template name="cart-goods-list">
+    <view class="list-top">
+        <view class="label">GymMaster</view>
+        <view class="edit-btn" hidden="{{!saveHidden}}" bindtap="editTap">Edit</view>
+        <view class="edit-btn" hidden="{{saveHidden}}" bindtap="saveTap">Complete</view>
+    </view>
+    <view class="goodsList">
+        <view class="a-gooods" wx:for="{{list}}"  wx:key="{{index}}" >
+            <view class="a-goods-conts {{item.active? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}"    style="{{item.left}}">
+                <view class="goods-info">
+                    <view class="img-box">
+                        <image src="http://172.20.10.2:8087/{{item.type}}/{{item.pic}}" class="img"/>
+                    </view>
+                    <view class="text-box">
+                        <view class="goods-title">{{item.name}}</view>
+                        <view class="goods-title">{{item.date}} -- period: {{item.period}}</view>
+                        <view class="goods-label">Facility num: {{item.facility}}</view>
+                        <view class="goods-price">￡ {{item.price}}</view>
+                        <view class="buy-num">
+                            Amount: <input  type="number" value="{{item.amount}}" disabled/>
+                        </view>
+                    </view>
+                </view>
+                <view class="delete-btn" data-index="{{index}}" catchtap="delItem">
+                  Delete
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="jiesuan-box">
+        <view class="left-price">
+            <view class="all-selected  {{allSelect?'active':''}}" bindtap="bindAllSelect">Select All</view>
+            <view class="total" hidden="{{noSelect}}">Total: ￡{{totalPrice}}</view>
+        </view>
+        <view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="toPayOrder">Pay for all</view>
+        <view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{saveHidden}}" bindtap="deleteSelected">Delete</view>
+    </view>
+</template>

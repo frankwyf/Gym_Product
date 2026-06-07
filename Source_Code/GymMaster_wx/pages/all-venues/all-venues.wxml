@@ -1,0 +1,49 @@
+<!--all-venues.wxml-->
+<!--1px = 750/320 = 2.34rpx;-->
+<view class="container">
+    <view class="zan-toptips {{ zanTopTips.show ? 'zan-toptips--show' : '' }}">{{ zanTopTips.content }}</view>
+   <view class="swiper-container">
+        <swiper class="swiper_box"
+                    autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" bindchange="swiperchange">
+            <block wx:for="{{slides}}">
+                <swiper-item>
+                    <view style=";width:{{width}}px; font-weight: 800 ;background:rgba(0,0,0,0.4);position: absolute;top:5px;border-radius:15px;left:30%;transform:translateX(0%);text-align:center;">
+                        <text style="font-size: 30px;font-family:Arial; color:white;">{{item.name}}</text>
+                    </view>
+                    <image bindtap="tapBanner" data-id="{{item.vid}}" src="{{server}}venues/{{item.picUrl}}" class="slide-image" width="750rpx" height="562.5rpx"/>
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class="dots">
+            <block wx:for="{{banners}}" wx:key="unique">
+                <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+            </block>
+        </view>
+   </view>
+<!--types of classes-->
+    <view class="type-container">
+        <scroll-view class="type-navbar" scroll-x="true" style="width: 100%">
+            <view class="type-box" wx:for-items="{{categories}}">
+                <view id="{{item.id}}" class="type-navbar-item {{activeCategoryId == item.id ? 'type-item-on' : ''}}" bindtap="tabClick">
+                    {{item.name}}
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+    <!--classes boxes-->
+    <view class="goods-container">
+        <view class="goods-box" wx:for-items="{{today_venues}}" wx:key="{{index}}" bindtap="toDetailsTap" data-id="{{item.vid}}">
+            <view class="img-box">
+                <image src="{{server}}venues/{{item.profile}}" class="image"/>
+            </view>
+            <view class="article__desc">
+                <text class="title">{{item.vname}}</text>
+                <text class="article__source">￡ {{ item.price }} /h per</text>
+                <text class="article__time" >{{item.status}}</text>
+            </view>
+        </view>
+    </view>
+    <view hidden="{{loadingMoreHidden ? true : false}}" class="no-more-goods">No More venues</view>
+</view>
+<view class="footaboutme"><text>XJCO2913 Group2\r\nGymMaster</text></view>
+

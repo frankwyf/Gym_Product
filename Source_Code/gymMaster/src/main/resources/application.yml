@@ -1,0 +1,84 @@
+# service port
+server:
+  #host: 162.14.64.131
+  #port: 8087
+  port: 8087
+  error:
+    whitelabel:
+      enabled: false
+#  ssl:
+#      enabled: true
+#      key-store: classpath:gymmaster.site.jks
+#      key-store-type: JKS
+#      key-store-password: u94o75bztm
+#      key-password: u94o75bztm
+
+# spring boot configuration
+spring:
+  application:
+    # name of application
+    name: gymMaster
+    # datasource configuration
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: ${GYMMASTER_DB_URL:jdbc:mysql://localhost:3306/gymmaster?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true}
+      username: ${GYMMASTER_DB_USERNAME:root}
+      password: ${GYMMASTER_DB_PASSWORD:change-me}
+  redis:
+    #host: 162.14.64.131
+    host: localhost
+    password:
+    port: 6379
+    database: 3
+  mail:
+    host: smtp.qq.com
+    # config email port
+    port: 465
+    # config email
+    username: ${GYMMASTER_MAIL_USERNAME:example@example.com}
+    # config password
+    password: ${GYMMASTER_MAIL_PASSWORD:change-me}
+    # 配置默认编码
+    default-encoding: UTF-8
+    # SSL for email service
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+        # open debug for email service (for log)
+        debug: false
+
+  thymeleaf:
+    cache:false
+
+  mvc:
+    static-path-pattern: /static/**
+
+    servlet:
+      multipart:
+        max-file-size: 100MB
+        max-request-size: 100MB
+  web:
+    resources:
+      static-locations: ${GYMMASTER_STATIC_LOCATIONS:file:src/main/resources/static}
+
+mybatis-plus:
+  configuration:
+    # when mapping variable name and column name, use underscore to Uppercase camel case
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+
+# resource configuration
+gym:
+  path: src/main/resources/static/
+
+
+# logging configuration
+logging:
+  config:
+    classpath: logback-spring.xml

@@ -1,0 +1,36 @@
+<view class="publish-container">
+  <image class="bg-image" mode="scaleToFill"  src="../../images/bakcgrounds/environment.jpg"></image>
+  <text id="title">Share you workout !</text>
+  <view class="container">
+    <view class="divLine"></view>
+  </view>
+  <view class="input-wrap">
+    <textarea placeholder="{{tishi}}" class="input-text" maxlength="2000" bindinput="getValue" value="{{inputValue}}"></textarea>
+  </view>
+  <view class="container">
+    <view class="divLine"></view>
+  </view>
+  <view class="container">
+    <view class="divLine"></view>
+  </view>
+  <view class="img-wrap" wx:if="{{!videoUrl}}">
+    <block wx:for="{{cloudImgList}}" wx:key="index">
+      <view class="one-img">
+        <image src="{{item}}" class="img-choose"></image>
+      </view>
+    </block>
+    <view class="one-img" bindtap="chooseImage" wx:if="{{cloudImgList.length < 9}}">
+      <image src="/images/add.png" class="img-choose"></image>
+    </view>
+    <view wx:if="{{cloudImgList.length == 0}}" class="choose-localtion" bindtap="chooseVideo">Upload file</view>
+  </view>
+  <view class="container">
+    <view class="divLine"></view>
+  </view>
+
+  <video class="video-cell" wx:if="{{videoUrl}}" src="{{videoUrl}}"></video>
+  <view class="container">
+    <view class="divLine"></view>
+  </view>
+  <button bindtap="submitData" class="publish-but">Post Now !</button>
+</view>

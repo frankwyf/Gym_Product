@@ -1,0 +1,17 @@
+<!--video.wxml-->
+<view class="container">
+    <image class="bg-image" mode="scaleToFill"  src="../../images/bakcgrounds/environment.jpg"></image>
+    <view class="page__hd">
+        <text class="page__title">Wonderful Environment</text>
+        <text class="page__desc">Our videos feature real-life footage of our gym, highlighting our state-of-the-art equipment,
+            spacious and well-lit facilities, and professional trainers.
+            And if you're looking for some extra motivation,
+            come see our diverse community of members who are all working towards their fitness goals.
+            Join us and be inspired!</text>
+    </view>
+        <view class="section tc">
+            <button  class="full" bindtap='play' >Full Screen</button>
+            <video src="{{server}}Environment/About.mp4" class='{{fullScreen?"show":"hide"}}' autoplay="true" binderror="videoErrorCallback" bindfullscreenchange="fullScreen"  bindended="closeVideo"  controls></video>
+        </view>
+    <button type="primary" size="default" bindtap="FindOutMore">Find out more !</button>
+</view>

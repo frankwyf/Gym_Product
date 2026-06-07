@@ -1,0 +1,130 @@
+<!--all-venues.wxml-->
+<!--1px = 750/320 = 2.34rpx;-->
+<view class="container">
+   <view class="swiper-container">
+        <swiper class="swiper_box"
+                    autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" bindchange="swiperchange">
+            <block wx:for="{{slides}}">
+                <swiper-item>
+                    <view style=";width:{{width}}px; font-weight: 800 ;background:rgba(0,0,0,0.4);position: absolute;top:5px;border-radius:15px;left:30%;transform:translateX(0%);text-align:center;">
+                        <text style="font-size: 30px;font-family:Arial; color:white;">{{item.text}}</text>
+                    </view>
+                    <image bindtap="tapBanner" data-id="{{item.slideID}}" src="{{server}}until/{{item.slideUrl}}" class="slide-image" width="750rpx" height="562.5rpx"/>
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class="dots">
+            <block wx:for="{{banners}}" wx:key="unique">
+                <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+            </block>
+        </view>
+   </view>
+<!--types of classes-->
+    <view class="type-container">
+        <scroll-view class="type-navbar" scroll-x="true" style="width: 100%">
+            <view class="type-box" wx:for-items="{{categories}}">
+                <view id="{{item.id}}" class="type-navbar-item {{activeCategoryId == item.id ? 'type-item-on' : ''}}" bindtap="tabClick">
+                    {{item.name}}
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+    <!--classes boxes-->
+    <view class="goods-container">
+        <view class="goods-box" wx:for-items="{{courses}}" wx:key="{{index}}" bindtap="toDetailsTap" data-id="{{item.couid}}">
+           <view class="img-box">
+              <image src="{{server}}courses/{{item.cover}}" class="image"/>
+           </view>
+            <view class="article__desc">
+                <text class="article__source">{{ item.type }}</text>
+                <text class="article__time">{{filter.format(item.time, 'yyyy/MM/dd hh:ss:mm')}}</text>
+            </view>
+        </view>
+    </view>
+    <view hidden="{{loadingMoreHidden ? true : false}}" class="no-more-goods">No More classes</view>
+</view>
+<view class="footaboutme"><text>XJCO2913 Group2\r\nGymMaster</text></view>
+
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>

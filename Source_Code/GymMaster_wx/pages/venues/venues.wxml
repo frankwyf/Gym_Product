@@ -1,0 +1,146 @@
+<!--coaches-detail.wxml-->
+<view class="container">
+    <view class="coach-dest">
+        <view class="coach">
+            <image class="item-coach" data-id="{{venue.fid}}" src="{{server}}venues/{{venue.profile}}"/>
+            <view class="zan-font-12-bold">{{venue.vname}}</view>
+            <view class="zan-font-12-bold">
+                <image src="../../images/ico-addr-red.png" class="img" />
+                {{venue.status}}
+            </view>
+        </view>
+        <text class="zan-font-10">{{venue.description}}</text>
+    </view>
+    <!-- reservation time (period)-->
+    <view class="zan-panel">
+        <view class="zan-cell">
+            <view class="zan-cell__bd">Reservation: </view>
+            <view class="zan-cell__bd" wx:if="{{yyTime}}">{{filter.format(yyTime)}}</view>
+        </view>
+    </view>
+    <button class='showBtn' bindtap='showTimeModel'>Choose a session</button>
+    <view class="num">
+        <text>Number of reservations:</text>
+        <picker value="{{reservationAmount}}" range="{{reservationAmountOptions}}" bindchange="handleReservationAmountChange">
+            <view class="picker">
+                <text>{{reservationAmount}}</text>
+            </view>
+        </picker>
+    </view>
+    <view class="modal {{timeShow?'modal_show':'modal_hide'}}">
+        <view class='modal_cancel' bindtap='modelCancel'></view>
+        <view class='modal_container'>
+            <view class='modal_header'>
+                <view style="font-size:20px">Choose start time</view>
+                <view class='header_tip'>Reservations can be made within: {{yyDay}} days</view>
+            </view>
+            <view class="time">
+                <scroll-view class="time_scroll" scroll-x="true" >
+                    <view data-index="{{index}}" bindtap="timeClick" class="scroll_item {{currentTab==index?'time_active':''}}" wx:for="{{timeList}}" wx:key="{{index}}">
+                        <view>{{item.name}}</view>
+                        <view>{{item.date}}</view>
+                    </view>
+                </scroll-view>
+            </view>
+            <view class='hour'>
+                <view bindtap="hourClick" class="hour_item {{item.isShow?'':'hour_unactive'}} {{hourIndex==index?'hour_active':''}} " wx:for="{{hourList}}" wx:key="{{index}}" data-index="{{index}}" data-isshow="{{item.isShow}}">{{item.hour}}</view>
+            </view>
+        </view>
+    </view>
+    <view class="footer-box">
+        <view class="shop-cart-btn" style="background-image: url('{{server}}backgrounds/cart-icon.jpg'); background-repeat: no-repeat; background-position: center 21rpx;" bindtap="goShopCar">
+            <view class="shop-num">({{shopNum}})</view>
+            Unpaid
+        </view>
+        <view class="join-shop-cart" bindtap="addShopCar">Add to Cart</view>
+        <view class="now-buy" bindtap="goShopCar">Check Out</view>
+    </view>
+</view>
+<modal title="Confirm Reservation" hidden="{{modalHidden}}"  bindconfirm="modalHide" bindcancel="modalHideCancle">
+    <view class="zan-font-15">
+        <text>{{modalContent}}</text>
+    </view>
+</modal>
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [month].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: mm-dd : hh-mm week
+        return [month, day].map(formatNumber).join('/') + ' ' + [hour, minute].map(formatNumber).join(':') + ' ' + getWeek(week)
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 0:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>

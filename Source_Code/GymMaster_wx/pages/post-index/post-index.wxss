@@ -1,0 +1,205 @@
+/* pages/post-index.wxss */
+.index-nav{
+    position:fixed;top:0;
+    z-index: 999
+}
+.container{
+    padding-top: 90rpx
+}
+view, scroll-view, swiper, button, input, textarea, label, navigator, image {
+    box-sizing: border-box;
+}
+.nav {
+    white-space: nowrap;
+}
+.nav .cu-item {
+    height: 90rpx;
+    display: inline-block;
+    line-height: 90rpx;
+    margin: 0 10rpx;
+    padding: 0 20rpx;
+}
+.bg-white {
+    background-color: white;
+    color: darkgray;
+}
+.cu-tag:not([class*="bg"]):not([class*="line"]) {
+    background-color: ghostwhite;
+}
+.cu-tag.sm {
+    font-size: 20rpx;
+    padding: 0rpx 12rpx;
+    height: 32rpx;
+}
+element.style {
+    margin-top: 3px;
+}
+.fl {
+    float: left;
+}
+.fr {
+    float: right;
+}
+view, scroll-view, swiper, button, input, textarea, label, navigator, image {
+    box-sizing: border-box;
+}
+.cu-tag:not([class*="bg"]):not([class*="line"]) {
+    background-color: ghostwhite;
+}
+.cu-tag.sm {
+    font-size: 20rpx;
+    padding: 0rpx 12rpx;
+    height: 32rpx;
+}
+.cu-tag {
+    font-size: 24rpx;
+    vertical-align: middle;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0rpx 16rpx;
+    height: 48rpx;
+    font-family: Helvetica Neue, Helvetica, sans-serif;
+    white-space: nowrap;
+}
+.radius {
+    border-radius: 6rpx;
+}
+view, scroll-view, swiper, button, input, textarea, label, navigator, image {
+    box-sizing: border-box;
+}
+.cu-tag:not([class*="bg"]):not([class*="line"]) {
+    background-color: ghostwhite;
+}
+.cu-tag.sm {
+    font-size: 20rpx;
+    padding: 0rpx 12rpx;
+    height: 32rpx;
+}
+.cu-tag {
+    font-size: 24rpx;
+    vertical-align: middle;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0rpx 16rpx;
+    height: 48rpx;
+    font-family: Helvetica Neue, Helvetica, sans-serif;
+    white-space: nowrap;
+}
+.radius {
+    border-radius: 6rpx;
+}
+view, scroll-view, swiper, button, input, textarea, label, navigator, image {
+    box-sizing: border-box;
+}
+.img-box text {
+    line-height: 45rpx;
+}
+[class*="cuIcon-"] {
+    font-family: "cuIcon";
+    font-size: inherit;
+    font-style: normal;
+}
+.text-right {
+    text-align: right;
+}
+.margin-lr-xs {
+    margin-left: 10rpx;
+    margin-right: 10rpx;
+}
+.type-container{
+    width: 100%;
+    height: 88rpx;
+    background-color: #fff;
+    overflow: hidden;
+}
+.type-navbar{
+    white-space: nowrap;
+    display: flex;
+    height: 88rpx;
+    background-color: #fff;
+}
+.type-box{
+    width:160rpx;
+    box-sizing: content-box;
+    font-size: 24rpx;
+    line-height: 84rpx;
+    text-align: center;
+    display: inline-block;
+    overflow: hidden;
+}
+.type-navbar-item{
+    border-bottom: 4rpx solid #fff;
+}
+.type-item-on{
+    border-bottom: 4rpx solid #e64340;
+}
+.send-button {
+    width: 80%;
+    height: 80rpx;
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 20px;
+    border: none;
+    border-radius: 10rpx;
+}
+
+.goods-container{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap:wrap;
+    box-sizing: content-box;
+    padding: 24rpx;
+}
+.goods-box{
+    width: 339rpx;
+    height: 410rpx;
+    background-color: #fff;
+    overflow: hidden;
+    margin-bottom: 24rpx;
+    border-radius: 5px;
+    padding: 5px 2px 5px 2px;
+}
+.article__time{
+    float: right;
+}
+.article__source{
+    color:#d81e06;
+    border:1rpx solid #d81e06;
+    padding: 2rpx 10rpx;
+    border-radius: 4rpx;
+    font-size:20rpx;
+    margin-right: 20rpx;
+}
+.goods-box .img-box{
+    width: 339rpx;
+    height: 339rpx;
+    overflow: hidden;
+}
+.goods-box .img-box image{
+    width: 339rpx;
+    height: 339rpx;
+}
+.goods-box .goods-title{
+    width: 280rpx;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 24rpx;
+    padding: 24rpx 0 0rpx 0;
+    color:#000;
+    margin-left: 24rpx;
+}
+.goods-box .goods-price{
+    width: 280rpx;
+    overflow: hidden;
+    font-size: 24rpx;
+    padding: 24rpx 0;
+    color:#e64340;
+    margin-left: 24rpx;
+}

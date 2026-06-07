@@ -1,0 +1,44 @@
+/* video.wxss */
+.container {
+  min-height: 100%;
+  justify-content:space-between;
+  align-items: center;
+}
+.bg-image
+{
+    width : 100%;
+    height : 100%;
+    position: fixed;
+    filter: blur(5px);
+    z-index: -1;
+}
+.full{
+    margin-bottom: 10px;
+    background-color: aquamarine;
+}
+.page__hd{
+    padding:20px 30px 20px 30px;
+    border:1rpx solid #000;
+    margin:30px 10px 20px 10px;
+    color: aliceblue;
+    background-color: cadetblue;
+}
+.page__title{
+    display: block;
+    font-size: 25px;
+    font-family: "Arial Black";
+    margin-bottom:10px;
+    margin-left: 5%;
+    color: #f34b4b;
+}
+.page__desc{
+    margin-top: 5px;
+    font-size: 18px;
+    color: #f1eded;
+}
+.section{
+    margin-bottom: 40px;
+}
+.tc{
+    text-align: center;
+}

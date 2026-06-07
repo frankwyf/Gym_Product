@@ -1,0 +1,55 @@
+<view class="container">
+     <form bindsubmit="createOrder">
+     <view class="goods-list">
+        <view class="list-title">{{mallName}}</view>
+        <view class="a-goods" wx:for-items="{{goodsList}}" wx:key="{{index}}">
+            <view class="img-box">
+                <image src="{{server}}{{item.type}}/{{item.pic}}" class="img" />
+            </view>
+            <view class="text-box">
+                <view class="arow arow01">
+                    <view class="goods-name">{{item.name}}</view>
+                    <view class="goods-price">￡: {{item.price}}</view>
+                </view>
+                <view class="arow">
+                    <view class="goods-name">{{item.date}} at: {{item.period}}</view>
+                    <view class="goods-num">x {{item.amount}}</view>
+                </view>
+            </view>
+        </view>
+     </view>
+     <view class="goods-info">
+        <view class="row-box">
+            <view class="row-label">Total bill: </view>
+            <view class="right-text">￡ {{allGoodsPrice}}</view>
+        </view>
+     </view>
+         <button class="change-account-btn" bindtap="showModal">Change Account</button>
+     <view class="jiesuan-box">
+        <view class="left-price">
+            <view class="total">Total Price: {{allGoodsPrice}}</view>
+        </view>
+        <button class="to-pay-btn" formType="submit">Pay Now !</button>
+    </view>
+    </form>
+</view>
+
+<view class="modal" wx:if="{{showModal}}">
+    <view class="modal-content">
+        <view class="modal-title">Select Account to Pay</view>
+        <view class="modal-list">
+            <view class="account-item" wx:for="{{accounts}}" wx:key="id" bindtap="onAccountSelect" data-id="{{item.aid}}">
+                <view class="account-info">
+                    <view class="account-title">Account ID: {{item.aid}}</view>
+                    <view class="account-balance">Method: {{item.method}}</view>
+                    <view class="account-balance">Balance: {{item.balance}}</view>
+                </view>
+            </view>
+            <view class="account-balance">Current Wallet: {{selectedAccount}}</view>
+        </view>
+        <view class="modal-buttons">
+            <view class="modal-button" bindtap="onCancel">Cancel</view>
+            <view class="modal-button" bindtap="onConfirm">Confirm</view>
+        </view>
+    </view>
+</view>

@@ -1,0 +1,129 @@
+
+Page {
+    background-color: #fff8fa;
+}
+.type-wrap {
+  margin:20rpx 20rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content:space-around;
+  font-size: 40rpx;
+}
+.bg-image
+{
+  width : 100%;
+  height : 100%;
+  position: fixed;
+  filter: blur(15px);
+  z-index: -1;
+}
+.big-type {
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid red;
+}
+
+.pub-wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-right: 20rpx;
+}
+
+.pub-text {
+  background-color: #07C160;
+  color: #fff;
+  width: 120rpx;
+  height: 60rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  line-height: 60rpx;
+  font-size: 28rpx;
+}
+.input_text{
+  color: ghostwhite;
+  font-size: 20px;
+  font-family: "Arial Black";
+}
+
+.input-wrap {
+  margin: 20rpx 40rpx;
+  background-color: ghostwhite;
+  font-size: 20px;
+  border-radius: 5px;
+
+}
+.input-text {
+  font-size: 20px;
+  height: 200rpx;
+  width: 95%;
+  border: solid 1px black;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.img-wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 20rpx 30rpx;
+}
+.one-img {
+  position: relative;
+  margin: 4rpx 8rpx;
+}
+.img-choose {
+  width: 210rpx;
+  height: 210rpx;
+}
+.close-img {
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  right: 4rpx;
+  top: 4rpx;
+}
+#title{
+  margin-left: 15%;
+  color: red;
+  font-size: 30px;
+  background-color: #89898a;
+  border-radius: 5px;
+}
+.choose-localtion {
+  margin: 50rpx 40rpx;
+  font-size: 36rpx;
+  color: ghostwhite;
+}
+
+.video-cell {
+  width: 700rpx;
+  height: 350rpx;
+  margin: 20rpx;
+}
+
+.input_block {
+  margin: 20rpx 40rpx;
+  font-size: 20px;
+}
+/*分割线样式*/
+.divLine{
+  background: #E0E3DA;
+  width: 100%;
+  height: 5rpx;
+}
+
+.title-input-wrap {
+  background-color: ghostwhite;
+  font-size: 20px;
+  margin: 40rpx 40rpx;
+  border: solid 1px #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  color: ghostwhite;
+}
+
+.publish-but {
+  background-color: #FF2840;
+  color: #fff;
+  margin-top: 50px;
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gym.project.gym.mapper.GymVipMapper">
+    
+    <resultMap type="GymVip" id="GymVipResult">
+        <result property="vipId"    column="vip_id"    />
+        <result property="vipNo"    column="vip_no"    />
+        <result property="effective"    column="effective"    />
+        <result property="memberPhone"    column="member_phone"    />
+        <result property="memberName"    column="member_name"    />
+    </resultMap>
+
+    <sql id="selectGymVipVo">
+        SELECT vip.`vip_id`, vip_no, effective,member.`member_phone`,member.`member_name` FROM gym_vip vip
+        JOIN gym_member member ON member.`vip_id` = vip.`vip_id`
+    </sql>
+
+    <select id="selectGymVipList" parameterType="GymVip" resultMap="GymVipResult">
+        <include refid="selectGymVipVo"/>
+        <where>  
+            <if test="vipNo != null  and vipNo != ''"> and vip_no like concat('%', #{vipNo}, '%')</if>
+            <if test="effective != null "> and effective like concat('%', #{effective}, '%')</if>
+            <if test="memberName != null  and memberName != ''"> and member_name like concat('%', #{memberName}, '%')</if>
+            <if test="memberPhone != null  and memberPhone != ''"> and member_phone like concat('%',#{memberPhone},'%')</if>
+        </where>
+    </select>
+    
+    <select id="selectGymVipByVipId" parameterType="Long" resultMap="GymVipResult">
+        <include refid="selectGymVipVo"/>
+        where vip.`vip_id` = #{vipId}
+    </select>
+        
+    <insert id="insertGymVip" parameterType="GymVip" useGeneratedKeys="true" keyProperty="vipId">
+        insert into gym_vip
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vipNo != null">vip_no,</if>
+            <if test="effective != null">effective,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vipNo != null">#{vipNo},</if>
+            <if test="effective != null">#{effective},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGymVip" parameterType="GymVip">
+        update gym_vip
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vipNo != null">vip_no = #{vipNo},</if>
+            <if test="effective != null">effective = #{effective},</if>
+        </trim>
+        where vip_id = #{vipId}
+    </update>
+
+    <delete id="deleteGymVipByVipId" parameterType="Long">
+        delete from gym_vip where vip_id = #{vipId}
+    </delete>
+
+    <delete id="deleteGymVipByVipIds" parameterType="String">
+        delete from gym_vip where vip_id in 
+        <foreach item="vipId" collection="array" open="(" separator="," close=")">
+            #{vipId}
+        </foreach>
+    </delete>
+</mapper>

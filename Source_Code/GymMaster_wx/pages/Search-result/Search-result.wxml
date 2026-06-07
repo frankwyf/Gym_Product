@@ -1,0 +1,204 @@
+<!--Search-result.wxml-->
+<view class="container">
+    <view class="zan-panel">
+        <view class="zan-cell">
+            <view class="zan-cell__bd">Facilities</view>
+            <view class="zan-cell__ft">click to find out more !</view>
+        </view>
+        <block wx:for="{{ facilities }}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}facilities/{{ item.profile }}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                        <view class="article__title_font">{{ item.fname }}</view>
+                        <navigator url="/pages/facilities/facilities?id={{item.fid}}">
+                            <view class="appointBtn border-radius">
+                                <view class="appointFont">Book</view>
+                            </view>
+                        </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time">Location: {{ item.location }}.</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.vacancy > 0}}">
+                            <text class="article__time1">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.vacancy <= 0}}">
+                            <text class="article__time2">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.recommend == 'Yes'}}">
+                            <view class="article__desc">
+                                <text class="article__source">Recommended</text>
+                            </view>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+        <text class="no_more"> no more results found!</text>
+    </view>
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">Venues</view>
+      <view class="zan-cell__ft">click to book a session !</view>
+    </view>
+        <block wx:for="{{ venues }}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}venues/{{ item.profile }}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                    <view class="article__title_font">{{ item.vname }}</view>
+                    <navigator url="/pages/venues/venues?vid={{item.vid}}">
+                        <view class="appointBtn border-radius">
+                            <view class="appointFont">Book</view>
+                        </view>
+                    </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time0">Price: {{ item.price }} ￡/h .</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.status == 'available'}}">
+                            <text class="article__time1">Status: {{ item.status }}</text>
+                        </block>
+                        <block wx:else>
+                            <text class="article__time2">Status: {{ item.status }}</text>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+      <text class="no_more"> no more results found!</text>
+    </view>
+    <view class="zan-panel">
+        <view class="zan-cell">
+            <view class="zan-cell__bd">Courses</view>
+            <view class="zan-cell__ft">click to book a course !</view>
+        </view>
+        <block wx:for="{{course}}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}courses/{{ item.cover}}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                        <view class="article__title_font">{{ item.type }}</view>
+                        <navigator url="/pages/goods-details/goods-details?id={{item.couid}}">
+                            <view class="appointBtn border-radius">
+                                <view class="appointFont">Book</view>
+                            </view>
+                        </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time0">Price: {{ item.price }} ￡/h .</text>
+                    </view>
+                    <view class="article__desc">
+                        <text>\n</text>
+                        <text class="article__time">Start at:{{filter.format(item.time, 'yyyy/MM/dd hh:ss:mm')}}</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.vacancy > 0}}">
+                            <text class="article__time1">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.vacancy <= 0}}">
+                            <text class="article__time2">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+        <text class="no_more"> no more results found!</text>
+    </view>
+
+</view>
+<view class="footaboutme"><text>XJCO2913 Group2\r\nGymMaster</text></view>
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>

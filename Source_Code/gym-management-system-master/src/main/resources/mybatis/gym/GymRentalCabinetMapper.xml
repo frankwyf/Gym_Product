@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gym.project.gym.mapper.GymRentalCabinetMapper">
+    
+    <resultMap type="GymRentalCabinet" id="GymRentalCabinetResult">
+        <result property="cabinetId"    column="cabinet_id"    />
+        <result property="cabinetNo"    column="cabinet_no"    />
+        <result property="memberId"    column="member_id"    />
+        <result property="cabinetDate"    column="cabinet_date"    />
+        <result property="memberName"    column="member_name"    />
+    </resultMap>
+
+    <sql id="selectGymRentalCabinetVo">
+        select cabinet_id, cabinet_no, cabinet.`member_id`, cabinet_date,member_name from gym_rental_cabinet cabinet
+        LEFT JOIN gym_member gm on cabinet.member_id = gm.member_id
+    </sql>
+
+    <select id="selectGymRentalCabinetList" parameterType="GymRentalCabinet" resultMap="GymRentalCabinetResult">
+        <include refid="selectGymRentalCabinetVo"/>
+        <where>
+            <if test="cabinetNo != null  and cabinetNo != ''"> and cabinet_no = #{cabinetNo}</if>
+            <if test="memberName != null  and memberName != ''"> and member_name like concat('%', #{memberName}, '%')</if>
+            <if test="cabinetDate != null "> and cabinet_date = #{cabinetDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectGymRentalCabinetByCabinetId" parameterType="Long" resultMap="GymRentalCabinetResult">
+        <include refid="selectGymRentalCabinetVo"/>
+        where cabinet_id = #{cabinetId}
+    </select>
+        
+    <insert id="insertGymRentalCabinet" parameterType="GymRentalCabinet" useGeneratedKeys="true" keyProperty="cabinetId">
+        insert into gym_rental_cabinet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cabinetNo != null">cabinet_no,</if>
+            <if test="memberId != null">member_id,</if>
+            <if test="cabinetDate != null">cabinet_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cabinetNo != null">#{cabinetNo},</if>
+            <if test="memberId != null">#{memberId},</if>
+            <if test="cabinetDate != null">#{cabinetDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGymRentalCabinetMember" parameterType="GymRentalCabinet">
+        update gym_rental_cabinet set member_id = null where cabinet_id = #{cabinetId}
+    </update>
+    <update id="updateGymRentalCabinet" parameterType="GymRentalCabinet">
+        update gym_rental_cabinet
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cabinetNo != null">cabinet_no = #{cabinetNo},</if>
+            <if test="memberId != null">member_id = #{memberId},</if>
+            <if test="cabinetDate != null">cabinet_date = #{cabinetDate},</if>
+        </trim>
+        where cabinet_id = #{cabinetId}
+    </update>
+
+    <delete id="deleteGymRentalCabinetByCabinetId" parameterType="Long">
+        delete from gym_rental_cabinet where cabinet_id = #{cabinetId}
+    </delete>
+
+    <delete id="deleteGymRentalCabinetByCabinetIds" parameterType="String">
+        delete from gym_rental_cabinet where cabinet_id in 
+        <foreach item="cabinetId" collection="array" open="(" separator="," close=")">
+            #{cabinetId}
+        </foreach>
+    </delete>
+</mapper>

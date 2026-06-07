@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gym.project.gym.mapper.GymVipUsageMapper">
+    
+    <resultMap type="GymVipUsage" id="GymVipUsageResult">
+        <result property="usageId"    column="usage_id"    />
+        <result property="vipId"    column="vip_id"    />
+        <result property="date"    column="date"    />
+        <result property="vipNo"    column="vip_no"    />
+    </resultMap>
+
+    <sql id="selectGymVipUsageVo">
+        SELECT usage_id, usg.vip_id, `date`,vip_no FROM gym_vip_usage usg
+        JOIN gym_vip vip ON  usg.`vip_id` = vip.`vip_id`
+    </sql>
+
+    <select id="selectGymVipUsageList" parameterType="GymVipUsage" resultMap="GymVipUsageResult">
+        <include refid="selectGymVipUsageVo"/>
+        <where>
+            <if test="vipNo != null  and vipNo != ''"> and vip_no like concat('%', #{vipNo}, '%')</if>
+            <if test="date != null "> and date = #{date}</if>
+        </where>
+    </select>
+    
+    <select id="selectGymVipUsageByUsageId" parameterType="Long" resultMap="GymVipUsageResult">
+        <include refid="selectGymVipUsageVo"/>
+        where usage_id = #{usageId}
+    </select>
+
+    <select id="selectGymVipUsageByVipId" parameterType="Long" resultMap="GymVipUsageResult">
+        <include refid="selectGymVipUsageVo"/>
+        where vip.`vip_id` = #{vipId}
+    </select>
+        
+    <insert id="insertGymVipUsage" parameterType="GymVipUsage" useGeneratedKeys="true" keyProperty="usageId">
+        insert into gym_vip_usage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vipId != null">vip_id,</if>
+            <if test="date != null">date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vipId != null">#{vipId},</if>
+            <if test="date != null">#{date},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGymVipUsage" parameterType="GymVipUsage">
+        update gym_vip_usage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vipId != null">vip_id = #{vipId},</if>
+            <if test="date != null">date = #{date},</if>
+        </trim>
+        where usage_id = #{usageId}
+    </update>
+
+    <delete id="deleteGymVipUsageByUsageId" parameterType="Long">
+        delete from gym_vip_usage where usage_id = #{usageId}
+    </delete>
+
+    <delete id="deleteGymVipUsageByUsageIds" parameterType="String">
+        delete from gym_vip_usage where usage_id in 
+        <foreach item="usageId" collection="array" open="(" separator="," close=")">
+            #{usageId}
+        </foreach>
+    </delete>
+</mapper>

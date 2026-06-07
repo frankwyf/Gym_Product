@@ -1,0 +1,60 @@
+<view class="page">
+    <text class="create1">Your Accounts</text>
+    <view class="container">
+        <!-- 分割线 -->
+        <view class="divLine"></view>
+    </view>
+    <view class="content">
+        <view class="account-list">
+            <!-- Display account details with edit button -->
+            <view class="account-item" wx:for="{{accounts}}" wx:key="id">
+                <view class="account-info">
+                    <view class="account-title">Account num: {{item.aid}}</view>
+                    <view class="account-balance">Balance ￡: {{item.balance}}</view>
+                    <view class="account-method">Payment: {{item.method}}</view>
+                    <view class="account-method1" wx:if="{{item.active}}">Active</view>
+                    <view class="account-method2" wx:if="{{!item.active}}">Enabled</view>
+                </view>
+                <view class="edit-button1" data-id="{{item.aid}}" bindtap="onEditAccount">Charge</view>
+                <view class="edit-button" data-id="{{item.aid}}" bindtap="onDeleteAccount">Delete</view>
+            </view>
+        </view>
+
+        <!-- Create new account form -->
+        <text class="create">Creat a new Account here !</text>
+        <view class="container">
+            <!-- 分割线 -->
+            <view class="divLine"></view>
+        </view>
+        <text>\n</text>
+        <form class="new-account-form" bindsubmit="onSubmit">
+            <view class="form-row">
+                <view class="form-label">Method</view>
+                <input class="form-input" type="text" name="method" placeholder="Enter account method" />
+            </view>
+            <view class="form-row">
+                <view class="form-label">Balance</view>
+                <input class="form-input" type="number" name="balance" placeholder="Enter account balance" />
+            </view>
+            <view class="form-row">
+                <view class="form-label">Active</view>
+                <input class="form-input" type="checkbox" placeholder="Enter true/false" name="isActive" />
+            </view>
+            <button class="create-account-button" form-type="submit">Create Account</button>
+        </form>
+    </view>
+</view>
+
+        <!-- Modal dialog for charging an account -->
+<view class="modal" wx:if="{{showChargeModal}}">
+    <view class="modal-content">
+        <view class="modal-title">Charge Account</view>
+        <view class="modal-input">
+            <input type="number" placeholder="Enter charge amount" bindinput="onChargeInput" />
+        </view>
+        <view class="modal-buttons">
+            <view class="modal-button" bindtap="onChargeCancel">Cancel</view>
+            <view class="modal-button" bindtap="onChargeConfirm">Confirm</view>
+        </view>
+    </view>
+</view>

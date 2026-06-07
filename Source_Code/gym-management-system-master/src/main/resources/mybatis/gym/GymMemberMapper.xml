@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gym.project.gym.mapper.GymMemberMapper">
+    
+    <resultMap type="GymMember" id="GymMemberResult">
+        <result property="memberId"    column="member_id"    />
+        <result property="memberName"    column="member_name"    />
+        <result property="memberAge"    column="member_age"    />
+        <result property="memberSex"    column="member_sex"    />
+        <result property="memberPhone"    column="member_phone"    />
+        <result property="memberEmail"    column="member_email"    />
+        <result property="memberBirthday"    column="member_birthday"    />
+        <result property="vipId"    column="vip_id"    />
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectGymMemberVo">
+        select member_id, member_name, member_age, member_sex, member_phone, member_email, member_birthday, vip_id, teacher_id, user_id from gym_member
+    </sql>
+    <select id="selectNoTeacherGymMemberList" parameterType="GymMember" resultMap="GymMemberResult">
+        <include refid="selectGymMemberVo"/>
+        where teacher_id is null or teacher_id = -1
+    </select>
+    <select id="selectGymMemberList" parameterType="GymMember" resultMap="GymMemberResult">
+        <include refid="selectGymMemberVo"/>
+        <where>  
+            <if test="memberName != null  and memberName != ''"> and member_name like concat('%', #{memberName}, '%')</if>
+            <if test="memberAge != null "> and member_age = #{memberAge}</if>
+            <if test="memberSex != null  and memberSex != ''"> and member_sex = #{memberSex}</if>
+            <if test="memberPhone != null  and memberPhone != ''"> and member_phone like concat('%',#{memberPhone},'%')</if>
+            <if test="memberEmail != null  and memberEmail != ''"> and member_email like concat('%',#{memberEmail},'%')</if>
+            <if test="memberBirthday != null "> and member_birthday = #{memberBirthday}</if>
+            <if test="vipId != null "> and vip_id = #{vipId}</if>
+            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectGymMemberByMemberId" parameterType="Long" resultMap="GymMemberResult">
+        <include refid="selectGymMemberVo"/>
+        where member_id = #{memberId}
+    </select>
+
+    <select id="getStudentNumber" parameterType="Long" resultType="java.lang.Long">
+        select count(*) from gym_member where teacher_id = #{teacherId}
+    </select>
+
+    <select id="selectGymMemberByUserId" parameterType="Long" resultMap="GymMemberResult">
+        <include refid="selectGymMemberVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertGymMember" parameterType="GymMember">
+        insert into gym_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="memberName != null and memberName != ''">member_name,</if>
+            <if test="memberAge != null">member_age,</if>
+            <if test="memberSex != null">member_sex,</if>
+            <if test="memberPhone != null">member_phone,</if>
+            <if test="memberEmail != null">member_email,</if>
+            <if test="memberBirthday != null">member_birthday,</if>
+            <if test="vipId != null">vip_id,</if>
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId},</if>
+            <if test="memberName != null and memberName != ''">#{memberName},</if>
+            <if test="memberAge != null">#{memberAge},</if>
+            <if test="memberSex != null">#{memberSex},</if>
+            <if test="memberPhone != null">#{memberPhone},</if>
+            <if test="memberEmail != null">#{memberEmail},</if>
+            <if test="memberBirthday != null">#{memberBirthday},</if>
+            <if test="vipId != null">#{vipId},</if>
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGymMember" parameterType="GymMember">
+        update gym_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="memberName != null and memberName != ''">member_name = #{memberName},</if>
+            <if test="memberAge != null">member_age = #{memberAge},</if>
+            <if test="memberSex != null">member_sex = #{memberSex},</if>
+            <if test="memberPhone != null">member_phone = #{memberPhone},</if>
+            <if test="memberEmail != null">member_email = #{memberEmail},</if>
+            <if test="memberBirthday != null">member_birthday = #{memberBirthday},</if>
+            <if test="vipId != null">vip_id = #{vipId},</if>
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where member_id = #{memberId}
+    </update>
+
+    <delete id="deleteGymMemberByMemberId" parameterType="Long">
+        delete from gym_member where member_id = #{memberId}
+    </delete>
+
+
+    <delete id="deleteGymMemberByMemberIds" parameterType="String">
+        delete from gym_member where member_id in 
+        <foreach item="memberId" collection="array" open="(" separator="," close=")">
+            #{memberId}
+        </foreach>
+    </delete>
+</mapper>

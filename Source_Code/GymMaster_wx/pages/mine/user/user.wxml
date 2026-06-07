@@ -1,0 +1,88 @@
+<view class="page">
+    <view class="user-info">
+        <view class="head-img">
+            <image class="thumb" src="{{server}}static/customerpro/{{profilePictureUrl}}"></image>
+            <text class="name">{{username}}: welcome to GymMaster!</text>
+        </view>
+    </view>
+    <form bindsubmit="onFormSubmitcus">
+        <view class="profile-picture" bindtap="uploadProfilePicture">
+            <image class="picture-image" src="{{server}}static/customerpro/{{profilePictureUrl}}"></image>
+            <text class="picture-text">Tap to Change profile</text>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Username:</label>
+            <input class="form-input" type="text" name="username" value="{{username}}"></input>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Password:</label>
+            <navigator class="resetpwd" url="/pages/findpassword/index">
+                Change password ?
+            </navigator>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Firstname: </label>
+            <input class="form-input" type="text" name="firstName" value="{{firstName}}"></input>
+        </view>
+        <view class="form-section">
+            <label class="form-label">LastName:</label>
+            <input class="form-input" type="text" name="lastName" value="{{lastName}}"></input>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Email:</label>
+            <input class="form-input" type="email" name="email" value="{{email}}"></input>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Gender:</label>
+            <picker class="form-input" name="gender" mode="selector" range="{{['Unknown', 'Male', 'Female']}}" value="{{gender}}" bindchange="onGenderChange">
+                <text>{{['Unknown', 'Male', 'Female'][gender]}}</text>
+            </picker>
+        </view>
+        <view class="form-section">
+            <button class="update-button" formType="submit">Update account</button>
+        </view>
+    </form>
+    <!-- goal form -->
+    <view class="container">
+        <!-- 分割线 -->
+        <view class="divLine"></view>
+    </view>
+    <text class="title">Goal set</text>
+    <form bindsubmit="onFormSubmitgoal">
+        <view class="form-section">
+            <label class="form-label">Height(cm):</label>
+            <view class="form-input">{{height}}</view>
+            <picker class="form-input" mode="selector" range="{{heightOptions}}" value="{{height}}" bindchange="onHeightPickerChange" name="height">
+                <button class="picker-button">Choose</button>
+            </picker>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Weight(kg):</label>
+            <view class="form-input">{{weight}}</view>
+            <picker class="form-input" mode="selector" range="{{weightOptions}}" value="{{weight}}" bindchange="onWeightPickerChange" name="weight">
+                <button class="picker-button">Choose</button>
+            </picker>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Goal Weight(kg):</label>
+            <view class="form-input">{{goalWeight}}</view>
+            <picker class="form-input" mode="selector" range="{{weightOptions}}" value="{{goalWeight}}" bindchange="onGoalWeightPickerChange" name="goalWeight">
+                <button class="picker-button">Choose</button>
+            </picker>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Workout frequency (times/week):</label>
+            <view class="form-input">{{weekGoal}}</view>
+            <picker  class="form-input" mode="selector" range="{{weekGoalOptions}}" value="{{weekGoal}}" bindchange="onWeekGoalPickerChange" name="weekGoal">
+                <button class="picker-button">Choose</button>
+            </picker>
+        </view>
+        <view class="form-section">
+            <label class="form-label">Workout target:</label>
+            <textarea class="form-input" name="target" value="{{targetDescription}}" placeholder="Enter workout goal" bindinput="onTargetDescriptionInput"></textarea>
+        </view>
+        <view class="form-section">
+            <button class="update-button" formType="submit">Update Goal</button>
+        </view>
+    </form>
+</view>

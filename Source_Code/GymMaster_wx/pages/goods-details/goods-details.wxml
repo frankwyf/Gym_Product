@@ -1,0 +1,170 @@
+<import src="../../wxParse/wxParse.wxml" />
+<view class="container">
+   <view class="swiper-container">
+        <swiper class="swiper_box"
+                    autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" bindchange="swiperchange">
+            <block wx:for="{{goodsDetail}}">
+                <swiper-item>
+                    <image src="{{server}}courses/{{goodsDetail.cover}}" class="slide-image" width="355" height="150"/>
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class="dots">
+            <block wx:for="{{goodsDetail}}" wx:key="unique">
+                <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+            </block>
+        </view>
+   </view>
+   <view class="goods-info">
+        <view class="goods-title">{{goodsDetail.type}}</view>
+        <view class="zan-font-10">
+          <text>{{goodsDetail.description}}</text>
+        </view>
+        <view class="goods-price">Price ￡: {{goodsDetail.price}}/h per person</view>
+   </view>
+   <view wx:if="{{goodsDetail.time}}" class="row-arrow" bindtap="bindGuiGeTap">
+     Course start at: {{filter.format( goodsDetail.time, 'yyyy/MM/dd hh:ss:mm')}}
+   </view>
+    <view class="goods-des-info">
+        <view class="label-title">Coach Introduction</view>
+        <view class="goods-text">
+            <view class="coach-container">
+                <image class="coach-image" src="{{server}}coachpro/{{coachDetail.profile}}" mode="aspectFill"></image>
+                <view class="coach-details">
+                    <view class="coach-name">{{coachDetail.username}}</view>
+                    <view class="coach-description">{{coachDetail.intro}}</view>
+                    <view class="coach-other-info">{{coachDetail.otherInfo}}</view>
+                </view>
+            </view>
+         </view>
+    </view>
+    <view class="footer-box">
+        <view class="shop-cart-btn" style="background-image: url('{{server}}backgrounds/cart-icon.jpg'); background-repeat: no-repeat; background-position: center 21rpx; margin-right:-10px" bindtap="goShopCar">
+            <view class="shop-num">({{shopNum}})</view>
+            Unpaid
+        </view>
+        <view class="join-shop-cart" bindtap="addShopCar">Add to Cart</view>
+        <view class="now-buy" bindtap="goShopCar">Check Out</view>
+    </view>
+    <view class="show-popup" hidden="{{hideShopPopup}}" >
+        <view class="popup-contents">
+             <view class="pop-goods-info">
+                <view class="pop-img-box">
+                    <image src="{{server}}courses/{{goodsDetail.cover}}" class="goods-thumbnail"/>
+                </view>
+                <view class="pop-goods-des">
+                    <view class="pop-goods-title">{{goodsDetail.basicInfo.name}}</view>
+                    <view class="pop-goods-price">￡： {{selectSizePrice}} per</view>
+                </view>
+                <view class="pop-goods-close" bindtap="closePopupTap"></view>
+             </view>
+             <view class="size-label-box">
+                <block wx:for="{{goodsDetail.properties}}" wx:for-item="property" wx:for-index="idx">
+                <view class="label">{{property.name}}</view>
+                <view class="label-item-box">
+                    <view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{property.childsCurGoods}}" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertyid="{{property.id}}" data-propertyname="{{property.name}}" data-propertychildindex="{{index}}" data-propertychildid="{{item.id}}" data-propertychildname="{{item.name}}">
+                        {{item.name}}
+                    </view>
+                </view>
+                </block>
+             </view>
+             <view class="buy-num-box">
+                <view class="num-label">Number of attendants</view>
+                <view class="num-box">
+                    <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numJianTap">-</view>
+                    <view class="num-input">
+                       <input  type="number" value="{{buyNumber}}" disabled/>
+                    </view>
+                    <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numJiaTap">+</view>
+                </view>
+             </view>
+             <view class="popup-join-btn" bindtap="tobuy">
+                Book the course now !
+             </view>
+        </view>
+    </view>
+</view>
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>
+

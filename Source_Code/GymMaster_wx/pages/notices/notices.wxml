@@ -1,0 +1,110 @@
+<!--notices.wxml-->
+<view class="histroy_notice">
+    <view class="zan-toptips {{ zanTopTips.show ? 'zan-toptips--show' : '' }}">{{ zanTopTips.content }}</view>
+    <text class="title"> Historical notices</text>
+    <view class="divLine"></view>
+    <block wx:for="{{ notices }}">
+        <navigator url="/pages/articles-detail/index?id={{item.nid}}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}notice/{{ item.noticeMedia}}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title article__title__large" background-image="url({{server}}notice/{{ item.noticeMedia}})">{{ item.title }}</view>
+                    <view class="article__desc">
+                        <text wx:if="{{ item.publisherType }}" class="article__source">{{ item.publisherType }}</text>
+                        <text class="article__time">{{filter.format(item.noticeDate, 'yyyy/MM/dd hh:ss:mm')}}</text>
+                        <view class="article__count">
+                            <image class="article__icon" src="../../images/eye.png"></image>
+                            <text wx:if="{{ item.publisherType == 'employee'}}" id="normal"> Normal </text>
+                            <text wx:if="{{ item.publisherType == 'manager'}}" id="urgent"> Urgent </text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </navigator>
+    </block>
+</view>
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>
+

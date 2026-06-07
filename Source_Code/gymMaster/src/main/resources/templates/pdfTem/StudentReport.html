@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GymMaster Customer Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: red;
+        }
+        h3 {
+            color: black;
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: red;
+            color: white;
+        }
+        #situation {
+            text-indent: 2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>GymMaster Customer Bill</h1>
+<!-- 班级信息 -->
+<!--<table border="1" style="text-align: center">-->
+<!--    <tr>-->
+<!--        <td>school</td>-->
+<!--        <td>grade</td>-->
+<!--        <td>class</td>-->
+<!--        <td>num</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        &lt;!&ndash; 变量：学校 &ndash;&gt;-->
+<!--        <td id="school"></td>-->
+<!--        &lt;!&ndash; 变量：年级 &ndash;&gt;-->
+<!--        <td id="grade"></td>-->
+<!--        &lt;!&ndash; 变量：班级 &ndash;&gt;-->
+<!--        <td id="class"></td>-->
+<!--        &lt;!&ndash; 变量：学生人数 &ndash;&gt;-->
+<!--        <td id="studentNum"></td>-->
+<!--    </tr>-->
+<!--</table>-->
+<h3>
+    overall：These are your chosen bills. It is our honor to have you here. Your attendances are appreciated. Hope that you've had a great time here. Looking forward to your next coming.
+</h3>
+<!-- 变量：班级概况 -->
+<p id="situation">
+
+</p>
+<h3>
+    bill list：
+</h3>
+<!-- 学生列表 -->
+<table>
+    <tbody>
+    <!-- 表头 -->
+    <tr>
+        <th>username</th>
+        <th>facility</th>
+        <th>venue</th>
+        <th>date</th>
+        <th>bill</th>
+    </tr>
+    <!-- 学生数据 -->
+    <tr id="billList">
+        <!-- 变量：姓名 -->
+        <td id="username"></td>
+        <!-- 变量：性别 -->
+        <td id="facility"></td>
+        <!-- 变量：年龄 -->
+        <td id="venue"></td>
+        <!-- 变量：父亲 -->
+        <td id="date"></td>
+        <!-- 变量：母亲 -->
+        <td id="bill"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

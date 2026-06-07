@@ -1,0 +1,178 @@
+/* pages/wallet.wxss */
+.page {
+    background-color: #222;
+    color: #fff;
+    min-height: 850px;
+}
+
+.content {
+    padding: 20px;
+}
+
+.account-list {
+    margin-bottom: 20px;
+}
+.account-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.account-info {
+    flex-grow: 1;
+}
+.account-title {
+    font-size: 26px;
+    color: #ff4d4f;
+}
+
+.account-balance {
+    font-size: 22px;
+    color: #fdbe01;
+    font-weight: 500px;
+}
+
+.account-method {
+    font-size: 18px;
+    color: #ccc;
+}
+
+.account-method1 {
+    font-size: 16px;
+    color: #58fd01;
+}
+
+.account-method2 {
+    font-size: 16px;
+    color: #fd0101;
+}
+
+
+.edit-button {
+    margin-left: 3%;
+    font-size: 14px;
+    color: #fff;
+    background-color: #ff4d4f;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.edit-button1 {
+    font-size: 14px;
+    color: #fff;
+    background-color: #4d50ff;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+
+
+.new-account-form {
+}
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+.form-label {
+    flex-basis: 100px;
+    font-size: 18px;
+    color: #fff;
+}
+.create{
+    color: red;
+    font-family: "Arial Black";
+    font-size: 24px;
+    margin-left: 3%;
+}
+.create1{
+    color: red;
+    font-family: "Arial Black";
+    font-size: 24px;
+    margin-left: 28%;
+}
+.divLine{
+    background: #E0E3DA;
+    width: 100%;
+    height: 5rpx;
+}
+
+.form-input {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #fff;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
+.create-account-button {
+    font-size: 16px;
+    color: #fff;
+    background-color: #ff4d4f;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+    width: 200px;
+    flex-direction: column;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.modal-input {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-button {
+    margin-left: 10px;
+    padding: 5px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.modal-button:last-child {
+    background-color: #f44336;
+}

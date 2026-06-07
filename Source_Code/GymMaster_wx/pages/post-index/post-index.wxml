@@ -1,0 +1,112 @@
+<!--post-index.wxml-->
+<view style="height:{{contentHeight}}px;background-color: grey;">
+    <!--types of posts-->
+    <view class="type-container">
+        <scroll-view class="type-navbar" scroll-x="true" style="width: 100%">
+            <view class="type-box" wx:for-items="{{themes}}">
+                <view id="{{item.id}}" class="type-navbar-item {{activeCategoryId == item.id ? 'type-item-on' : ''}}" bindtap="tabClick">
+                    {{item.name}}
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+    <!--posts boxes-->
+    <view class="goods-container">
+        <view class="goods-box" wx:for-items="{{post_now}}" wx:key="{{index}}" bindtap="toDetailsTap" data-id="{{item.pid}}">
+            <view class="img-box">
+                <image src="{{server}}posts/{{item.media}}" class="image"/>
+            </view>
+            <view class="article__desc">
+                <text class="article__source">{{ item.type }}</text>
+                <text class="article__time">{{filter.format(item.datesent, 'yyyy/MM/dd')}}</text>
+            </view>
+        </view>
+    </view>
+    <button class="send-button" bindtap="onSendPost">Send new post</button>
+    <no-data wx:if='{{(!item||item.length == 0)}}'>
+        <view style="color: white">No more Posts. Publish one now !</view>
+    </no-data>
+</view>
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>

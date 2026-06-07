@@ -1,0 +1,30 @@
+# Workspace-wide ignores
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Java
+**/target/
+**/*.log
+**/logs/
+**/GymMaster_Log/
+**/kGymMaster_Log/
+**/User_End_Logs/
+Source_Code/gym-management-system-master/sql/ry-vue.sql
+
+# Node
+**/node_modules/
+**/dist/
+
+# Environment files
+.env
+.env.*.local
+
+# Mini program local state
+**/project.private.config.json

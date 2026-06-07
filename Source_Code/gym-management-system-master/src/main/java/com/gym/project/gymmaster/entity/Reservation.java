@@ -1,0 +1,23 @@
+package com.gym.project.gymmaster.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.sql.Date;
+
+
+@Data
+public class Reservation implements Serializable {
+    @TableId(type = IdType.AUTO)
+    private Integer rid;
+    private int Ruid;
+    private Date rdate;
+    private int facility;
+    private int venue;
+    private int amount;
+    private String period;
+    private String payment;
+    private String status;
+}

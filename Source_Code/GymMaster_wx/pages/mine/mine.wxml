@@ -1,0 +1,77 @@
+<!--mine.wxml-->
+<view class="container">
+    <view class="weui-cells weui-cells_after-title">
+        <navigator class="weui-cell weui-cell_access" hover-class="weui-cell_active" url="/pages/mine/user/user">
+            <view class="userInfo">
+                <image  class="thumb" src="{{server}}static/customerpro/{{profile}}"></image>
+                <text class="name">{{username}}</text>
+                <text class="name1">Tap to view/update</text>
+            </view>
+        </navigator>
+    </view>
+  <view class="zan-panel">
+    <view class="zan-cell zan-cell--access" wx:for="{{ items }}" wx:key="" data-path="{{ item.path }}" data-index="{{ index }}" bindtap="navigateTo">
+      <view class="zan-cell__bd">
+          <image src="{{item.icon}}" class="img"></image>
+          <text>{{ item.text }}</text>
+      </view>
+    </view>
+  </view>
+  <view class="zan-panel">
+      <view class="container">
+          <view>
+              <button bindtap="logout" style="background-color: red; color: white; border: none;  border-radius: 5px; margin-bottom:10px">Logout</button>
+          </view>
+          <view class="title">Your Current Membership</view>
+          <view class="current-membership">
+              <view class="level-icon" wx:if="{{membership == 'free trail'}}" style="background-color: green;"></view>
+              <view class="level-icon" wx:if="{{membership == 'copper member'}}" style="background-color: #A67D3D;"></view>
+              <view class="level-icon" wx:if="{{membership == 'silver member'}}" style="background-color: #c0c0c0;"></view>
+              <view class="level-icon" wx:if="{{membership == 'gold member'}}" style="background-color: #ffd700;"></view>
+              <view class="level-text">{{membership}}</view>
+          </view>
+          <view class="upgrade-options">
+              <block wx:for="{{upgradeOptions}}" wx:key="index">
+                  <view class="card">
+                      <view class="level-icon" wx:if="{{item == 'free trail'}}" style="background-color: #c0c0c0;"></view>
+                      <view class="level-icon" wx:if="{{item == 'copper member'}}" style="background-color: #A67D3D;"></view>
+                      <view class="level-icon" wx:if="{{item == 'silver member'}}" style="background-color: #c0c0c0;"></view>
+                      <view class="level-icon" wx:if="{{item == 'gold member'}}" style="background-color: #ffd700;"></view>
+                      <view class="level-text">{{item}}</view>
+                      <view class="price-text">￡: {{upgradePrices[item]}}/month</view>
+                      <view class="price-text1">Discount: {{upgradeDiscounts[item]}}% off</view>
+                      <button class="submit-button" bindtap="showUpgradeModal" data-level="{{item}}">Upgrade</button>
+                  </view>
+              </block>
+          </view>
+      </view>
+    <view class="zan-cell zan-cell--access" wx:for="{{ settings }}" wx:key="" data-path="{{ item.path }}" data-index="{{ index }}" bindtap="navigateTo">
+      <view class="zan-cell__bd">
+          <image src="{{item.icon}}" class="img"></image>
+          {{ item.text }}
+      </view>
+      <view class="zan-cell__ft"></view>
+    </view>
+  </view>
+</view>
+<view class="modal" wx:if="{{showUpgradeModal}}">
+    <view class="modal-content">
+        <view class="modal-title">Upgrade Membership</view>
+        <view class="modal-list">
+            <view class="account-item" wx:for="{{accounts}}" wx:if="{{item.active}}" wx:key="id" bindtap="onAccountSelect" data-id="{{item.aid}}">
+                <view class="account-info">
+                    <view class="account-title">Account num: {{item.aid}}</view>
+                    <view class="account-balance">Balance ￡: {{item.balance}}</view>
+                    <view class="account-method">Payment: {{item.method}}</view>
+                    <view class="account-method1" wx:if="{{item.active}}">Active</view>
+                    <view class="account-method2" wx:if="{{!item.active}}">Enabled</view>
+                </view>
+            </view>
+            <view class="account-method">Chosen Account Num: {{selectedAccountId}}</view>
+        </view>
+        <view class="modal-buttons">
+            <view class="modal-button" bindtap="onUpgradeCancel">Cancel</view>
+            <view class="modal-button" bindtap="onUpgradeConfirm">Confirm</view>
+        </view>
+    </view>
+</view>

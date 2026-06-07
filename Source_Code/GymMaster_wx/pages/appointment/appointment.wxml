@@ -1,0 +1,114 @@
+<!--Search-result.wxml-->
+<view class="container">
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">Recommend</view>
+      <view class="zan-cell__ft">Recommend by manager of GymMaster</view>
+    </view>
+        <block wx:for="{{ starFacilities }}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}facilities/{{ item.profile }}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                    <view class="article__title_font">{{ item.fname }}</view>
+                    <navigator url="/pages/facilities/facilities?id={{item.fid}}">
+                        <view class="appointBtn border-radius">
+                            <view class="appointFont">Book</view>
+                        </view>
+                    </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time">Location: {{ item.location }}.</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.vacancy > 0}}">
+                            <text class="article__time1">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.vacancy <= 0}}">
+                            <text class="article__time2">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </view>
+    <view class="zan-panel">
+        <view class="zan-cell">
+            <view class="zan-cell__bd">Best selling Last week</view>
+            <view class="zan-cell__ft">Best selling facilities during last week</view>
+        </view>
+        <block wx:for="{{ bestsales }}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}facilities/{{ item.profile }}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                        <view class="article__title_font">{{ item.fname }}</view>
+                        <navigator url="/pages/facilities/facilities?id={{item.fid}}">
+                            <view class="appointBtn border-radius">
+                                <view class="appointFont">Book</view>
+                            </view>
+                        </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time">Location: {{ item.location }}.</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.vacancy > 0}}">
+                            <text class="article__time1">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.vacancy <= 0}}">
+                            <text class="article__time2">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </view>
+    <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">All Facilities</view>
+      <view class="zan-cell__ft">Please reserve as you wish!</view>
+    </view>
+        <block wx:for="{{ facilities }}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}facilities/{{ item.profile }}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title">
+                    <view class="article__title_font">{{ item.fname }}</view>
+                    <navigator url="/pages/facilities/facilities?id={{item.fid}}">
+                        <view class="appointBtn border-radius">
+                            <view class="appointFont">Book</view>
+                        </view>
+                    </navigator>
+                    </view>
+                    <view class="article__desc">
+                        <text class="article__time">Location: {{ item.location }}.</text>
+                    </view>
+                    <text>\n</text>
+                    <view class="article__desc">
+                        <block wx:if="{{item.vacancy > 0}}">
+                            <text class="article__time1">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.vacancy <= 0}}">
+                            <text class="article__time2">Vacancy: {{ item.vacancy }}</text>
+                        </block>
+                        <block wx:if="{{item.recommend == 'Yes'}}">
+                            <view class="article__desc">
+                                <text class="article__source">Recommended</text>
+                            </view>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </view>
+</view>
+<view class="footaboutme"><text>XJCO2913 Group2\r\nGymMaster</text></view>

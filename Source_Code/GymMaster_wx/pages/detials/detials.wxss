@@ -1,0 +1,17 @@
+.img-list{
+  width: 100%;
+}
+.img-list image{
+  width: 100%;
+  max-height: 100%;
+}
+.text-title,.text-desc{
+  line-height: 30px;
+}
+.text-desc{
+  padding-top: 10px;
+}
+
+.bottom-bar{
+  position:fixed;bottom:0;width:100%;
+}

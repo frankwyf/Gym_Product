@@ -1,0 +1,215 @@
+<!--home.wxml-->
+<view class="container">
+   <view class="swiper-container">
+        <swiper class="swiper_box"
+                    autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" bindchange="swiperchange">
+            <block wx:for="{{slides}}">
+                <swiper-item>
+                    <image data-id="{{item.slideID}}" src="{{server}}until/{{item.slideUrl}}" class="slide-image" width="750rpx" height="562.5rpx"/>
+                    <view style=";width:{{width}}px; font-weight: 800 ;background:rgba(0,0,0,0.4);position: absolute;top:15px;border-radius:15px;left:25%;transform:translateX(0%);text-align:center;">
+                        <text style="color:#FFFFFF;">{{item.text}}</text>
+                    </view>
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class="dots">
+            <block wx:for="{{slides}}" wx:key="unique">
+                <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+            </block>
+        </view>
+   </view>
+    <form style="width:100%" bindsubmit='searchForm'>
+        <view class="search-container">
+            <input name='term' type="text" placeholder="Search for venue/facilities" class="search-input" style="background-color: #333; background-image: url('/images/search-icon.png'); background-repeat: no-repeat; background-position: 10px center; background-size: 15px 15px; text-align: left;"/>
+            <button formType="submit" class="search-button" >
+                Search
+            </button>
+        </view>
+    </form>
+<!-- about us -->
+<view class="zan-panel">
+    <view class="zan-cell">
+        <view class="zan-cell__bd">About Us</view>
+        <view class="zan-cell__ft">
+          <view class="img-box" bindtap="showmap">Your current Address
+            <image src="../../images/ico-addr-red.png" class="img" />
+          </view>
+        </view>
+    </view>
+    <view class="zan-font-10">Master your gym experience with GymMaster: the ultimate way to book your workouts.
+        Unlock your full potential with GymMaster: the hassle-free way to schedule your fitness goals !</view>
+</view>
+    <!-- environment -->
+<view class="zan-panel">
+    <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">Our Environment</view>
+        <view class="zan-cell__ft">
+            <view class="img-box" bindtap="showvideo">Real Video Demo
+                <image src="../../images/video.png" class="imgvideo" />
+            </view>
+        </view>
+    </view>
+    <view class="envimg" wx:for="{{envpic}}">
+        <image src="{{item.picUrl}}"></image>
+    </view>
+</view>
+    <!-- facilities -->
+    <view class="zan-panel">
+        <view class="zan-cell zan-cell--access">
+            <view class="zan-cell__bd">Our Facilities</view>
+            <view class="zan-cell__ft" bindtap="toAllVenuesTap">Book Venues</view>
+        </view>
+        <view class="swiper-container">
+            <swiper autoplay="{{autoplay}}" class="swiper_box_facility" bindchange="coachswiperchange">
+                <block wx:for="{{facilities}}">
+                    <swiper-item>
+                        <view class="facilities">
+                            <image class="swiper-item-facility" data-id="{{item.fid}}" src="{{server}}facilities/{{item.profile}}"/>
+                            <view class="zan-font-12-bold">{{item.fname}}</view>
+                        </view>
+                        <view class="zan-font-12-bold1">Location: {{item.location}} </view>
+                        <view class="zan-font-12-bold1">Opened at: {{item.addDate}}.</view>
+
+                        <view class="zan-font-12-bold1">Book now: {{item.vacancy}} spots left !</view>
+                        <button type="warn" size="mini" class="contact" bindtap="popup" data-phone="{{item.phone}}">Contact: {{item.phone}}</button>
+                        <view class="divLine"></view>
+                        <view class="zan-font-10">{{item.description}}</view>
+                    </swiper-item>
+                </block>
+            </swiper>
+        </view>
+    </view>
+    <!-- coaches -->
+  <view class="zan-panel">
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">Our Coaches</view>
+      <view class="zan-cell__ft" bindtap="toAllCoachesTap">All Coaches</view>
+    </view>
+   <view class="swiper-container">
+        <swiper autoplay="{{autoplay}}" class="swiper_box" bindchange="coachswiperchange">
+            <block wx:for="{{coaches}}">
+                <swiper-item>
+                  <view class="coach">
+                    <image class="swiper-item-coach" data-id="{{item.coaid}}" src="{{server}}coachpro/{{item.profile}}"/>
+                    <view class="zan-font-12-bold">{{item.firstName}} {{item.lastName}}</view>
+                  </view>
+                  <text class="zan-font-10">{{item.intro}}</text>
+                </swiper-item>
+            </block>
+        </swiper>
+    </view>
+  </view>
+    <!-- notices -->
+  <view class="zan-panel articles">
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">Recent Notices</view>
+      <view class="zan-cell__ft" bindtap="historyNotice">History Notices</view>
+    </view>
+        <block wx:for="{{ notices }}">
+            <navigator url="/pages/articles-detail/index?id={{item.nid}}">
+            <view class="article__item">
+                <view class="article__thumb">
+                    <image class="article__image" src="{{server}}notice/{{ item.noticeMedia}}"></image>
+                </view>
+                <view class="article__info">
+                    <view class="article__title article__title__large" background-image="url({{server}}notice/{{ item.noticeMedia}})">{{ item.title }}</view>
+                    <view class="article__desc">
+                        <text wx:if="{{ item.publisherType }}" class="article__source">{{ item.publisherType }}</text>
+                        <text class="article__time">{{filter.format(item.noticeDate, 'yyyy/MM/dd hh:ss:mm')}}</text>
+                        <view class="article__count">
+                            <image class="article__icon" src="../../images/eye.png"></image>
+                            <text wx:if="{{ item.publisherType == 'employee'}}" id="normal"> Normal </text>
+                            <text wx:if="{{ item.publisherType == 'manager'}}" id="urgent"> Urgent </text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            </navigator>
+        </block>
+    </view>
+</view>
+<view class="footaboutme"><text>XJCO2913 Group2\r\nGymMaster</text></view>
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>
+

@@ -1,0 +1,87 @@
+{
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation",
+    "chooseAddress"
+  ],
+  "pages": [
+    "pages/home/home",
+    "pages/index/index",
+    "pages/post-index/post-index",
+    "pages/post-details/post-details",
+    "pages/goods-details/goods-details",
+    "pages/shop-cart/index",
+    "pages/to-pay-order/index",
+    "pages/select-address/index",
+    "pages/address-add/index",
+    "pages/order-list/index",
+    "pages/coaches/coaches",
+    "pages/notices/notices",
+    "pages/mine/mine",
+    "pages/articles-detail/index",
+    "pages/video/video",
+    "pages/signin/sign-in",
+    "pages/appointment/appointment",
+    "pages/facilities/facilities",
+    "pages/venues/venues",
+    "pages/mine/user/user",
+    "pages/all-venues/all-venues",
+    "pages/Search-result/Search-result",
+    "pages/send/send",
+    "pages/login/index",
+    "pages/regist/index",
+    "pages/findpassword/index",
+    "pages/wallet/wallet"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTitleText": "GymMaster",
+    "backgroundColor": "#000000",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#cccccc",
+    "selectedColor": "#e64340",
+    "borderStyle": "black",
+    "backgroundColor": "#000",
+    "box-shadow": "0 0 6px 0",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "images/nav/home-off.png",
+        "selectedIconPath": "images/nav/home-on.png",
+        "text": "Home"
+      },
+      {
+        "pagePath": "pages/appointment/appointment",
+        "iconPath": "images/nav/time-off.png",
+        "selectedIconPath": "images/nav/time-on.png",
+        "text": "Appointment"
+      },
+      {
+        "pagePath": "pages/post-index/post-index",
+        "iconPath": "images/nav/community-off.png",
+        "selectedIconPath": "images/nav/community-on.png",
+        "text": "Community"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/nav/icon-list.png",
+        "selectedIconPath": "images/nav/icon-list-sel.png",
+        "text": "Courses"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "images/nav/icon-weightlift.png",
+        "selectedIconPath": "images/nav/icon-weightlift-sel.png",
+        "text": "Me"
+      }
+    ]
+  }
+}

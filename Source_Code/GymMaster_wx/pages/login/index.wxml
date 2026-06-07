@@ -1,0 +1,22 @@
+<view class="content">
+    <image class="bg-image" mode="scaleToFill"  src="../../images/login_background.jpg"></image>
+    <view class = "logo">
+        <image mode="aspectFit" src="/images/gym_logo.jpg" style="width:120px;height:120px;border-radius: 5px;"></image>
+    </view>
+    <form bindsubmit="formSubmit">
+        <view class="input-area">
+          <input id="username" name="username" maxlength='40' type="text" placeholder=" Enter username" />
+        </view>
+        <text>\n</text>
+        <view class="input-area">
+          <input id="password" name="password" maxlength='20' type="password" placeholder=" Enter password" />
+        </view>
+        <view class="btn-area">
+            <button  disabled="{{disabled}}" style="background-color:{{loginBtnBgBgColor}}"   formType="submit"  loading="{{btnLoading}}"> {{loginBtnTxt}} </button>
+            <view class="txt-area">
+                <navigator redirect url="../findpassword/index"><text class="forgot-password">Forget password?</text></navigator>
+                <navigator redirect url="../regist/index"><text class="register">Register now!</text></navigator>
+            </view>
+        </view>
+    </form>
+</view>

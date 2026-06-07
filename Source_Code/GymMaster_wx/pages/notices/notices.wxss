@@ -1,0 +1,164 @@
+/* notices.wxss */
+.container {
+  background-color: #F2f2f2;
+  min-height: 100%;
+  justify-content:space-between;
+  align-items: center;
+}
+.coach-card{
+  background: #fff;
+  margin:0 0 10px 0;
+}
+.coach{
+  align-items: center;
+  background: #fff;
+  padding: 10px 35% 0 35%;
+}
+.item-coach {
+  width:200rpx;
+  display: inline-block;
+  overflow: hidden;
+  height:200rpx;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.zan-font-10 {
+  position: relative;
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  line-height:15px;
+}
+
+.zan-font-12-bold {
+  position: relative;
+  padding: 6px 15px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight:bold;
+  flex-direction: row;
+  text-align: center;
+  margin:0 10%;
+}
+
+.zan-toptips {
+  display: block;
+  position: fixed;
+  -webkit-transform: translateZ(0) translateY(-100%);
+  width: 100%;
+  /* 至少有一行的高度，保证第一次动画显示正常 */
+  min-height: 20px;
+  top: 0;
+  line-height: 2.3;
+  font-size: 12px;
+  text-align: center;
+  color: #FFF;
+  background-color: #F00;
+  z-index: 110;
+
+  /* 动画部分 */
+  transition: all 0.4s ease;
+}
+
+.zan-toptips--show {
+  -webkit-transform: translateZ(0) translateY(0);
+}
+.article__item{
+  display: flex;
+  padding: 30rpx;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+  position: relative;
+  padding-bottom: 40rpx;
+}
+.histroy_notice{
+  margin-top: 10px;
+}
+.article__thumb{
+  width:4.2rem;
+  height: 3rem;
+  margin-right: 0.6rem;
+}
+/*分割线样式*/
+.divLine{
+  margin-top: 10px;
+  background: #E0E3DA;
+  width: 100%;
+  height: 5rpx;
+}
+.title{
+  font-size: 50rpx;
+  font-weight: 900;
+  color: black;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin-left: 25%;
+  background-color: aquamarine;
+  border-radius: 5px;
+}
+#normal{
+  padding: 10px;
+  color: #6eb7ff;
+}
+#urgent{
+  padding: 10px;
+  color: #ee3b5d;
+}
+.article__image{
+  width:100%;
+  height: 150%;
+}
+.article__info{
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  padding-bottom:5px;
+  padding-top:5px;
+}
+.article__title{
+  font-weight: 400;
+  font-size: 26rpx;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  margin-bottom: 20rpx;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.article__desc{
+  color: #999;
+  font-size: 24rpx;
+  line-height: 1.2;
+  width: 100%;
+}
+.article__source{
+  color:#d81e06;
+  border:1rpx solid #d81e06;
+  padding: 2rpx 10rpx;
+  border-radius: 4rpx;
+  font-size:20rpx;
+  margin-right: 20rpx;
+}
+
+
+.article__time{
+  margin-right: 10rpx;
+}
+.article__count{
+  float: right;
+  display: flex;
+  align-items: center;
+  color:#333;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.article__icon{
+  width: 33rpx;
+  height: 20rpx;
+  margin-left: 15rpx;
+  margin-right: 6rpx;
+}
+

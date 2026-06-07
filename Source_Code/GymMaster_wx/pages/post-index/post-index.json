@@ -1,0 +1,12 @@
+{
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#000",
+  "navigationBarTitleText": "GymMaster Community",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "masonry": "../../components/masonry/masonry",
+    "img-box": "../../components/img-box/img-box",
+    "no-data": "../../components/no-data/no-data"
+  }
+}

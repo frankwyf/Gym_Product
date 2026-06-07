@@ -1,0 +1,40 @@
+<view class="bg-white" style="min-height:{{contentHeight-5}}px">
+  <view  style="margin-bottom:50px;height:100%">
+    <view class="img-list">
+      <img-loader  default-image='/images/none-url_720_480.png' mode='widthFix' original-image='{{img.url}}' wx:for="{{item.images}}" wx:for-item="img" wx:key/>
+    </view>
+
+    <view class="padding">
+      <view class="text-lg text-title">
+        <text class="text-black text-bold">{{item.title}}</text>
+      </view>
+      <view class="text-black text-desc">{{item.desc}}</view>
+    </view>
+
+    <view class="text-gray text-sm padding">
+      <view class="cf">
+        <view class="fl">
+          <text>{{item.publishDate}}</text>       
+        </view>      
+        <view class="fr">
+              
+        </view>
+      </view>      
+    </view>
+  </view>
+
+  <view class="cu-bar bg-white tabbar border shop bottom-bar">
+      <!-- <view class="action text-orange">
+        <view class="cuIcon-service text-green"></view>
+      </view>
+      <view class="action text-orange">
+        <view class="cuIcon-favorfill"></view>
+      </view>
+      <view class="action">
+        <view class="cuIcon-cart"></view>
+      </view> -->
+      <view class="btn-group">
+        <button class="cu-btn bg-orange round shadow-blur" open-type="share"> 分享给好友</button>
+      </view>
+  </view>
+</view>

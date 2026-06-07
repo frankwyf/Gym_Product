@@ -1,0 +1,115 @@
+<!--all-venues.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<view class="container">
+<view class="art-header">
+    <image src="{{server}}notice/{{article.noticeMedia}}" class="art-img" />
+    <view class="art-title">{{article.title}}</view>
+    <view class="article__desc">
+      <text class="article__source">{{ article.publisherType }}</text>
+      <text class="article__time">{{filter.format(article.noticeDate, 'yyyy/MM/dd hh:ss:mm')}}</text>
+      <view class="article__count">
+          <image class="article__icon" src="/image/icon-comt.png"></image>
+          <text wx:if="{{ article.publisherType == 'employee'}}" id="normal"> Normal </text>
+          <text wx:if="{{ article.publisherType == 'manager'}}" id="urgent"> Urgent </text>
+          <text wx:if="{{ article.publisherType == 'System'}}" id="urgent">GymMaster</text>
+          <image class="article__icon" src="../../images/eye.png"></image>
+      </view>
+    </view>
+</view>
+    <view class="article__content">
+        <view class="article-text">
+        <view class="article__content wxParse">
+            <template is="wxParse" data="{{wxParseData:FitnessArticle.nodes}}"/>
+        </view>
+            <text class="about_us" wx:if="{{article.publisherType == 'System'}}">Welcome to GymMaster, your ultimate sports center for a healthy lifestyle!
+                  We offer a range of facilities and services including a fully equipped gym, cardio machines, state-of-the-art swimming pool, and group fitness classes.
+                  Our certified trainers provide personalized training programs and one-on-one coaching sessions.
+                  Join our friendly and supportive community today and start your fitness journey with GymMaster!
+            </text>
+            <button wx:if="{{article.publisherType == 'System'}}" class="go_video" type="primary" size="default" bindtap="FindOutMore">Find out more !</button>
+        </view>
+    </view>
+</view>
+
+<wxs module="filter">
+    function format(ts, option) {
+        var date = getDate(ts)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        var week = date.getDay()
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+
+        // year month day
+        if (option == 'YY-MM-DD') return [year, month, day].map(formatNumber).join('/')
+
+        // year month
+        if (option == 'YY-MM') return [year, month].map(formatNumber).join('/')
+
+        // year
+        if (option == 'YY') return [year].map(formatNumber).toString()
+
+        // month
+        if (option == 'MM') return  [mont].map(formatNumber).toString()
+
+        // day
+        if (option == 'DD') return [day].map(formatNumber).toString()
+
+        // year month day and week
+        if (option == 'YY/M/DD Week')  return [year, month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // month day and week
+        if (option == 'MM/DD Week')  return [month, day].map(formatNumber).join('/') + ' ' + getWeek(week)
+
+        // week
+        if (option == 'Week')  return getWeek(week)
+
+        // hour minutes and seconds
+        if (option == 'hh-mm-ss') return [hour, minute, second].map(formatNumber).join(':')
+
+        // hour and seconds
+        if (option == 'hh-mm') return [hour, minute].map(formatNumber).join(':')
+
+        // minutes and seconds
+        if (option == 'mm-dd') return [minute, second].map(formatNumber).join(':')
+
+        // hour
+        if (option == 'hh')  return [hour].map(formatNumber).toString()
+
+        // minutes
+        if (option == 'mm')  return [minute].map(formatNumber).toString()
+
+        // seconds
+        if (option == 'ss') return [second].map(formatNumber).toString()
+
+        // return value: yyyy-mm-dd : hh-mm-ss.sss
+        return [day, month, year].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+    }
+
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    function getWeek(n) {
+        switch(n) {
+            case 1:
+                return 'Monday'
+            case 2:
+                return 'Tuesday'
+            case 3:
+                return 'Wednesday'
+            case 4:
+                return 'Thursday'
+            case 5:
+                return 'Friday'
+            case 6:
+                return 'Saturday'
+            case 7:
+                return 'Sunday'
+        }
+    }
+    module.exports.format = format;
+</wxs>
