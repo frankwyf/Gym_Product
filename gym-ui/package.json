@@ -9,7 +9,9 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --ext .js,.vue src",
+    "test:unit": "jest --runInBand",
+    "test:e2e": "playwright test"
   },
   "husky": {
     "hooks": {
@@ -70,16 +72,19 @@
     "vuex": "3.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.0",
     "@vue/cli-plugin-babel": "4.4.6",
     "@vue/cli-plugin-eslint": "4.4.6",
     "@vue/cli-service": "4.4.6",
     "babel-eslint": "10.1.0",
+    "babel-jest": "^27.5.1",
     "babel-plugin-dynamic-import-node": "2.3.3",
     "chalk": "4.1.0",
     "compression-webpack-plugin": "5.0.2",
     "connect": "3.6.6",
     "eslint": "7.15.0",
     "eslint-plugin-vue": "7.2.0",
+    "jest": "^27.5.1",
     "lint-staged": "10.5.3",
     "runjs": "4.4.2",
     "sass": "1.32.13",
