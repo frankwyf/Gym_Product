@@ -5,7 +5,7 @@ const browserAvailable = existsSync(chromium.executablePath())
 
 test.skip(!browserAvailable, 'Playwright browser binary is not installed in current environment')
 
-test('login page should render username/password form', async ({ page }) => {
+test('@smoke login page should render username/password form', async ({ page }) => {
   await page.goto('/login')
   await expect(page).toHaveURL(/\/login/)
 

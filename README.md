@@ -70,7 +70,7 @@ powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-maste
 	- `npm --prefix gym-ui run format:check`
 - 前端测试命令：
 	- `npm --prefix gym-ui run test:unit`
-	- `npm --prefix gym-ui run test:e2e:smoke`（默认冒烟，环境缺浏览器时自动跳过）
+	- `npm --prefix gym-ui run test:e2e:smoke`（运行带 `@smoke` 标签的用例；环境缺浏览器时自动跳过）
 	- `npm --prefix gym-ui run test:e2e:full`（完整 E2E）
 - 已增强 E2E 稳定性：本地若未安装 Playwright 浏览器二进制，将自动跳过冒烟用例而不是直接失败。
 - 详细改造计划见 OPEN_SOURCE_OPTIMIZATION_PLAN.md
