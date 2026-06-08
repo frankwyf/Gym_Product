@@ -110,6 +110,18 @@ module.exports = {
                   priority: 10,
                   chunks: 'initial' // only package third parties that are initially dependent
                 },
+                echarts: {
+                  name: 'chunk-echarts',
+                  test: /[\\/]node_modules[\\/]_?echarts(.*)/,
+                  priority: 30,
+                  chunks: 'all'
+                },
+                editor: {
+                  name: 'chunk-editor',
+                  test: /[\\/]node_modules[\\/](quill|highlight\.js|js-beautify|jspdf|html2canvas)([\\/]|$)/,
+                  priority: 25,
+                  chunks: 'all'
+                },
                 elementUI: {
                   name: 'chunk-elementUI', // split elementUI into a single package
                   priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app

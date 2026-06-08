@@ -64,6 +64,7 @@ powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
 	- gymMaster/src/test/java/com/gymmaster/controller/ReservationControllerUnitTest.java
 	- gymMaster/src/test/java/com/gymmaster/controller/BillControllerUnitTest.java
 - 已建立代码风格基线：仓库级 `.editorconfig` + 前端 `Prettier`
+- 已优化前端打包分片：对 `echarts` 与编辑器相关重依赖进行独立 chunk 拆分
 - 前端风格命令：
 	- `npm --prefix gym-ui run lint`
 	- `npm --prefix gym-ui run lint:fix`
