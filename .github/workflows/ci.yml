@@ -17,9 +17,11 @@ jobs:
         with:
           node-version: 16
           cache: npm
-          cache-dependency-path: gym-ui/package.json
+          cache-dependency-path: gym-ui/package-lock.json
       - name: Install dependencies
-        run: npm install --legacy-peer-deps --no-audit --no-fund
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
       - name: Run unit tests
         run: npm run test:unit
       - name: Run smoke e2e
@@ -37,9 +39,9 @@ jobs:
         with:
           node-version: 16
           cache: npm
-          cache-dependency-path: gym-ui/package.json
+          cache-dependency-path: gym-ui/package-lock.json
       - name: Install dependencies
-        run: npm install --legacy-peer-deps --no-audit --no-fund
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
       - name: Build
         run: npm run build:prod
         env:

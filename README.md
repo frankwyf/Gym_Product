@@ -96,5 +96,6 @@ This repository contains a multi-client gym product portfolio:
 - Initial unit tests added for reservation and bill critical logic in gymMaster
 - Code-style baseline added: repo-level `.editorconfig` and frontend `Prettier` scripts
 - Frontend CI now runs unit tests and smoke e2e by default
+- CI smoke e2e installs Chromium before execution to avoid false skip in cloud environment
 
 See OPEN_SOURCE_OPTIMIZATION_PLAN.md for roadmap details.
