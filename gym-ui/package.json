@@ -14,7 +14,9 @@
     "format": "prettier --write \"src/**/*.{js,vue,scss,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,vue,scss,css,json}\"",
     "test:unit": "jest --runInBand",
-    "test:e2e": "playwright test"
+    "test:e2e": "npm run test:e2e:full",
+    "test:e2e:smoke": "playwright test tests/e2e/login.spec.js",
+    "test:e2e:full": "playwright test"
   },
   "husky": {
     "hooks": {
