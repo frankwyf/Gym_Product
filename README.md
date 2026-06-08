@@ -1,86 +1,87 @@
 # Gym Product Portfolio
 
-[中文](#中文) | [日本語](#日本語) | [English](#english)
+[中文](#中文) | [English](#english)
 
 ## 中文
 
-这是一个为个人 GitHub 作品集整理后的多项目仓库，来源于早期学校课程作业。当前仓库仅保留与产品实现直接相关的代码、脚本和必要图片，已经完成一轮开源前整理：删除课程过程文档、编译产物、日志、IDE 元数据，并将硬编码凭据替换为可配置占位值。
+这是一个健身房业务多端项目仓库，包含两个后端、一个管理端和一个微信小程序端。
 
-### 项目组成
+### 目录结构
 
-- `Source_Code/gym-management-system-master`: 基于 Spring Boot 的管理后端，配套 Vue 管理端与微信小程序。
-- `Source_Code/gym-ui`: Vue 2 管理端。
-- `Source_Code/gymMaster`: 另一套 Spring Boot 后端实现，包含邮件、账单和会员功能。
-- `Source_Code/GymMaster_wx`: 微信小程序客户端。
+- gym-management-system-master: Spring Boot 管理后端
+- gymMaster: Spring Boot 业务后端
+- gym-ui: Vue 2 管理端
+- GymMaster_wx: 微信小程序端
 
-### 已完成的开源整理
+### 当前验证状态
 
-- 删除了课程报告、会议记录、个人贡献材料等非代码内容。
-- 删除了 `.idea`、`target`、`dist`、日志目录、前端 `node_modules` 等本地生成内容。
-- 脱敏了数据库密码、邮件凭据、JWT 密钥、小程序 `appid`、样例邮箱和手机号。
-- 将后端敏感配置改为环境变量优先的占位写法。
+- gym-ui 可构建通过（Node 16 推荐，Node 24 需 OpenSSL 兼容参数）。
+- gymMaster 可在本机启动（端口 8087）。
+- gym-management-system-master 可构建通过，启动时已修复 YAML 配置问题；当前主要运行阻塞来自历史日志路径配置，已改为相对路径。
 
-### 当前验证结果
+### 本地运行（Windows）
 
-- 脱敏扫描已通过，未发现已知敏感值残留。
-- 本机可用 `java`，但缺少全局 `mvn`、`node`、`npm`。
-- `Source_Code/gymMaster` 自带的 Maven Wrapper 文件不完整，当前无法在无全局 Maven 的环境下直接构建。
-- 因此本次整理主要完成了仓库清洁化、配置可移植化和文档开源化；完整运行仍需要补齐本地工具链。
+1. 准备依赖
+- JDK 8 或 17
+- Maven 3.8+
+- Node.js 16 LTS（推荐）
+- MySQL、Redis
 
-### 建议的本地准备
+2. 前端启动
 
-1. 安装 JDK 8 或 JDK 17，并优先使用这两个长期支持版本运行旧项目。
-2. 安装 Maven 3.8+。
-3. 安装 Node.js 16 LTS 和 npm。
-4. 准备 MySQL 5.7/8.0 与 Redis。
-5. 按各子项目 README 中的说明配置环境变量和数据库。
+```powershell
+npm --prefix gym-ui install --legacy-peer-deps --no-audit --no-fund
+$env:NODE_OPTIONS="--openssl-legacy-provider"
+npm --prefix gym-ui run build:prod
+```
 
-## 日本語
+3. 后端构建
 
-これは個人 GitHub ポートフォリオ向けに整理したマルチプロジェクト構成のリポジトリです。元は大学の課題でしたが、現在は公開準備のためにコード中心の構成へ整理しています。授業用ドキュメント、ビルド成果物、ログ、IDE 固有ファイルを削除し、ハードコードされていた認証情報は環境変数ベースのプレースホルダーに置き換えました。
+```powershell
+mvn -f gymMaster/pom.xml test
+mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.skip=true package
+```
 
-### 含まれるプロジェクト
+4. 一键脚本
 
-- `Source_Code/gym-management-system-master`: Spring Boot ベースの管理バックエンド。
-- `Source_Code/gym-ui`: Vue 2 管理画面。
-- `Source_Code/gymMaster`: 別実装の Spring Boot バックエンド。
-- `Source_Code/GymMaster_wx`: WeChat ミニプログラム。
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup-local-maven.ps1
+powershell -ExecutionPolicy Bypass -File scripts/run-gymMaster.ps1
+powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-master.ps1
+```
 
-### 現在の状態
+### 环境变量模板
 
-- 既知の機密値は削除済みです。
-- このマシンには `java` はありますが、`mvn`、`node`、`npm` は未導入です。
-- `gymMaster` の Maven Wrapper は不完全なため、追加の Maven 環境なしではビルドできませんでした。
+- gym-management-system-master/.env.example
+- gymMaster/.env.example
+- gym-ui/.env.local.example
 
-### 次に必要なもの
+### 自动化与开源改造
 
-- JDK 8 または 17
-- Maven 3.8 以降
-- Node.js 16 LTS
-- MySQL と Redis
+- 已新增 CI: .github/workflows/ci.yml
+- 已新增第一批关键单测（预约与账单）:
+	- gymMaster/src/test/java/com/gymmaster/controller/ReservationControllerUnitTest.java
+	- gymMaster/src/test/java/com/gymmaster/controller/BillControllerUnitTest.java
+- 详细改造计划见 OPEN_SOURCE_OPTIMIZATION_PLAN.md
 
 ## English
 
-This repository is a cleaned-up portfolio version of an older university assignment. It now keeps only implementation-related source code, scripts, and useful assets. Course-process documents, build outputs, logs, and IDE metadata were removed, and hardcoded credentials were replaced with environment-variable-based placeholders.
+This repository contains a multi-client gym product portfolio:
 
-### Repository layout
+- gym-management-system-master: Spring Boot admin backend
+- gymMaster: Spring Boot business backend
+- gym-ui: Vue 2 admin frontend
+- GymMaster_wx: WeChat mini-program client
 
-- `Source_Code/gym-management-system-master`: Spring Boot admin backend.
-- `Source_Code/gym-ui`: Vue 2 admin frontend.
-- `Source_Code/gymMaster`: Alternative Spring Boot backend implementation.
-- `Source_Code/GymMaster_wx`: WeChat mini-program client.
+### Current status
 
-### What was done for open-source readiness
+- gym-ui builds successfully.
+- gymMaster is buildable and startable locally.
+- gym-management-system-master is buildable; startup blockers identified and partially fixed for open-source portability.
 
-- Removed non-code coursework materials.
-- Removed generated folders such as `target`, `dist`, logs, IDE state, and local dependencies.
-- Sanitized DB passwords, mail credentials, JWT secrets, sample emails, sample phone numbers, and the mini-program app id.
-- Converted backend secrets to environment-variable-first configuration.
+### CI and tests
 
-### Validation summary
+- CI workflow added at .github/workflows/ci.yml
+- Initial unit tests added for reservation and bill critical logic in gymMaster
 
-- Known sensitive values were re-scanned and cleared.
-- `java` is available on this machine, but global `mvn`, `node`, and `npm` are not.
-- `Source_Code/gymMaster` includes an incomplete Maven Wrapper, so it cannot be built here without installing Maven first.
-
-See the README in each subproject for setup details.
+See OPEN_SOURCE_OPTIMIZATION_PLAN.md for roadmap details.
