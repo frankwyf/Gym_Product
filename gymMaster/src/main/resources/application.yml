@@ -17,7 +17,7 @@ server:
 spring:
   application:
     # name of application
-    name: gymMaster
+    name: gym-master-api
     # datasource configuration
   datasource:
     druid:

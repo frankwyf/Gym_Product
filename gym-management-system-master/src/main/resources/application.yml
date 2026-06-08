@@ -1,7 +1,7 @@
 # 项目相关配置
 ruoyi:
   # 名称
-  name: gym
+  name: gym-admin-api
   # 版本
   version: 3.8.1
   # 版权年份
@@ -41,6 +41,8 @@ logging:
 
 # Spring配置
 spring:
+  application:
+    name: gym-admin-api
   # 资源信息
   messages:
     # 国际化资源文件路径

@@ -1,7 +1,7 @@
 {
-  "name": "gymmaster",
+  "name": "gym-product-admin",
   "version": "3.8.1",
-  "description": "GymManagementSystem",
+  "description": "Gym Product Admin Portal",
   "author": "健身房",
   "license": "MIT",
   "scripts": {
