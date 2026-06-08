@@ -62,6 +62,12 @@ powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-maste
 - 已新增第一批关键单测（预约与账单）:
 	- gymMaster/src/test/java/com/gymmaster/controller/ReservationControllerUnitTest.java
 	- gymMaster/src/test/java/com/gymmaster/controller/BillControllerUnitTest.java
+- 已建立代码风格基线：仓库级 `.editorconfig` + 前端 `Prettier`
+- 前端风格命令：
+	- `npm --prefix gym-ui run lint`
+	- `npm --prefix gym-ui run lint:fix`
+	- `npm --prefix gym-ui run format`
+	- `npm --prefix gym-ui run format:check`
 - 详细改造计划见 OPEN_SOURCE_OPTIMIZATION_PLAN.md
 
 ## English
@@ -83,5 +89,6 @@ This repository contains a multi-client gym product portfolio:
 
 - CI workflow added at .github/workflows/ci.yml
 - Initial unit tests added for reservation and bill critical logic in gymMaster
+- Code-style baseline added: repo-level `.editorconfig` and frontend `Prettier` scripts
 
 See OPEN_SOURCE_OPTIMIZATION_PLAN.md for roadmap details.
