@@ -48,6 +48,7 @@ mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.
 powershell -ExecutionPolicy Bypass -File scripts/setup-local-maven.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gymMaster.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-master.ps1
+powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
 ```
 
 ### 环境变量模板
