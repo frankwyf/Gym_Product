@@ -68,6 +68,7 @@ powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-maste
 	- `npm --prefix gym-ui run lint:fix`
 	- `npm --prefix gym-ui run format`
 	- `npm --prefix gym-ui run format:check`
+- 已增强 E2E 稳定性：本地若未安装 Playwright 浏览器二进制，将自动跳过冒烟用例而不是直接失败。
 - 详细改造计划见 OPEN_SOURCE_OPTIMIZATION_PLAN.md
 
 ## English
