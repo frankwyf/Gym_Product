@@ -1,5 +1,6 @@
 param(
-  [switch]$SkipInstall
+  [switch]$SkipInstall,
+  [switch]$SkipBuild
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,8 +21,12 @@ npm --prefix $frontendDir run test:unit
 Write-Host '[verify-frontend] Running smoke e2e...' -ForegroundColor Yellow
 npm --prefix $frontendDir run test:e2e:smoke
 
-Write-Host '[verify-frontend] Running production build...' -ForegroundColor Yellow
-$env:NODE_OPTIONS = '--openssl-legacy-provider'
-npm --prefix $frontendDir run build:prod
+if (-not $SkipBuild) {
+  Write-Host '[verify-frontend] Running production build...' -ForegroundColor Yellow
+  $env:NODE_OPTIONS = '--openssl-legacy-provider'
+  npm --prefix $frontendDir run build:prod
+} else {
+  Write-Host '[verify-frontend] Skip build as requested.' -ForegroundColor Yellow
+}
 
 Write-Host '[verify-frontend] Completed successfully.' -ForegroundColor Green

@@ -49,6 +49,8 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-local-maven.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gymMaster.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-master.ps1
 powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
+# 快速模式（跳过依赖安装与构建，仅跑单测+smoke）
+powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1 -SkipInstall -SkipBuild
 ```
 
 ### 环境变量模板
@@ -63,6 +65,7 @@ powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
 - 已新增第一批关键单测（预约与账单）:
 	- gymMaster/src/test/java/com/gymmaster/controller/ReservationControllerUnitTest.java
 	- gymMaster/src/test/java/com/gymmaster/controller/BillControllerUnitTest.java
+- 已补充登录页行为测试：登录状态 Cookie 读写与 rememberMe 逻辑（含字符串布尔值解析）
 - 已建立代码风格基线：仓库级 `.editorconfig` + 前端 `Prettier`
 - 已优化前端打包分片：对 `echarts` 与编辑器相关重依赖进行独立 chunk 拆分
 - 前端风格命令：
