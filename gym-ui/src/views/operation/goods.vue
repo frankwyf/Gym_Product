@@ -22,7 +22,7 @@ export default {
         // 绘制图表
         myChart.setOption({
           title: {
-            text: "商品统计",
+            text: this.$tr('operation.goodsStats'),
           },
           xAxis: {
             type: 'category',

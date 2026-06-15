@@ -3,7 +3,7 @@
     <div>
       <div class="setting-drawer-content">
         <div class="setting-drawer-title">
-          <h3 class="drawer-title">主题风格设置</h3>
+          <h3 class="drawer-title">{{ $tr('settings.themeStyle') }}</h3>
         </div>
         <div class="setting-drawer-block-checbox">
           <div class="setting-drawer-block-checbox-item" @click="handleTheme('theme-dark')">
@@ -33,44 +33,44 @@
         </div>
 
         <div class="drawer-item">
-          <span>主题颜色</span>
+          <span>{{ $tr('settings.themeColor') }}</span>
           <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
         </div>
       </div>
 
       <el-divider/>
 
-      <h3 class="drawer-title">系统布局配置</h3>
+      <h3 class="drawer-title">{{ $tr('settings.layoutConfig') }}</h3>
       
       <div class="drawer-item">
-        <span>开启 TopNav</span>
+        <span>{{ $tr('settings.enableTopNav') }}</span>
         <el-switch v-model="topNav" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>开启 Tags-Views</span>
+        <span>{{ $tr('settings.enableTagsView') }}</span>
         <el-switch v-model="tagsView" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>固定 Header</span>
+        <span>{{ $tr('settings.fixedHeader') }}</span>
         <el-switch v-model="fixedHeader" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>显示 Logo</span>
+        <span>{{ $tr('settings.showLogo') }}</span>
         <el-switch v-model="sidebarLogo" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>动态标题</span>
+        <span>{{ $tr('settings.dynamicTitle') }}</span>
         <el-switch v-model="dynamicTitle" class="drawer-switch" />
       </div>
 
       <el-divider/>
 
-      <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">保存配置</el-button>
-      <el-button size="small" plain icon="el-icon-refresh" @click="resetSetting">重置配置</el-button>
+      <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">{{ $tr('settings.save') }}</el-button>
+      <el-button size="small" plain icon="el-icon-refresh" @click="resetSetting">{{ $tr('settings.reset') }}</el-button>
     </div>
   </div>
 </template>
@@ -162,7 +162,7 @@ export default {
       this.sideTheme = val;
     },
     saveSetting() {
-      this.$modal.loading("Saving to local, please wait...");
+      this.$modal.loading(this.$tr('settings.saving'));
       this.$cache.local.set(
         "layout-setting",
         `{
@@ -175,12 +175,12 @@ export default {
             "theme":"${this.theme}"
           }`
       );
-      setTimeout(this.$modal.closeLoading(), 1000)
+      setTimeout(() => this.$modal.closeLoading(), 1000)
     },
     resetSetting() {
-      this.$modal.loading("Please wait while clearing the Settings cache and refreshing...");
+      this.$modal.loading(this.$tr('settings.resetting'));
       this.$cache.local.remove("layout-setting")
-      setTimeout("window.location.reload()", 1000)
+      setTimeout(() => window.location.reload(), 1000)
     }
   }
 }

@@ -24,7 +24,7 @@ export default {
         // 绘制图表
         myChart.setOption({
           title: {
-            text: "Student analysis",
+            text: this.$tr('operation.studentAnalysis'),
           },
           xAxis: {
             type: 'category',
