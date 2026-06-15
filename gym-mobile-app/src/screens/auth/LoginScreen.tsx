@@ -6,8 +6,10 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 
 export function LoginScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,7 +17,7 @@ export function LoginScreen({ navigation }: { navigation: any }) {
 
   const submit = async () => {
     if (!username.trim() || !password.trim()) {
-      Alert.alert('Tips', 'Please input username and password')
+      Alert.alert(t('auth.tips'), t('auth.inputUsernamePassword'))
       return
     }
 
@@ -23,13 +25,13 @@ export function LoginScreen({ navigation }: { navigation: any }) {
       setLoading(true)
       const result = await gymApi.login(username.trim(), password.trim())
       if (result.code !== 1 || !result.data?.token) {
-        Alert.alert('Login failed', result.msg ?? 'Username or password is wrong')
+        Alert.alert(t('auth.loginFailed'), result.msg ?? t('auth.loginWrong'))
         return
       }
       await setToken(result.data.token)
       navigation.replace('MainTabs')
     } catch (error) {
-      Alert.alert('Login failed', String(error))
+      Alert.alert(t('auth.loginFailed'), String(error))
     } finally {
       setLoading(false)
     }
@@ -37,13 +39,13 @@ export function LoginScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Login" subtitle="迁移自小程序登录页，保留账号密码登录流程。">
-        <TextInput placeholder="Account" placeholderTextColor={colors.textMuted} style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" />
-        <TextInput placeholder="Password" placeholderTextColor={colors.textMuted} style={styles.input} value={password} onChangeText={setPassword} secureTextEntry />
-        <PrimaryButton title={loading ? 'Login...' : 'Login'} onPress={() => void submit()} disabled={loading} />
+      <SectionCard title={t('auth.loginTitle')} subtitle={t('auth.loginSubtitle')}>
+        <TextInput placeholder={t('auth.account')} placeholderTextColor={colors.textMuted} style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" />
+        <TextInput placeholder={t('auth.password')} placeholderTextColor={colors.textMuted} style={styles.input} value={password} onChangeText={setPassword} secureTextEntry />
+        <PrimaryButton title={loading ? t('auth.loggingIn') : t('auth.login')} onPress={() => void submit()} disabled={loading} />
         <View style={styles.links}>
-          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>Register</Text>
-          <Text style={styles.link} onPress={() => navigation.navigate('ForgotPassword')}>Forgot password</Text>
+          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>{t('auth.register')}</Text>
+          <Text style={styles.link} onPress={() => navigation.navigate('ForgotPassword')}>{t('auth.forgotPassword')}</Text>
         </View>
       </SectionCard>
     </Screen>

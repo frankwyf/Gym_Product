@@ -5,10 +5,12 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function ForgotPasswordScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,48 +21,48 @@ export function ForgotPasswordScreen({ navigation }: { navigation: any }) {
 
   const getCode = async () => {
     if (!emailPattern.test(email.trim())) {
-      Alert.alert('Tips', 'Enter a valid email address')
+      Alert.alert(t('auth.tips'), t('forgot.invalidEmail'))
       return
     }
 
     try {
       const emails = await gymApi.getEmails()
       if (!emails.includes(email.trim())) {
-        Alert.alert('Tips', 'The email is not registered')
+        Alert.alert(t('auth.tips'), t('forgot.emailNotRegistered'))
         return
       }
 
       const result = await gymApi.getCaptchaReset(email.trim(), username.trim())
       if (result.code !== 1) {
-        Alert.alert('Get code failed', result.msg ?? 'Unknown error')
+        Alert.alert(t('forgot.getCodeFailed'), result.msg ?? 'Unknown error')
         return
       }
       setServerCaptcha(String(result.data ?? ''))
-      Alert.alert('Code sent', 'Verification code has been requested from backend.')
+      Alert.alert(t('forgot.codeSent'), t('forgot.codeRequested'))
     } catch (error) {
-      Alert.alert('Get code failed', String(error))
+      Alert.alert(t('forgot.getCodeFailed'), String(error))
     }
   }
 
   const submit = async () => {
     if (!username.trim() || !email.trim()) {
-      Alert.alert('Tips', 'Username and email are required')
+      Alert.alert(t('auth.tips'), t('forgot.usernameEmailRequired'))
       return
     }
     if (!emailPattern.test(email.trim())) {
-      Alert.alert('Tips', 'Enter a valid email address')
+      Alert.alert(t('auth.tips'), t('forgot.invalidEmail'))
       return
     }
     if (password.length < 6 || password.length > 20) {
-      Alert.alert('Tips', 'Password length is 6-20')
+      Alert.alert(t('auth.tips'), t('forgot.passwordRule'))
       return
     }
     if (password !== confirmPassword) {
-      Alert.alert('Tips', 'The two passwords are different')
+      Alert.alert(t('auth.tips'), t('forgot.passwordMismatch'))
       return
     }
     if (!serverCaptcha || captcha.trim() !== serverCaptcha.trim()) {
-      Alert.alert('Tips', 'Enter the correct verification code')
+      Alert.alert(t('auth.tips'), t('forgot.invalidCode'))
       return
     }
 
@@ -68,12 +70,12 @@ export function ForgotPasswordScreen({ navigation }: { navigation: any }) {
       setLoading(true)
       const result = await gymApi.resetPassword(username.trim(), password)
       if (result.code !== 1) {
-        Alert.alert('Reset failed', result.msg ?? 'Unknown error')
+        Alert.alert(t('forgot.resetFailed'), result.msg ?? 'Unknown error')
         return
       }
-      Alert.alert('Success', 'Password reset success', [{ text: 'OK', onPress: () => navigation.replace('Login') }])
+      Alert.alert(t('register.success'), t('forgot.resetSuccess'), [{ text: 'OK', onPress: () => navigation.replace('Login') }])
     } catch (error) {
-      Alert.alert('Reset failed', String(error))
+      Alert.alert(t('forgot.resetFailed'), String(error))
     } finally {
       setLoading(false)
     }
@@ -81,16 +83,16 @@ export function ForgotPasswordScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Forgot Password" subtitle="对应小程序 findpassword 流程。">
-        <TextInput style={styles.input} placeholder="Username" placeholderTextColor={colors.textMuted} value={username} onChangeText={setUsername} autoCapitalize="none" />
-        <TextInput style={styles.input} placeholder="Email" placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-        <TextInput style={styles.input} placeholder="New Password" placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
-        <TextInput style={styles.input} placeholder="Confirm Password" placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+      <SectionCard title={t('forgot.title')} subtitle={t('forgot.subtitle')}>
+        <TextInput style={styles.input} placeholder={t('forgot.username')} placeholderTextColor={colors.textMuted} value={username} onChangeText={setUsername} autoCapitalize="none" />
+        <TextInput style={styles.input} placeholder={t('forgot.email')} placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+        <TextInput style={styles.input} placeholder={t('forgot.newPassword')} placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder={t('forgot.confirmPassword')} placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
         <View style={styles.row}>
-          <TextInput style={[styles.input, styles.flex]} placeholder="Verification Code" placeholderTextColor={colors.textMuted} value={captcha} onChangeText={setCaptcha} autoCapitalize="none" />
-          <PrimaryButton title="Get Code" secondary onPress={() => void getCode()} />
+          <TextInput style={[styles.input, styles.flex]} placeholder={t('forgot.verificationCode')} placeholderTextColor={colors.textMuted} value={captcha} onChangeText={setCaptcha} autoCapitalize="none" />
+          <PrimaryButton title={t('forgot.getCode')} secondary onPress={() => void getCode()} />
         </View>
-        <PrimaryButton title={loading ? 'Submitting...' : 'Submit'} onPress={() => void submit()} disabled={loading} />
+        <PrimaryButton title={loading ? t('forgot.submitting') : t('forgot.submit')} onPress={() => void submit()} disabled={loading} />
       </SectionCard>
     </Screen>
   )

@@ -4,22 +4,24 @@ import { gymApi } from '../../api/gymApi'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { Course } from '../../types/models'
 
 export function CoursesScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [courses, setCourses] = useState<Course[]>([])
-  const [activeCategory, setActiveCategory] = useState('All')
+  const [activeCategory, setActiveCategory] = useState('all')
   const [term, setTerm] = useState('')
 
   useEffect(() => {
     gymApi.allCourses().then((res) => setCourses(res.data ?? [])).catch(() => setCourses([]))
   }, [])
 
-  const categories = useMemo(() => ['All', ...new Set(courses.map((item) => item.type).filter(Boolean) as string[])], [courses])
+  const categories = useMemo(() => ['all', ...new Set(courses.map((item) => item.type).filter(Boolean) as string[])], [courses])
   const filtered = useMemo(() => {
     const normalized = term.trim().toLowerCase()
     return courses.filter((course) => {
-      const typeMatch = activeCategory === 'All' || course.type === activeCategory
+      const typeMatch = activeCategory === 'all' || course.type === activeCategory
       const haystack = [
         course.name,
         course.cname,
@@ -34,9 +36,9 @@ export function CoursesScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Courses" subtitle="课程页迁移：分类筛选 + 搜索 + 详情跳转。">
+      <SectionCard title={t('courses.title')} subtitle={t('courses.subtitle')}>
         <TextInput
-          placeholder="Search course"
+          placeholder={t('courses.searchCourse')}
           placeholderTextColor={colors.textMuted}
           style={styles.input}
           value={term}
@@ -45,20 +47,20 @@ export function CoursesScreen({ navigation }: { navigation: any }) {
         <View style={styles.chips}>
           {categories.map((category) => (
             <Pressable key={category} onPress={() => setActiveCategory(category)} style={[styles.chip, activeCategory === category ? styles.chipActive : null]}>
-              <Text style={[styles.chipText, activeCategory === category ? styles.chipTextActive : null]}>{category}</Text>
+              <Text style={[styles.chipText, activeCategory === category ? styles.chipTextActive : null]}>{category === 'all' ? t('courses.all') : category}</Text>
             </Pressable>
           ))}
         </View>
       </SectionCard>
 
-      <SectionCard title="Course List" subtitle={`Showing ${filtered.length} item(s)`}>
+      <SectionCard title={t('courses.courseList')} subtitle={`Showing ${filtered.length} item(s)`}>
         {filtered.map((course, index) => (
           <Pressable
             key={`${course.id ?? course.cid ?? index}`}
             style={styles.listItem}
             onPress={() => navigation.navigate('CourseDetail', { courseId: Number(course.id ?? course.cid ?? 0), title: String(course.name ?? course.cname ?? 'Course') })}
           >
-            <Text style={styles.name}>{course.name ?? course.cname ?? 'Unnamed course'}</Text>
+            <Text style={styles.name}>{course.name ?? course.cname ?? t('courses.unnamed')}</Text>
             <Text style={styles.meta}>{`${course.type ?? 'General'} · ¥${course.price ?? 0}`}</Text>
           </Pressable>
         ))}

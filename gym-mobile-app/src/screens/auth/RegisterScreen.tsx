@@ -5,10 +5,12 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function RegisterScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [username, setUsername] = useState('')
@@ -21,42 +23,42 @@ export function RegisterScreen({ navigation }: { navigation: any }) {
 
   const getCode = async () => {
     if (!emailPattern.test(email.trim())) {
-      Alert.alert('Tips', 'Email format is incorrect')
+      Alert.alert(t('auth.tips'), t('register.invalidEmail'))
       return
     }
 
     try {
       const result = await gymApi.getCaptcha(email.trim())
       if (result.code !== 1) {
-        Alert.alert('Get code failed', result.msg ?? 'Unknown error')
+        Alert.alert(t('register.getCodeFailed'), result.msg ?? 'Unknown error')
         return
       }
       setServerCaptcha(String(result.data ?? ''))
-      Alert.alert('Code sent', 'Verification code has been requested from backend.')
+      Alert.alert(t('register.codeSent'), t('register.codeRequested'))
     } catch (error) {
-      Alert.alert('Get code failed', String(error))
+      Alert.alert(t('register.getCodeFailed'), String(error))
     }
   }
 
   const submit = async () => {
     if (!firstName.trim() || !lastName.trim() || !username.trim() || !email.trim()) {
-      Alert.alert('Tips', 'Please complete all required fields')
+      Alert.alert(t('auth.tips'), t('register.fillRequired'))
       return
     }
     if (!emailPattern.test(email.trim())) {
-      Alert.alert('Tips', 'Email format is incorrect')
+      Alert.alert(t('auth.tips'), t('register.invalidEmail'))
       return
     }
     if (password.length < 6 || password.length > 20) {
-      Alert.alert('Tips', 'Password length must be 6-20')
+      Alert.alert(t('auth.tips'), t('register.passwordRule'))
       return
     }
     if (password !== confirmPassword) {
-      Alert.alert('Tips', 'The two passwords are different')
+      Alert.alert(t('auth.tips'), t('register.passwordMismatch'))
       return
     }
     if (!serverCaptcha || captcha.trim() !== serverCaptcha.trim()) {
-      Alert.alert('Tips', 'Enter the right verification code')
+      Alert.alert(t('auth.tips'), t('register.invalidCode'))
       return
     }
 
@@ -70,12 +72,12 @@ export function RegisterScreen({ navigation }: { navigation: any }) {
         password
       })
       if (result.code !== 1) {
-        Alert.alert('Register failed', String(result.msg ?? result.data ?? 'Unknown error'))
+        Alert.alert(t('register.registerFailed'), String(result.msg ?? result.data ?? 'Unknown error'))
         return
       }
-      Alert.alert('Success', 'Register success', [{ text: 'OK', onPress: () => navigation.replace('Login') }])
+      Alert.alert(t('register.success'), t('register.registerSuccess'), [{ text: 'OK', onPress: () => navigation.replace('Login') }])
     } catch (error) {
-      Alert.alert('Register failed', String(error))
+      Alert.alert(t('register.registerFailed'), String(error))
     } finally {
       setLoading(false)
     }
@@ -83,18 +85,18 @@ export function RegisterScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Register" subtitle="迁移自 regist 页面：邮箱验证码 + 用户注册。">
-        <TextInput style={styles.input} placeholder="First Name" placeholderTextColor={colors.textMuted} value={firstName} onChangeText={setFirstName} />
-        <TextInput style={styles.input} placeholder="Last Name" placeholderTextColor={colors.textMuted} value={lastName} onChangeText={setLastName} />
-        <TextInput style={styles.input} placeholder="Username" placeholderTextColor={colors.textMuted} value={username} onChangeText={setUsername} autoCapitalize="none" />
-        <TextInput style={styles.input} placeholder="Email" placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-        <TextInput style={styles.input} placeholder="Password" placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
-        <TextInput style={styles.input} placeholder="Confirm Password" placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+      <SectionCard title={t('register.title')} subtitle={t('register.subtitle')}>
+        <TextInput style={styles.input} placeholder={t('register.firstName')} placeholderTextColor={colors.textMuted} value={firstName} onChangeText={setFirstName} />
+        <TextInput style={styles.input} placeholder={t('register.lastName')} placeholderTextColor={colors.textMuted} value={lastName} onChangeText={setLastName} />
+        <TextInput style={styles.input} placeholder={t('register.username')} placeholderTextColor={colors.textMuted} value={username} onChangeText={setUsername} autoCapitalize="none" />
+        <TextInput style={styles.input} placeholder={t('register.email')} placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+        <TextInput style={styles.input} placeholder={t('register.password')} placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder={t('register.confirmPassword')} placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
         <View style={styles.row}>
-          <TextInput style={[styles.input, styles.flex]} placeholder="Verification Code" placeholderTextColor={colors.textMuted} value={captcha} onChangeText={setCaptcha} autoCapitalize="none" />
-          <PrimaryButton title="Get Code" secondary onPress={() => void getCode()} />
+          <TextInput style={[styles.input, styles.flex]} placeholder={t('register.verificationCode')} placeholderTextColor={colors.textMuted} value={captcha} onChangeText={setCaptcha} autoCapitalize="none" />
+          <PrimaryButton title={t('register.getCode')} secondary onPress={() => void getCode()} />
         </View>
-        <PrimaryButton title={loading ? 'Registering...' : 'Register'} onPress={() => void submit()} disabled={loading} />
+        <PrimaryButton title={loading ? t('register.registering') : t('register.title')} onPress={() => void submit()} disabled={loading} />
       </SectionCard>
     </Screen>
   )

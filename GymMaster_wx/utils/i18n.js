@@ -26,6 +26,11 @@ const messages = {
     upgradeMembership: 'Upgrade Membership',
     cancel: 'Cancel',
     confirm: 'Confirm'
+    ,tabHome: 'Home'
+    ,tabAppointment: 'Appointment'
+    ,tabCommunity: 'Community'
+    ,tabCourses: 'Courses'
+    ,tabMe: 'Me'
   },
   zh: {
     appName: '健身管家',
@@ -52,6 +57,11 @@ const messages = {
     upgradeMembership: '会员升级',
     cancel: '取消',
     confirm: '确认'
+    ,tabHome: '首页'
+    ,tabAppointment: '预约'
+    ,tabCommunity: '社区'
+    ,tabCourses: '课程'
+    ,tabMe: '我的'
   },
   ja: {
     appName: 'ジムマスター',
@@ -78,6 +88,11 @@ const messages = {
     upgradeMembership: '会員アップグレード',
     cancel: 'キャンセル',
     confirm: '確認'
+    ,tabHome: 'ホーム'
+    ,tabAppointment: '予約'
+    ,tabCommunity: 'コミュニティ'
+    ,tabCourses: 'コース'
+    ,tabMe: 'マイ'
   }
 };
 

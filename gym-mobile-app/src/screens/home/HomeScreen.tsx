@@ -5,9 +5,11 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { Coach, Facility, Notice, Slide } from '../../types/models'
 
 export function HomeScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [slides, setSlides] = useState<Slide[]>([])
   const [notices, setNotices] = useState<Notice[]>([])
   const [facilities, setFacilities] = useState<Facility[]>([])
@@ -33,37 +35,37 @@ export function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Gym Product" subtitle="小程序首页迁移为原生 App 首页，保留轮播、公告、设施、教练和快速入口。">
+      <SectionCard title={t('home.title')} subtitle={t('home.subtitle')}>
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Train smarter, book faster.</Text>
-          <Text style={styles.heroText}>Home tab mirrors the mini-program: slides, notices, facility showcase, coaches, location and video access.</Text>
+          <Text style={styles.heroTitle}>{t('home.heroTitle')}</Text>
+          <Text style={styles.heroText}>{t('home.heroText')}</Text>
         </View>
         <View style={styles.buttonRow}>
-          <PrimaryButton title="Open Video" onPress={() => navigation.navigate('Video')} />
-          <PrimaryButton title="Call Gym" secondary onPress={() => Linking.openURL('tel:13800000000')} />
+          <PrimaryButton title={t('home.openVideo')} onPress={() => navigation.navigate('Video')} />
+          <PrimaryButton title={t('home.callGym')} secondary onPress={() => Linking.openURL('tel:13800000000')} />
         </View>
       </SectionCard>
 
-      <SectionCard title="Slides" subtitle={`Loaded ${slides.length} banner items from until/homeslides`}>
+      <SectionCard title={t('home.slides')} subtitle={`Loaded ${slides.length} banner items from until/homeslides`}>
         {slides.slice(0, 3).map((slide, index) => (
           <Text key={`${slide.id ?? index}`} style={styles.itemText}>{`#${index + 1} ${String(slide.title ?? slide.image ?? slide.profile ?? 'slide')}`}</Text>
         ))}
       </SectionCard>
 
-      <SectionCard title="Notices" subtitle="Top 2 announcements, same as mini-program home page.">
+      <SectionCard title={t('home.notices')} subtitle={t('home.noticesSubtitle')}>
         {notices.map((notice, index) => (
           <Text key={`${notice.nid ?? index}`} style={styles.itemText}>{notice.title ?? notice.content ?? `Notice ${index + 1}`}</Text>
         ))}
-        <PrimaryButton title="All Notices" secondary onPress={() => navigation.navigate('Notices')} />
+        <PrimaryButton title={t('home.allNotices')} secondary onPress={() => navigation.navigate('Notices')} />
       </SectionCard>
 
-      <SectionCard title="Facilities & Coaches" subtitle="Quick overview before jumping to reservation or detail pages.">
+      <SectionCard title={t('home.facilitiesCoaches')} subtitle={t('home.facilitiesCoachesSubtitle')}>
         <Text style={styles.itemText}>{`Facilities: ${facilities.length}`}</Text>
         <Text style={styles.itemText}>{`Coaches: ${coaches.length}`}</Text>
         <View style={styles.buttonRow}>
-          <PrimaryButton title="All Venues" onPress={() => navigation.navigate('MainTabs', { screen: 'Reservation' })} />
-          <PrimaryButton title="Community" secondary onPress={() => navigation.navigate('MainTabs', { screen: 'Community' })} />
-          <PrimaryButton title="Search" secondary onPress={() => navigation.navigate('Search', { term: '' })} />
+          <PrimaryButton title={t('home.allVenues')} onPress={() => navigation.navigate('MainTabs', { screen: 'Reservation' })} />
+          <PrimaryButton title={t('home.community')} secondary onPress={() => navigation.navigate('MainTabs', { screen: 'Community' })} />
+          <PrimaryButton title={t('home.search')} secondary onPress={() => navigation.navigate('Search', { term: '' })} />
         </View>
       </SectionCard>
     </Screen>

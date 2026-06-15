@@ -80,6 +80,7 @@ Page({
 
  onShow() {
     this.syncI18n();
+    app.applyTabBarLanguage();
     this.onLoad();
  },
   onLoad: function (options) {
@@ -141,6 +142,7 @@ Page({
       return;
     }
     app.setLanguage(locale);
+    app.applyTabBarLanguage();
     this.syncI18n();
   },
 

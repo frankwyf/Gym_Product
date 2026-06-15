@@ -6,10 +6,30 @@ App({
     console.log('GymMaster App onLaunch');
     wx.setStorageSync('mallName', 'GymMaster');
     this.globalData.locale = i18n.getLocale();
+    this.applyTabBarLanguage();
+  },
+
+  applyTabBarLanguage: function() {
+    const labels = this.getMessages();
+    const texts = [
+      labels.tabHome,
+      labels.tabAppointment,
+      labels.tabCommunity,
+      labels.tabCourses,
+      labels.tabMe
+    ];
+
+    texts.forEach((text, index) => {
+      wx.setTabBarItem({
+        index,
+        text
+      });
+    });
   },
 
   setLanguage: function(locale) {
     this.globalData.locale = i18n.setLocale(locale);
+    this.applyTabBarLanguage();
     return this.globalData.locale;
   },
 

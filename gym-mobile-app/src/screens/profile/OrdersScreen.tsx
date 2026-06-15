@@ -7,9 +7,11 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 import type { Account, CartItem } from '../../types/models'
 
 export function OrdersScreen() {
+  const { t } = useI18n()
   const { token, cart, clearCart } = useAppContext()
   const [accounts, setAccounts] = useState<Account[]>([])
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null)
@@ -62,24 +64,24 @@ export function OrdersScreen() {
 
   const payNow = async () => {
     if (!token) {
-      Alert.alert('Login required', 'Please login first.')
+      Alert.alert(t('orders.loginRequired'), t('orders.loginFirst'))
       return
     }
     if (cart.length === 0) {
-      Alert.alert('Tips', 'No unpaid reservations in cart.')
+      Alert.alert(t('auth.tips'), t('orders.noUnpaid'))
       return
     }
     if (!selectedAccountId) {
-      Alert.alert('Tips', 'Please select an account.')
+      Alert.alert(t('auth.tips'), t('orders.selectAccount'))
       return
     }
     if (!selectedAccount) {
-      Alert.alert('Tips', 'Selected account is no longer available. Please re-select.')
+      Alert.alert(t('auth.tips'), t('orders.accountUnavailable'))
       return
     }
     const accountBalance = Number(selectedAccount.balance ?? 0)
     if (!Number.isNaN(accountBalance) && accountBalance < total) {
-      Alert.alert('Insufficient balance', 'Selected account balance is lower than order total.')
+      Alert.alert(t('orders.insufficientBalance'), t('orders.balanceLow'))
       return
     }
 
@@ -87,14 +89,14 @@ export function OrdersScreen() {
       setPaying(true)
       const result = await gymApi.payBill(token, selectedAccountId, total, cart)
       if (result.code === 0) {
-        Alert.alert('Payment failed', result.msg ?? 'Unknown backend rejection')
+        Alert.alert(t('orders.paymentFailed'), result.msg ?? 'Unknown backend rejection')
         return
       }
       await clearCart()
-      Alert.alert('Success', 'Order paid successfully.')
+      Alert.alert(t('register.success'), t('orders.paymentSuccess'))
       refreshRemoteData()
     } catch (error) {
-      Alert.alert('Payment failed', String(error))
+      Alert.alert(t('orders.paymentFailed'), String(error))
     } finally {
       setPaying(false)
     }
@@ -120,7 +122,7 @@ export function OrdersScreen() {
 
   return (
     <Screen>
-      <SectionCard title="Unpaid Reservations" subtitle="Maps from local cart storage in the mini-program.">
+      <SectionCard title={t('orders.unpaid')} subtitle={t('orders.unpaidSubtitle')}>
         {cart.map((item, index) => (
           <View key={`${item.name ?? index}`} style={styles.rowCard}>
             <InfoRow label="Name" value={item.name} />
@@ -128,10 +130,10 @@ export function OrdersScreen() {
             <InfoRow label="Price" value={`¥${item.price ?? 0}`} />
           </View>
         ))}
-        <InfoRow label="Total" value={`¥${total.toFixed(2)}`} />
+        <InfoRow label={t('orders.total')} value={`¥${total.toFixed(2)}`} />
       </SectionCard>
 
-      <SectionCard title="Select Account & Pay" subtitle="迁移自 to-pay-order：账号选择 + 结算调用。">
+      <SectionCard title={t('orders.selectPay')} subtitle={t('orders.selectPaySubtitle')}>
         {accounts.map((account, index) => {
           const aid = Number(account.aid ?? 0)
           const active = selectedAccountId === aid
@@ -142,16 +144,16 @@ export function OrdersScreen() {
             </Pressable>
           )
         })}
-        <PrimaryButton title={paying ? 'Paying...' : 'Pay Now'} onPress={() => void payNow()} disabled={paying || cart.length === 0 || !selectedAccountId} />
+        <PrimaryButton title={paying ? t('orders.paying') : t('orders.payNow')} onPress={() => void payNow()} disabled={paying || cart.length === 0 || !selectedAccountId} />
       </SectionCard>
 
-      <SectionCard title="Paid Reservations" subtitle={`Loaded ${paidReservations.length} item(s)`}>
+      <SectionCard title={t('orders.paidReservations')} subtitle={`Loaded ${paidReservations.length} item(s)`}>
         {paidReservations.map((item, index) => (
           <Text key={`${item.name ?? index}`} style={styles.text}>{formatPaidItem(item)}</Text>
         ))}
       </SectionCard>
 
-      <SectionCard title="Bills" subtitle={`Loaded ${bills.length} bill record(s)`}>
+      <SectionCard title={t('orders.bills')} subtitle={`Loaded ${bills.length} bill record(s)`}>
         {bills.map((bill, index) => (
           <Text key={index} style={styles.text}>{formatBill(bill)}</Text>
         ))}
