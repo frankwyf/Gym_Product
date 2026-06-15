@@ -7,3 +7,5 @@ public
 # 忽略根目录下的构建配置脚本
 /babel.config.js
 /vue.config.js
+# 忽略代码生成器页面（历史模板代码，风格与当前规则不一致）
+src/views/tool/gen
