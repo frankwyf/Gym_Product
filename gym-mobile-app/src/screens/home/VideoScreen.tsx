@@ -6,17 +6,19 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { API_BASE_URL } from '../../constants/config'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 
 const VIDEO_URL = `${API_BASE_URL}Environment/About.mp4`
 
 export function VideoScreen() {
+  const { t } = useI18n()
   const videoRef = useRef<Video | null>(null)
 
   const play = async () => {
     try {
       await videoRef.current?.playAsync()
     } catch (error) {
-      Alert.alert('Video unavailable', String(error))
+      Alert.alert(t('video.unavailable'), String(error))
     }
   }
 
@@ -26,19 +28,19 @@ export function VideoScreen() {
 
   return (
     <Screen>
-      <SectionCard title="Video" subtitle="迁移自 video 页面，保留场馆介绍视频播放能力。">
-        <Text style={styles.text}>If your network is not Wi-Fi, video playback may consume mobile data.</Text>
+      <SectionCard title={t('stack.video')} subtitle={t('video.subtitle')}>
+        <Text style={styles.text}>{t('video.networkTip')}</Text>
         <Video
           ref={videoRef}
           source={{ uri: VIDEO_URL }}
           style={styles.video}
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
-          onError={(error) => Alert.alert('Video error', JSON.stringify(error))}
+          onError={(error) => Alert.alert(t('video.error'), JSON.stringify(error))}
         />
         <View style={styles.actions}>
-          <PrimaryButton title="Play" onPress={() => void play()} />
-          <PrimaryButton title="Open Source URL" secondary onPress={() => void openInBrowser()} />
+          <PrimaryButton title={t('video.play')} onPress={() => void play()} />
+          <PrimaryButton title={t('video.openUrl')} secondary onPress={() => void openInBrowser()} />
         </View>
       </SectionCard>
     </Screen>

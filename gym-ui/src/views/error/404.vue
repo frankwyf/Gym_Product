@@ -24,16 +24,15 @@
         />
       </div>
       <div class="bullshit">
-        <div class="bullshit__oops">404 Error!</div>
+        <div class="bullshit__oops">{{ $tr('error404.title') }}</div>
         <div class="bullshit__headline">
-          {{ message }}
+          {{ $tr('error404.headline') }}
         </div>
         <div class="bullshit__info">
-          Sorry, the page you are looking for does not exist. Please check the
-          URL for errors, then refresh the page or try searching for something else.
+          {{ $tr('error404.info') }}
         </div>
         <router-link to="/" class="bullshit__return-home">
-          Return to homepage
+          {{ $tr('error404.home') }}
         </router-link>
       </div>
     </div>
@@ -42,12 +41,7 @@
 
 <script>
 export default {
-  name: "Page404",
-  computed: {
-    message() {
-      return "Page Not Found";
-    },
-  },
+  name: "Page404"
 };
 </script>
 

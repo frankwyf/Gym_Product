@@ -6,7 +6,7 @@
 
 这是与健身房管理系统配套的 Vue 2 管理端。项目基于 RuoYi-Vue 风格扩展，已移除 `dist`、`node_modules` 和 IDE 本地状态，适合重新安装依赖后启动。
 
-当前已接入轻量多语言基础能力（英文/中文/日文），并在顶部导航提供语言切换入口（登录页与导航文案已完成三语化示例）。
+当前已接入轻量多语言基础能力（英文/中文/日文），并在顶部导航提供语言切换入口（登录页、注册页、导航与 401/404 页面文案已完成三语化示例）。
 
 ### 运行前提
 
@@ -49,7 +49,7 @@ npm run dev
 
 This is the Vue 2 admin frontend for the gym management system. Local build output and dependencies were removed so the project can be reinstalled cleanly.
 
-A lightweight i18n baseline (English/Chinese/Japanese) is integrated, with a language switch entry in the top navigation.
+A lightweight i18n baseline (English/Chinese/Japanese) is integrated, with a language switch entry in the top navigation. Login, register, navbar, and 401/404 pages are localized.
 
 ### Requirements
 

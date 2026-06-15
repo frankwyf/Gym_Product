@@ -4,6 +4,7 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import { getStoredCheckInDays, setStoredCheckInDays } from '../../utils/storage'
 
 function getMonthKey(date: Date) {
@@ -19,6 +20,7 @@ function getFirstWeekday(date: Date) {
 }
 
 export function CheckInScreen() {
+  const { t } = useI18n()
   const [monthDate, setMonthDate] = useState(new Date())
   const [signedDays, setSignedDays] = useState<number[]>([])
 
@@ -39,14 +41,14 @@ export function CheckInScreen() {
 
     const day = today.getDate()
     if (signedDays.includes(day)) {
-      Alert.alert('Already checked in', 'Today has been checked in already.')
+      Alert.alert(t('checkin.alreadyTitle'), t('checkin.alreadyMsg'))
       return
     }
 
     const next = [...signedDays, day].sort((a, b) => a - b)
     setSignedDays(next)
     await setStoredCheckInDays(monthKey, next)
-    Alert.alert('Success', 'Check-in completed.')
+    Alert.alert(t('register.success'), t('checkin.successMsg'))
   }
 
   const previousMonth = () => {
@@ -67,11 +69,11 @@ export function CheckInScreen() {
 
   return (
     <Screen>
-      <SectionCard title="Daily Check-In" subtitle="迁移自 sign-in 页面，按月打卡并持久化记录。">
+      <SectionCard title={t('checkin.title')} subtitle={t('checkin.subtitle')}>
         <View style={styles.monthHeader}>
-          <PrimaryButton title="Prev" secondary onPress={previousMonth} />
+          <PrimaryButton title={t('checkin.prev')} secondary onPress={previousMonth} />
           <Text style={styles.monthText}>{`${monthDate.getFullYear()}-${monthDate.getMonth() + 1}`}</Text>
-          <PrimaryButton title="Next" secondary onPress={nextMonth} />
+          <PrimaryButton title={t('checkin.next')} secondary onPress={nextMonth} />
         </View>
 
         <View style={styles.weekRow}>
@@ -91,13 +93,13 @@ export function CheckInScreen() {
 
             return (
               <Pressable key={day} style={[styles.dayCell, isToday ? styles.todayCell : null, isSigned ? styles.signedCell : null]}>
-                <Text style={[styles.dayText, isSigned ? styles.signedText : null]}>{isToday ? 'Today' : day}</Text>
+                <Text style={[styles.dayText, isSigned ? styles.signedText : null]}>{isToday ? t('checkin.today') : day}</Text>
               </Pressable>
             )
           })}
         </View>
 
-        <PrimaryButton title="Check In Today" onPress={() => void signToday()} />
+        <PrimaryButton title={t('checkin.action')} onPress={() => void signToday()} />
       </SectionCard>
     </Screen>
   )

@@ -10,6 +10,10 @@ App({
   },
 
   applyTabBarLanguage: function() {
+    if (typeof wx.setTabBarItem !== 'function') {
+      return;
+    }
+
     const labels = this.getMessages();
     const texts = [
       labels.tabHome,
@@ -22,7 +26,10 @@ App({
     texts.forEach((text, index) => {
       wx.setTabBarItem({
         index,
-        text
+        text,
+        fail: function() {
+          // Ignore failures on pages where tab bar is not initialized yet.
+        }
       });
     });
   },

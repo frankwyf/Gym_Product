@@ -3,7 +3,7 @@
     <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
       <h3 class="title">GymMaster</h3>
       <el-form-item prop="username">
-        <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="Account">
+        <el-input v-model="registerForm.username" type="text" auto-complete="off" :placeholder="$tr('register.account')">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -12,7 +12,7 @@
           v-model="registerForm.password"
           type="password"
           auto-complete="off"
-          placeholder="Password"
+          :placeholder="$tr('register.password')"
           @keyup.enter.native="handleRegister"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -23,7 +23,7 @@
           v-model="registerForm.confirmPassword"
           type="password"
           auto-complete="off"
-          placeholder="Confirm password"
+          :placeholder="$tr('register.confirmPassword')"
           @keyup.enter.native="handleRegister"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -33,7 +33,7 @@
         <el-input
           v-model="registerForm.code"
           auto-complete="off"
-          placeholder="Verification Code"
+          :placeholder="$tr('register.verificationCode')"
           style="width: 63%"
           @keyup.enter.native="handleRegister"
         >
@@ -51,11 +51,11 @@
           style="width:100%;"
           @click.native.prevent="handleRegister"
         >
-          <span v-if="!loading">Register</span>
-          <span v-else>Under registration</span>
+          <span v-if="!loading">{{ $tr('register.submit') }}</span>
+          <span v-else>{{ $tr('register.loading') }}</span>
         </el-button>
         <div style="float: right;">
-          <router-link class="link-type" :to="'/login'">Account existed</router-link>
+          <router-link class="link-type" :to="'/login'">{{ $tr('register.login') }}</router-link>
         </div>
       </el-form-item>
     </el-form>
@@ -70,7 +70,7 @@ export default {
   data() {
     const equalToPassword = (rule, value, callback) => {
       if (this.registerForm.password !== value) {
-        callback(new Error("Passwords different"));
+        callback(new Error(this.$tr('register.passwordDifferent')));
       } else {
         callback();
       }
@@ -86,18 +86,18 @@ export default {
       },
       registerRules: {
         username: [
-          { required: true, trigger: "blur", message: "Please enter your account" },
-          { min: 2, max: 20, message: 'The length of the user account must be between 2 and 20', trigger: 'blur' }
+          { required: true, trigger: "blur", message: this.$tr('register.requiredAccount') },
+          { min: 2, max: 20, message: this.$tr('register.accountLength'), trigger: 'blur' }
         ],
         password: [
-          { required: true, trigger: "blur", message: "Please enter your password" },
-          { min: 5, max: 20, message: 'The length of the password must be between 5 and 20', trigger: 'blur' }
+          { required: true, trigger: "blur", message: this.$tr('register.requiredPassword') },
+          { min: 5, max: 20, message: this.$tr('register.passwordLength'), trigger: 'blur' }
         ],
         confirmPassword: [
-          { required: true, trigger: "blur", message: "Please enter your password again" },
+          { required: true, trigger: "blur", message: this.$tr('register.requiredPasswordAgain') },
           { required: true, validator: equalToPassword, trigger: "blur" }
         ],
-        code: [{ required: true, trigger: "change", message: "Please enter the verification code" }]
+        code: [{ required: true, trigger: "change", message: this.$tr('register.requiredCode') }]
       },
       loading: false,
       captchaOnOff: true
@@ -122,7 +122,7 @@ export default {
           this.loading = true;
           register(this.registerForm).then(res => {
             const username = this.registerForm.username;
-            this.$alert("<font color='red'>Account " + username + " registered successfully</font>", 'System prompt', {
+            this.$alert("<font color='red'>" + this.$tr('register.successMessage').replace('{username}', username) + "</font>", this.$tr('register.successTitle'), {
               dangerouslyUseHTMLString: true,
               type: 'success'
             }).then(() => {

@@ -16,6 +16,7 @@ This app is the iOS/Android rewrite of the WeChat mini-program in `GymMaster_wx`
 - Reliability polish: loading/empty/error states with retry actions on key list pages
 - Data safety polish: invalid-id guards for post/facility/venue navigation and actions
 - Internationalization baseline: English / Chinese / Japanese locale support with persisted language selection
+- i18n expanded coverage: Auth (Login/Register/ForgotPassword), Home, Courses, Reservation, Community, Notices, Wallet, Orders, Check-In, Addresses, Course Detail, Search, Video
 
 ## Stack
 

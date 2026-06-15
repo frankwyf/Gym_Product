@@ -1,19 +1,19 @@
 <template>
   <div class="errPage-container">
     <el-button icon="arrow-left" class="pan-back-btn" @click="back">
-      Back
+      {{ $tr('error401.back') }}
     </el-button>
     <el-row>
       <el-col :span="12">
         <h1 class="text-jumbo text-ginormous">
-          401 Error!
+          {{ $tr('error401.title') }}
         </h1>
-        <h2>You do not have permission to access this page!</h2>
-        <h6>We're sorry, but you do not have permission to access this page. Please do not engage in any unauthorized activities. You can return to the main page.</h6>
+        <h2>{{ $tr('error401.desc') }}</h2>
+        <h6>{{ $tr('error401.help') }}</h6>
         <ul class="list-unstyled">
           <li class="link-type">
             <router-link to="/">
-              Back to Home page
+              {{ $tr('error401.home') }}
             </router-link>
           </li>
         </ul>

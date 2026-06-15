@@ -7,9 +7,11 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 import type { Coach, Course } from '../../types/models'
 
 export function CourseDetailScreen({ route, navigation }: { route: any; navigation: any }) {
+  const { t } = useI18n()
   const courseId = Number(route.params?.courseId ?? 0)
   const [course, setCourse] = useState<Course | null>(null)
   const [coach, setCoach] = useState<Coach | null>(null)
@@ -54,21 +56,21 @@ export function CourseDetailScreen({ route, navigation }: { route: any; navigati
       price: Number(course.price ?? 0),
       active: true
     })
-    Alert.alert('Success', 'Course has been added to cart')
+    Alert.alert(t('register.success'), t('courseDetail.added'))
     navigation.navigate('Orders')
   }
 
   return (
     <Screen>
-      <SectionCard title={route.params?.title ?? 'Course Detail'} subtitle="迁移自 goods-details，保留课程详情与加入购物车流程。">
-        <InfoRow label="Course" value={course?.name ?? course?.cname} />
-        <InfoRow label="Type" value={course?.type} />
-        <InfoRow label="Price" value={course?.price ? `¥${course.price}` : '-'} />
-        <InfoRow label="Coach" value={coach?.cname} />
-        {content ? <Text style={styles.text}>{content}</Text> : <Text style={styles.text}>{loading ? 'Loading details...' : 'No detail content returned.'}</Text>}
+      <SectionCard title={route.params?.title ?? t('stack.courseDetail')} subtitle={t('courseDetail.subtitle')}>
+        <InfoRow label={t('courseDetail.course')} value={course?.name ?? course?.cname} />
+        <InfoRow label={t('courseDetail.type')} value={course?.type} />
+        <InfoRow label={t('courseDetail.price')} value={course?.price ? `¥${course.price}` : '-'} />
+        <InfoRow label={t('courseDetail.coach')} value={coach?.cname} />
+        {content ? <Text style={styles.text}>{content}</Text> : <Text style={styles.text}>{loading ? t('courseDetail.loading') : t('courseDetail.empty')}</Text>}
         <View style={styles.actions}>
-          <PrimaryButton title="Add to Cart" onPress={() => void addReservation()} disabled={!course} />
-          <PrimaryButton title="Back" secondary onPress={() => navigation.goBack()} />
+          <PrimaryButton title={t('courseDetail.addToCart')} onPress={() => void addReservation()} disabled={!course} />
+          <PrimaryButton title={t('courseDetail.back')} secondary onPress={() => navigation.goBack()} />
         </View>
       </SectionCard>
     </Screen>

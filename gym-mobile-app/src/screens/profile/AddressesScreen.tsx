@@ -4,6 +4,7 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { ShippingAddress } from '../../types/models'
 import { getStoredAddresses, setStoredAddresses } from '../../utils/storage'
 
@@ -17,6 +18,7 @@ const emptyForm = {
 }
 
 export function AddressesScreen() {
+  const { t } = useI18n()
   const [addresses, setAddresses] = useState<ShippingAddress[]>([])
   const [form, setForm] = useState<ShippingAddress>(emptyForm)
 
@@ -38,7 +40,7 @@ export function AddressesScreen() {
 
   const saveAddress = async () => {
     if (!form.linkMan.trim() || !form.mobile.trim() || !form.address.trim()) {
-      Alert.alert('Tips', 'Name, mobile and address are required')
+      Alert.alert(t('auth.tips'), t('addresses.required'))
       return
     }
 
@@ -73,31 +75,31 @@ export function AddressesScreen() {
 
   return (
     <Screen>
-      <SectionCard title="Address Management" subtitle="迁移自 select-address + address-add，支持新增、编辑、删除、默认地址。">
-        <TextInput style={styles.input} placeholder="Name" placeholderTextColor={colors.textMuted} value={form.linkMan} onChangeText={(v) => setForm({ ...form, linkMan: v })} />
-        <TextInput style={styles.input} placeholder="Mobile" placeholderTextColor={colors.textMuted} value={form.mobile} onChangeText={(v) => setForm({ ...form, mobile: v })} keyboardType="phone-pad" />
-        <TextInput style={styles.input} placeholder="Street Address" placeholderTextColor={colors.textMuted} value={form.address} onChangeText={(v) => setForm({ ...form, address: v })} />
-        <TextInput style={styles.input} placeholder="Postal Code (optional)" placeholderTextColor={colors.textMuted} value={form.code ?? ''} onChangeText={(v) => setForm({ ...form, code: v })} />
+      <SectionCard title={t('addresses.title')} subtitle={t('addresses.subtitle')}>
+        <TextInput style={styles.input} placeholder={t('addresses.name')} placeholderTextColor={colors.textMuted} value={form.linkMan} onChangeText={(v) => setForm({ ...form, linkMan: v })} />
+        <TextInput style={styles.input} placeholder={t('addresses.mobile')} placeholderTextColor={colors.textMuted} value={form.mobile} onChangeText={(v) => setForm({ ...form, mobile: v })} keyboardType="phone-pad" />
+        <TextInput style={styles.input} placeholder={t('addresses.street')} placeholderTextColor={colors.textMuted} value={form.address} onChangeText={(v) => setForm({ ...form, address: v })} />
+        <TextInput style={styles.input} placeholder={t('addresses.postal')} placeholderTextColor={colors.textMuted} value={form.code ?? ''} onChangeText={(v) => setForm({ ...form, code: v })} />
 
         <View style={styles.formActions}>
-          <PrimaryButton title={form.id ? 'Update Address' : 'Add Address'} onPress={() => void saveAddress()} />
-          {form.id ? <PrimaryButton title="Cancel Edit" secondary onPress={() => setForm(emptyForm)} /> : null}
+          <PrimaryButton title={form.id ? t('addresses.update') : t('addresses.add')} onPress={() => void saveAddress()} />
+          {form.id ? <PrimaryButton title={t('addresses.cancelEdit')} secondary onPress={() => setForm(emptyForm)} /> : null}
         </View>
       </SectionCard>
 
-      <SectionCard title="Address List" subtitle={`Saved ${addresses.length} address(es)`}>
+      <SectionCard title={t('addresses.list')} subtitle={`Saved ${addresses.length} address(es)`}>
         {addresses.map((item) => (
           <View key={item.id} style={styles.card}>
             <Text style={styles.name}>{`${item.linkMan} · ${item.mobile}`}</Text>
             <Text style={styles.addr}>{item.address}</Text>
-            {item.code ? <Text style={styles.addr}>{`Code: ${item.code}`}</Text> : null}
+            {item.code ? <Text style={styles.addr}>{`${t('addresses.code')}: ${item.code}`}</Text> : null}
             <View style={styles.tagRow}>
-              {item.isDefault ? <Text style={styles.defaultTag}>Default</Text> : null}
+              {item.isDefault ? <Text style={styles.defaultTag}>{t('addresses.default')}</Text> : null}
             </View>
             <View style={styles.actions}>
-              <Pressable onPress={() => editAddress(item)}><Text style={styles.actionText}>Edit</Text></Pressable>
-              <Pressable onPress={() => void setDefault(item.id)}><Text style={styles.actionText}>Set Default</Text></Pressable>
-              <Pressable onPress={() => void removeAddress(item.id)}><Text style={[styles.actionText, styles.dangerText]}>Delete</Text></Pressable>
+              <Pressable onPress={() => editAddress(item)}><Text style={styles.actionText}>{t('addresses.edit')}</Text></Pressable>
+              <Pressable onPress={() => void setDefault(item.id)}><Text style={styles.actionText}>{t('addresses.setDefault')}</Text></Pressable>
+              <Pressable onPress={() => void removeAddress(item.id)}><Text style={[styles.actionText, styles.dangerText]}>{t('addresses.delete')}</Text></Pressable>
             </View>
           </View>
         ))}
