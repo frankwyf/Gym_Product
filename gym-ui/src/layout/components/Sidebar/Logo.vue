@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: 'GymMaster',
+      title: this.$tr('branding.title'),
       logo: logoImg
     }
   }

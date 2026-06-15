@@ -2,7 +2,7 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>GymMaster: to manage gym</h2>
+        <h2>{{ $tr('dashboard.title') }}</h2>
       </el-col>
     </el-row>
     <el-divider />
@@ -53,7 +53,7 @@ export default {
         // 绘制图表
         myChart.setOption({
           title: {
-            text: "Lessons analysis",
+            text: this.$tr('dashboard.lessonAnalysis'),
           },
           // legend: {
           //   data: response.c,
@@ -85,7 +85,7 @@ export default {
         // 绘制图表
         myChart.setOption({
           title: {
-            text: "Student analysis",
+            text: this.$tr('dashboard.studentAnalysis'),
           },
           tooltip: {
             trigger: "axis",
