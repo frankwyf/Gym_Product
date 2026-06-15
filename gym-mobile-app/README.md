@@ -32,6 +32,7 @@ npm --prefix gym-mobile-app install
 npm --prefix gym-mobile-app start
 npm --prefix gym-mobile-app run android
 npm --prefix gym-mobile-app run ios
+npm --prefix gym-mobile-app run verify
 ```
 
 ## Notes

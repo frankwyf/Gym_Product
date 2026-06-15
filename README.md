@@ -49,6 +49,8 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-local-maven.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gymMaster.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-master.ps1
 powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
+powershell -ExecutionPolicy Bypass -File scripts/verify-mobile.ps1
+powershell -ExecutionPolicy Bypass -File scripts/verify-miniapp.ps1
 # 快速模式（跳过依赖安装与构建，仅跑单测+smoke）
 powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1 -SkipInstall -SkipBuild
 # 全仓健康检查（移动端 + Web + 小程序 + 后端编译可用性）

@@ -1,5 +1,30 @@
 # Gym Product Optimization and Open-Source Plan
 
+## Update (2026-06-15)
+
+### Completed in this iteration
+- Added repository-wide validation orchestrator:
+  - `scripts/verify-all.ps1`
+- Added dedicated validation scripts:
+  - `scripts/verify-mobile.ps1` (TypeScript + Expo dependency compatibility)
+  - `scripts/verify-miniapp.ps1` (JS syntax + JSON parse)
+- Improved docs and runnable commands:
+  - Root README now includes mobile/miniapp verification entries.
+  - Mobile README now includes `npm run verify`.
+- Added mobile npm quality scripts:
+  - `typecheck`, `check:deps`, `verify`
+- Validation result snapshot:
+  - PASS: mobile verify
+  - PASS: frontend tests + smoke e2e (smoke skipped when browser/runtime unavailable)
+  - PASS: mini-program syntax/config parse
+  - WARN: backend compile blocked by Maven environment
+
+### Pending actions requiring user approval (large local installs)
+- Install Maven (system-wide) to enable backend compile/start checks end-to-end.
+- If later needed for native runtime packaging/debug:
+  - Android Studio + SDK
+  - Xcode (macOS)
+
 ## 1) Current Status
 
 ### Repository layout

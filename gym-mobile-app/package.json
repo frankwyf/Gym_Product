@@ -26,7 +26,10 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "check:deps": "expo install --check",
+    "verify": "npm run typecheck && npm run check:deps"
   },
   "private": true
 }

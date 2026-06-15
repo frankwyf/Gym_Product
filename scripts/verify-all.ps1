@@ -53,29 +53,10 @@ function Invoke-StepWarn {
 
 Write-Host '[verify-all] Starting cross-project validation...' -ForegroundColor Cyan
 
-Invoke-Step -Component 'mobile: typescript' -Script {
-  Push-Location (Join-Path $repoRoot 'gym-mobile-app')
-  try {
-    npx tsc --noEmit
-    if ($LASTEXITCODE -ne 0) {
-      throw "mobile TypeScript check failed with exit code $LASTEXITCODE"
-    }
-  }
-  finally {
-    Pop-Location
-  }
-}
-
-Invoke-Step -Component 'mobile: expo dependency check' -Script {
-  Push-Location (Join-Path $repoRoot 'gym-mobile-app')
-  try {
-    npx expo install --check
-    if ($LASTEXITCODE -ne 0) {
-      throw "mobile expo dependency check failed with exit code $LASTEXITCODE"
-    }
-  }
-  finally {
-    Pop-Location
+Invoke-Step -Component 'mobile: verify' -Script {
+  & powershell -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'verify-mobile.ps1')
+  if ($LASTEXITCODE -ne 0) {
+    throw "verify-mobile.ps1 failed with exit code $LASTEXITCODE"
   }
 }
 
@@ -99,19 +80,9 @@ Invoke-Step -Component 'frontend: tests/build' -Script {
 }
 
 Invoke-Step -Component 'mini-program: js syntax' -Script {
-  $wxDir = Join-Path $repoRoot 'GymMaster_wx'
-  $files = Get-ChildItem -Path $wxDir -Recurse -File -Filter *.js
-
-  $failed = @()
-  foreach ($file in $files) {
-    node --check $file.FullName 2>$null
-    if ($LASTEXITCODE -ne 0) {
-      $failed += $file.FullName
-    }
-  }
-
-  if ($failed.Count -gt 0) {
-    throw ("JavaScript syntax check failed in: " + ($failed -join ', '))
+  & powershell -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'verify-miniapp.ps1')
+  if ($LASTEXITCODE -ne 0) {
+    throw "verify-miniapp.ps1 failed with exit code $LASTEXITCODE"
   }
 }
 
