@@ -6,9 +6,11 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 import type { Comment, Post } from '../../types/models'
 
 export function PostDetailScreen({ route }: { route: any }) {
+  const { t } = useI18n()
   const postId = Number(route.params?.postId ?? 0)
   const [post, setPost] = useState<Post | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
@@ -33,12 +35,12 @@ export function PostDetailScreen({ route }: { route: any }) {
 
   const submitComment = async () => {
     if (!token) {
-      Alert.alert('Login required', 'Please login first to comment.')
+      Alert.alert(t('postDetail.loginRequired'), t('postDetail.loginFirst'))
       return
     }
     const trimmed = content.trim()
     if (!trimmed) {
-      Alert.alert('Tips', 'Comment cannot be empty.')
+      Alert.alert(t('auth.tips'), t('postDetail.empty'))
       return
     }
     try {
@@ -46,10 +48,10 @@ export function PostDetailScreen({ route }: { route: any }) {
       await gymApi.addComment(token, postId, trimmed)
       const commentRes = await gymApi.postComments(postId)
       setComments(commentRes.data ?? [])
-      Alert.alert('Comment', 'Comment submitted.')
+      Alert.alert(t('postDetail.commentTitle'), t('postDetail.commentSuccess'))
       setContent('')
     } catch (error) {
-      Alert.alert('Comment failed', String(error))
+      Alert.alert(t('postDetail.commentFailed'), String(error))
     } finally {
       setSubmitting(false)
     }
@@ -57,26 +59,26 @@ export function PostDetailScreen({ route }: { route: any }) {
 
   return (
     <Screen>
-      <SectionCard title={route.params?.title ?? 'Post Detail'} subtitle={post?.type ?? 'Community detail'}>
-        <Text style={styles.content}>{post?.content ?? 'Loading...'}</Text>
+      <SectionCard title={route.params?.title ?? t('stack.postDetail')} subtitle={post?.type ?? t('postDetail.subtitleDefault')}>
+        <Text style={styles.content}>{post?.content ?? t('postDetail.loading')}</Text>
       </SectionCard>
 
-      <SectionCard title="Comments" subtitle={`Loaded ${comments.length} comment(s)`}>
+      <SectionCard title={t('postDetail.comments')} subtitle={`Loaded ${comments.length} comment(s)`}>
         {comments.map((comment, index) => (
           <Text key={`${comment.id ?? index}`} style={styles.commentText}>{comment.content ?? `Comment #${index + 1}`}</Text>
         ))}
       </SectionCard>
 
-      <SectionCard title="Add Comment" subtitle="保留发评论主流程。">
+      <SectionCard title={t('postDetail.addComment')} subtitle={t('postDetail.addSubtitle')}>
         <TextInput
           style={styles.input}
-          placeholder="Write a comment"
+          placeholder={t('postDetail.placeholder')}
           placeholderTextColor={colors.textMuted}
           value={content}
           onChangeText={setContent}
           multiline
         />
-        <PrimaryButton title={submitting ? 'Sending...' : 'Send Comment'} onPress={() => void submitComment()} disabled={submitting} />
+        <PrimaryButton title={submitting ? t('postDetail.sending') : t('postDetail.send')} onPress={() => void submitComment()} disabled={submitting} />
       </SectionCard>
     </Screen>
   )

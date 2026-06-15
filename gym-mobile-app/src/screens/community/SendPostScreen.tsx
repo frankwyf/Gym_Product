@@ -7,8 +7,10 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 
 export function SendPostScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const { token } = useAppContext()
   const [content, setContent] = useState('')
   const [imageUri, setImageUri] = useState<string | null>(null)
@@ -17,7 +19,7 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      Alert.alert('Permission', 'Media library access is required.')
+      Alert.alert(t('sendPost.permissionTitle'), t('sendPost.permissionMsg'))
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 })
@@ -28,12 +30,12 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
 
   const submit = async () => {
     if (!token) {
-      Alert.alert('Login required', 'Please login first.')
+      Alert.alert(t('sendPost.loginRequired'), t('sendPost.loginFirst'))
       return
     }
     const trimmed = content.trim()
     if (!trimmed) {
-      Alert.alert('Tips', 'Post content cannot be empty.')
+      Alert.alert(t('auth.tips'), t('sendPost.empty'))
       return
     }
     try {
@@ -43,10 +45,10 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
         uploadedMedia = await gymApi.uploadPostImage(token, imageUri)
       }
       await gymApi.addPost(token, trimmed, uploadedMedia)
-      Alert.alert('Post', 'Post created successfully.')
+      Alert.alert(t('sendPost.postTitle'), t('sendPost.success'))
       navigation.goBack()
     } catch (error) {
-      Alert.alert('Post failed', String(error))
+      Alert.alert(t('sendPost.failed'), String(error))
     } finally {
       setSubmitting(false)
     }
@@ -54,18 +56,18 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Create Post" subtitle="迁移自 send 页面，保留图片上传 + 发帖流程。">
+      <SectionCard title={t('sendPost.title')} subtitle={t('sendPost.subtitle')}>
         <TextInput
           style={styles.input}
-          placeholder="Enter content of the post"
+          placeholder={t('sendPost.placeholder')}
           placeholderTextColor={colors.textMuted}
           multiline
           value={content}
           onChangeText={setContent}
         />
         {imageUri ? <Image source={{ uri: imageUri }} style={styles.preview} /> : null}
-        <PrimaryButton title="Choose Image" secondary onPress={() => void pickImage()} disabled={submitting} />
-        <PrimaryButton title={submitting ? 'Submitting...' : 'Submit Post'} onPress={() => void submit()} disabled={submitting} />
+        <PrimaryButton title={t('sendPost.chooseImage')} secondary onPress={() => void pickImage()} disabled={submitting} />
+        <PrimaryButton title={submitting ? t('sendPost.submitting') : t('sendPost.submit')} onPress={() => void submit()} disabled={submitting} />
       </SectionCard>
     </Screen>
   )

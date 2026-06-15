@@ -7,9 +7,11 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 import type { Venue } from '../../types/models'
 
 export function VenueDetailScreen({ route, navigation }: { route: any; navigation: any }) {
+  const { t } = useI18n()
   const [venue, setVenue] = useState<Venue | null>(null)
   const [caps, setCaps] = useState<number[]>([])
   const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
@@ -52,10 +54,10 @@ export function VenueDetailScreen({ route, navigation }: { route: any; navigatio
 
   return (
     <Screen>
-      <SectionCard title={route.params?.title ?? 'Venue Detail'} subtitle="迁移自 venues 页面，保留场馆信息与预约加入购物车入口。">
-        <InfoRow label="Venue" value={venue?.vname} />
-        <InfoRow label="Price" value={venue?.price ? `¥${venue.price}` : '-'} />
-        <Text style={styles.text}>Select a time period before adding reservation. Remaining capacity is pulled from venue/getById.</Text>
+      <SectionCard title={route.params?.title ?? t('stack.venueDetail')} subtitle={t('venueDetail.subtitle')}>
+        <InfoRow label={t('venueDetail.venue')} value={venue?.vname} />
+        <InfoRow label={t('venueDetail.price')} value={venue?.price ? `¥${venue.price}` : '-'} />
+        <Text style={styles.text}>{t('venueDetail.tip')}</Text>
         <View style={styles.periodWrap}>
           {caps.map((cap, index) => {
             const selectable = cap > 0
@@ -70,15 +72,15 @@ export function VenueDetailScreen({ route, navigation }: { route: any; navigatio
                 }}
                 style={[styles.periodItem, active ? styles.periodItemActive : null, !selectable ? styles.periodItemDisabled : null]}
               >
-                <Text style={[styles.periodText, active ? styles.periodTextActive : null]}>{`Period ${index + 1}`}</Text>
-                <Text style={styles.periodCap}>{`Available: ${cap}`}</Text>
+                <Text style={[styles.periodText, active ? styles.periodTextActive : null]}>{`${t('venueDetail.period')} ${index + 1}`}</Text>
+                <Text style={styles.periodCap}>{`${t('venueDetail.available')}: ${cap}`}</Text>
               </Pressable>
             )
           })}
         </View>
         <View style={styles.actions}>
-          <PrimaryButton title="Add Reservation" onPress={() => void addReservation()} disabled={!venue || (caps.length > 0 && caps[selectedPeriod] <= 0)} />
-          <PrimaryButton title="Back to Reservation" secondary onPress={() => navigation.goBack()} />
+          <PrimaryButton title={t('venueDetail.addReservation')} onPress={() => void addReservation()} disabled={!venue || (caps.length > 0 && caps[selectedPeriod] <= 0)} />
+          <PrimaryButton title={t('venueDetail.backReservation')} secondary onPress={() => navigation.goBack()} />
         </View>
       </SectionCard>
     </Screen>

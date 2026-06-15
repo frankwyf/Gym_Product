@@ -27,6 +27,14 @@ npm run build:stage
 npm run build:prod
 ```
 
+### 国际化校验
+
+```bash
+npm run i18n:check
+```
+
+用于检查 `en/zh/ja` 词条键是否一致，避免新增文案时遗漏翻译。
+
 默认接口前缀由 `.env.*` 文件控制。
 
 ## 日本語
@@ -69,3 +77,11 @@ npm run dev
 npm run build:stage
 npm run build:prod
 ```
+
+### i18n Check
+
+```bash
+npm run i18n:check
+```
+
+This checks key consistency across `en/zh/ja` locale dictionaries.
