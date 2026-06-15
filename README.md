@@ -51,6 +51,10 @@ powershell -ExecutionPolicy Bypass -File scripts/run-gym-management-system-maste
 powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1
 # 快速模式（跳过依赖安装与构建，仅跑单测+smoke）
 powershell -ExecutionPolicy Bypass -File scripts/verify-frontend.ps1 -SkipInstall -SkipBuild
+# 全仓健康检查（移动端 + Web + 小程序 + 后端编译可用性）
+powershell -ExecutionPolicy Bypass -File scripts/verify-all.ps1
+# 快速模式（不重装依赖，且跳过前端 build）
+powershell -ExecutionPolicy Bypass -File scripts/verify-all.ps1 -SkipInstall -SkipFrontendBuild
 ```
 
 ### 环境变量模板

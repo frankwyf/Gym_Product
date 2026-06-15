@@ -19,6 +19,12 @@ This app is the iOS/Android rewrite of the WeChat mini-program in `GymMaster_wx`
 - React Navigation (bottom tabs + native stack)
 - AsyncStorage for token/cart persistence
 
+## Architecture decision
+
+- Current approach is one shared codebase for both iOS and Android.
+- iOS apps can be written in Swift, but React Native still renders native UI controls via platform bridges.
+- Split into separate Swift and Kotlin apps only when platform-specific UX/performance requirements clearly exceed the value of shared code.
+
 ## Run
 
 ```powershell
