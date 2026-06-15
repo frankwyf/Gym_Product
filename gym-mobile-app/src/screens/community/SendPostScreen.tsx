@@ -30,12 +30,17 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
       Alert.alert('Login required', 'Please login first.')
       return
     }
+    const trimmed = content.trim()
+    if (!trimmed) {
+      Alert.alert('Tips', 'Post content cannot be empty.')
+      return
+    }
     try {
       let uploadedMedia: string | undefined
       if (imageUri) {
         uploadedMedia = await gymApi.uploadPostImage(token, imageUri)
       }
-      await gymApi.addPost(token, content, uploadedMedia)
+      await gymApi.addPost(token, trimmed, uploadedMedia)
       Alert.alert('Post', 'Post created successfully.')
       navigation.goBack()
     } catch (error) {

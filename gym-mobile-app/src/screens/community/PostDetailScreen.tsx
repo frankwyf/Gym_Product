@@ -35,8 +35,15 @@ export function PostDetailScreen({ route }: { route: any }) {
       Alert.alert('Login required', 'Please login first to comment.')
       return
     }
+    const trimmed = content.trim()
+    if (!trimmed) {
+      Alert.alert('Tips', 'Comment cannot be empty.')
+      return
+    }
     try {
-      await gymApi.addComment(token, postId, content)
+      await gymApi.addComment(token, postId, trimmed)
+      const commentRes = await gymApi.postComments(postId)
+      setComments(commentRes.data ?? [])
       Alert.alert('Comment', 'Comment submitted.')
       setContent('')
     } catch (error) {

@@ -61,7 +61,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
         <Text style={styles.itemText}>{`Facilities: ${facilities.length}`}</Text>
         <Text style={styles.itemText}>{`Coaches: ${coaches.length}`}</Text>
         <View style={styles.buttonRow}>
-          <PrimaryButton title="All Venues" onPress={() => navigation.navigate('VenueDetail', { title: 'Venue detail' })} />
+          <PrimaryButton title="All Venues" onPress={() => navigation.navigate('MainTabs', { screen: 'Reservation' })} />
           <PrimaryButton title="Community" secondary onPress={() => navigation.navigate('MainTabs', { screen: 'Community' })} />
           <PrimaryButton title="Search" secondary onPress={() => navigation.navigate('Search', { term: '' })} />
         </View>

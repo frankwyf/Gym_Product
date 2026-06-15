@@ -69,6 +69,19 @@ export function WalletScreen() {
     }
   }
 
+  const deleteAccount = async (account: Account) => {
+    if (!token || !account.aid) {
+      return
+    }
+
+    try {
+      await gymApi.deleteAccount(token, account.aid)
+      loadAccounts()
+    } catch (error) {
+      Alert.alert('Delete failed', String(error))
+    }
+  }
+
   return (
     <Screen>
       <SectionCard title="Wallet" subtitle="账户创建、充值、删除逻辑映射自 wallet 页面。">
@@ -85,7 +98,7 @@ export function WalletScreen() {
             <InfoRow label="Method" value={account.method} />
             <View style={styles.actions}>
               <PrimaryButton title="Charge" onPress={() => void chargeAccount(account)} />
-              <PrimaryButton title="Delete" secondary onPress={() => token && account.aid ? gymApi.deleteAccount(token, account.aid).then(loadAccounts) : undefined} />
+              <PrimaryButton title="Delete" secondary onPress={() => void deleteAccount(account)} />
             </View>
           </View>
         ))}
