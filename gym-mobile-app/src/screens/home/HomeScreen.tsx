@@ -39,7 +39,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
           <Text style={styles.heroText}>Home tab mirrors the mini-program: slides, notices, facility showcase, coaches, location and video access.</Text>
         </View>
         <View style={styles.buttonRow}>
-          <PrimaryButton title="Open Video" onPress={() => navigation.navigate('PostDetail', { title: 'Video placeholder' })} />
+          <PrimaryButton title="Open Video" onPress={() => navigation.navigate('Video', { title: 'Video', description: 'Maps to pages/video/video and will be upgraded to Expo AV playback in the next pass.' })} />
           <PrimaryButton title="Call Gym" secondary onPress={() => Linking.openURL('tel:13800000000')} />
         </View>
       </SectionCard>
@@ -54,6 +54,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
         {notices.map((notice, index) => (
           <Text key={`${notice.nid ?? index}`} style={styles.itemText}>{notice.title ?? notice.content ?? `Notice ${index + 1}`}</Text>
         ))}
+        <PrimaryButton title="All Notices" secondary onPress={() => navigation.navigate('Notices', { title: 'Notices', description: 'Maps to pages/notices/notices with server-backed announcement list.' })} />
       </SectionCard>
 
       <SectionCard title="Facilities & Coaches" subtitle="Quick overview before jumping to reservation or detail pages.">
@@ -62,6 +63,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
         <View style={styles.buttonRow}>
           <PrimaryButton title="All Venues" onPress={() => navigation.navigate('VenueDetail', { title: 'Venue detail' })} />
           <PrimaryButton title="Community" secondary onPress={() => navigation.navigate('MainTabs', { screen: 'Community' })} />
+          <PrimaryButton title="Search" secondary onPress={() => navigation.navigate('Search', { term: '', title: 'Search', description: 'Maps to pages/Search-result/Search-result and will be wired to search query results next.' })} />
         </View>
       </SectionCard>
     </Screen>

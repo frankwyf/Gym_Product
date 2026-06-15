@@ -62,6 +62,8 @@ export function ProfileScreen({ navigation }: { navigation: any }) {
             <View style={styles.actions}>
               <PrimaryButton title="Wallet" onPress={() => navigation.navigate('Wallet')} />
               <PrimaryButton title="Orders" secondary onPress={() => navigation.navigate('Orders')} />
+              <PrimaryButton title="Daily Check-In" secondary onPress={() => navigation.navigate('CheckIn', { title: 'Daily Check-In', description: 'Maps to pages/signin/sign-in and keeps the original daily check-in feature boundary.' })} />
+              <PrimaryButton title="Addresses" secondary onPress={() => navigation.navigate('Addresses', { title: 'Addresses', description: 'Maps to pages/select-address and pages/address-add for shipping address management.' })} />
               <PrimaryButton title="Logout" secondary onPress={() => void handleLogout()} />
             </View>
           </>

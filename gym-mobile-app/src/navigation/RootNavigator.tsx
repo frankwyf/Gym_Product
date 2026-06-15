@@ -11,6 +11,7 @@ import { CourseDetailScreen } from '../screens/courses/CourseDetailScreen'
 import { OrdersScreen } from '../screens/profile/OrdersScreen'
 import { WalletScreen } from '../screens/profile/WalletScreen'
 import { VenueDetailScreen } from '../screens/reservation/VenueDetailScreen'
+import { FeatureStubScreen } from '../screens/shared/FeatureStubScreen'
 import { MainTabs } from './MainTabs'
 import type { RootStackParamList } from './types'
 
@@ -54,6 +55,11 @@ export function RootNavigator() {
         <Stack.Screen name="SendPost" component={SendPostScreen} options={{ title: 'Create Post' }} />
         <Stack.Screen name="Wallet" component={WalletScreen} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="Search" component={FeatureStubScreen} options={{ title: 'Search' }} />
+        <Stack.Screen name="Notices" component={FeatureStubScreen} options={{ title: 'Notices' }} />
+        <Stack.Screen name="Video" component={FeatureStubScreen} options={{ title: 'Video' }} />
+        <Stack.Screen name="CheckIn" component={FeatureStubScreen} options={{ title: 'Daily Check-In' }} />
+        <Stack.Screen name="Addresses" component={FeatureStubScreen} options={{ title: 'Addresses' }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

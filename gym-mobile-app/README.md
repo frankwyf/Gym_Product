@@ -33,3 +33,4 @@ npm --prefix gym-mobile-app run ios
 - The backend base URL currently follows the mini-program default and is defined in `src/constants/config.ts`.
 - Some screens are already functional against the current REST endpoints; some detail flows remain placeholders where backend response shape still needs confirmation.
 - The goal of this iteration is a readable, extensible native app foundation that preserves existing front-end feature boundaries before deep UI parity work.
+- Full feature mapping is documented in `../MOBILE_REWRITE_FEATURE_MAP.md`.
