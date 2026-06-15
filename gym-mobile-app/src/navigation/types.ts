@@ -4,6 +4,7 @@ export type RootStackParamList = {
   Register: undefined
   ForgotPassword: undefined
   CourseDetail: { courseId?: number; title?: string }
+  FacilityVenues: { facilityId: number; title?: string }
   VenueDetail: { venueId?: number; facilityId?: number; title?: string }
   PostDetail: { postId?: number; title?: string }
   SendPost: undefined

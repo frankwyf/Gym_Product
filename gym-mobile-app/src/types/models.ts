@@ -25,6 +25,8 @@ export type Facility = {
   fid?: number
   fname?: string
   profile?: string
+  location?: string
+  description?: string
   [key: string]: unknown
 }
 
@@ -48,6 +50,8 @@ export type Venue = {
   vname?: string
   price?: number
   profile?: string
+  capacity?: number
+  description?: string
   venue?: Venue
   [key: string]: unknown
 }

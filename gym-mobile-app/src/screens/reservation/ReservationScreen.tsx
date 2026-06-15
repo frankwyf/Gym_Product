@@ -10,10 +10,15 @@ import type { CartItem, Facility } from '../../types/models'
 
 export function ReservationScreen({ navigation }: { navigation: any }) {
   const [facilities, setFacilities] = useState<Facility[]>([])
+  const [loading, setLoading] = useState(false)
   const { addToCart, cart } = useAppContext()
 
   useEffect(() => {
-    gymApi.allVenues().then((res) => setFacilities(res.data ?? [])).catch(() => setFacilities([]))
+    setLoading(true)
+    gymApi.allVenues()
+      .then((res) => setFacilities(res.data ?? []))
+      .catch(() => setFacilities([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const summary = useMemo(() => cart.reduce((acc, item) => acc + Number(item.price ?? 0) * Number(item.amount ?? 1), 0), [cart])
@@ -36,7 +41,8 @@ export function ReservationScreen({ navigation }: { navigation: any }) {
         <Text style={styles.summary}>{`Cart items: ${cart.length} · Estimated total: ¥${summary.toFixed(2)}`}</Text>
       </SectionCard>
 
-      <SectionCard title="Facilities" subtitle="Maps from facilities / all-venues / venues flow in the mini-program.">
+      <SectionCard title="Facilities" subtitle={loading ? 'Loading facilities...' : 'Maps from facilities / all-venues / venues flow in the mini-program.'}>
+        {!loading && facilities.length === 0 ? <Text style={styles.empty}>No facilities available right now.</Text> : null}
         {facilities.map((facility, index) => (
           <View key={`${facility.fid ?? index}`} style={styles.item}>
             <View style={styles.itemTextWrap}>
@@ -44,7 +50,7 @@ export function ReservationScreen({ navigation }: { navigation: any }) {
               <Text style={styles.itemSubtitle}>Choose venue, time slot and quantity in detail screen.</Text>
             </View>
             <View style={styles.actions}>
-              <PrimaryButton title="Detail" secondary onPress={() => navigation.navigate('VenueDetail', { facilityId: Number(facility.fid ?? 0), title: String(facility.fname ?? 'Venue') })} />
+              <PrimaryButton title="Detail" secondary onPress={() => navigation.navigate('FacilityVenues', { facilityId: Number(facility.fid ?? 0), title: String(facility.fname ?? 'Facility') })} />
               <PrimaryButton title="Quick Add" onPress={() => void quickAdd(facility)} />
             </View>
           </View>
@@ -75,6 +81,10 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   itemSubtitle: {
+    color: colors.textMuted,
+    fontSize: 13
+  },
+  empty: {
     color: colors.textMuted,
     fontSize: 13
   },

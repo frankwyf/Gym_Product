@@ -63,10 +63,10 @@ export function SearchScreen({ navigation, route }: { navigation: any; route: an
             <Pressable
               key={`${facility.fid ?? index}`}
               style={styles.item}
-              onPress={() => navigation.navigate('MainTabs', { screen: 'Reservation' })}
+              onPress={() => navigation.navigate('FacilityVenues', { facilityId: Number(facility.fid ?? 0), title: facility.fname ?? 'Facility' })}
             >
               <Text style={styles.itemTitle}>{facility.fname ?? `Facility ${index + 1}`}</Text>
-              <Text style={styles.itemMeta}>Open reservation list</Text>
+              <Text style={styles.itemMeta}>Open facility venues</Text>
             </Pressable>
           ))}
         </View>

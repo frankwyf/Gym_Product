@@ -25,6 +25,8 @@ export const gymApi = {
   allCourses: () => apiRequest<ApiEnvelope<Course[]>>('until/allCourses'),
   search: (term: string) => apiRequest<ApiEnvelope<SearchResult>>(`until/search?name=${encodeURIComponent(term)}`),
   specificCourse: (courseId: number) => apiRequest<ApiEnvelope<{ course: Course; coach?: Coach; content?: string }>>(`until/specificCourse?courseID=${courseId}`),
+  specificFacility: (facilityId: number) => apiRequest<ApiEnvelope<Facility>>(`until/specificFacility?facilityID=${facilityId}`),
+  venuesInfoByFacility: (facilityId: number) => apiRequest<ApiEnvelope<Venue[]>>(`until/venuesInfo?facilityID=${facilityId}`),
   allVenues: () => apiRequest<ApiEnvelope<Facility[]>>('facility/getAllFacilities'),
   venueById: (vid: number) => apiRequest<ApiEnvelope<Array<{ venue: Venue; cap: number[] }>>>(`venue/getById?vid=${vid}`),
   allPosts: () => apiRequest<ApiEnvelope<Post[]>>('until/allPosts'),

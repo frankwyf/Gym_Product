@@ -15,6 +15,7 @@ import { AddressesScreen } from '../screens/profile/AddressesScreen'
 import { CheckInScreen } from '../screens/profile/CheckInScreen'
 import { OrdersScreen } from '../screens/profile/OrdersScreen'
 import { WalletScreen } from '../screens/profile/WalletScreen'
+import { FacilityVenuesScreen } from '../screens/reservation/FacilityVenuesScreen'
 import { VenueDetailScreen } from '../screens/reservation/VenueDetailScreen'
 import { MainTabs } from './MainTabs'
 import type { RootStackParamList } from './types'
@@ -54,6 +55,7 @@ export function RootNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
         <Stack.Screen name="CourseDetail" component={CourseDetailScreen} options={{ title: 'Course Detail' }} />
+        <Stack.Screen name="FacilityVenues" component={FacilityVenuesScreen} options={{ title: 'Facility Venues' }} />
         <Stack.Screen name="VenueDetail" component={VenueDetailScreen} options={{ title: 'Venue Detail' }} />
         <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{ title: 'Post Detail' }} />
         <Stack.Screen name="SendPost" component={SendPostScreen} options={{ title: 'Create Post' }} />
