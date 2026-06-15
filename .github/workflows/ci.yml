@@ -6,6 +6,43 @@ on:
   pull_request:
 
 jobs:
+  mobile-verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gym-mobile-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: gym-mobile-app/package-lock.json
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Type check
+        run: npm run typecheck
+      - name: Expo dependency check
+        run: npm run check:deps
+
+  miniapp-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JS syntax
+        run: |
+          find GymMaster_wx -name "*.js" -type f -print0 | while IFS= read -r -d '' file; do
+            node --check "$file"
+          done
+      - name: Validate JSON files
+        run: |
+          find GymMaster_wx -name "*.json" -type f -print0 | while IFS= read -r -d '' file; do
+            node -e "const fs=require('fs'); JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));" "$file"
+          done
+
   frontend-test:
     runs-on: ubuntu-latest
     defaults:
@@ -16,10 +53,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: npm
-          cache-dependency-path: gym-ui/package-lock.json
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --legacy-peer-deps --no-audit --no-fund
+          else
+            npm install --legacy-peer-deps --no-audit --no-fund
+          fi
       - name: Install Playwright Chromium
         run: npx playwright install chromium
       - name: Run unit tests
@@ -38,16 +78,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: npm
-          cache-dependency-path: gym-ui/package-lock.json
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --legacy-peer-deps --no-audit --no-fund
+          else
+            npm install --legacy-peer-deps --no-audit --no-fund
+          fi
       - name: Build
         run: npm run build:prod
         env:
           NODE_OPTIONS: --openssl-legacy-provider
 
-  gymmaster-test:
+  gymmaster-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,8 +101,10 @@ jobs:
           cache: maven
       - name: Run unit tests
         run: mvn -f gymMaster/pom.xml test
+      - name: Package backend
+        run: mvn -f gymMaster/pom.xml -DskipTests package
 
-  gym-management-package:
+  gym-management-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,5 +113,7 @@ jobs:
           distribution: temurin
           java-version: '8'
           cache: maven
+      - name: Verify backend
+        run: mvn -f gym-management-system-master/pom.xml -DskipTests verify
       - name: Package backend
         run: mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.skip=true package
