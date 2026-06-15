@@ -17,9 +17,17 @@ export function CoursesScreen({ navigation }: { navigation: any }) {
 
   const categories = useMemo(() => ['All', ...new Set(courses.map((item) => item.type).filter(Boolean) as string[])], [courses])
   const filtered = useMemo(() => {
+    const normalized = term.trim().toLowerCase()
     return courses.filter((course) => {
       const typeMatch = activeCategory === 'All' || course.type === activeCategory
-      const termMatch = !term || JSON.stringify(course).toLowerCase().includes(term.toLowerCase())
+      const haystack = [
+        course.name,
+        course.cname,
+        course.type,
+        String(course.price ?? ''),
+        course.profile
+      ].filter(Boolean).join(' ').toLowerCase()
+      const termMatch = !normalized || haystack.includes(normalized)
       return typeMatch && termMatch
     })
   }, [activeCategory, courses, term])

@@ -59,7 +59,7 @@ export function PostDetailScreen({ route }: { route: any }) {
 
       <SectionCard title="Comments" subtitle={`Loaded ${comments.length} comment(s)`}>
         {comments.map((comment, index) => (
-          <Text key={`${comment.id ?? index}`} style={styles.commentText}>{comment.content ?? JSON.stringify(comment)}</Text>
+          <Text key={`${comment.id ?? index}`} style={styles.commentText}>{comment.content ?? `Comment #${index + 1}`}</Text>
         ))}
       </SectionCard>
 

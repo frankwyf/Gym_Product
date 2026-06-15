@@ -17,6 +17,13 @@ export function OrdersScreen() {
   const [paidReservations, setPaidReservations] = useState<CartItem[]>([])
   const [bills, setBills] = useState<unknown[]>([])
 
+  const selectedAccount = useMemo(() => {
+    if (!selectedAccountId) {
+      return null
+    }
+    return accounts.find((account) => Number(account.aid ?? 0) === selectedAccountId) ?? null
+  }, [accounts, selectedAccountId])
+
   const total = useMemo(() => cart.reduce((sum, item) => {
     const price = Number(item.price ?? 0)
     const amount = Number(item.amount ?? 1)
@@ -64,6 +71,15 @@ export function OrdersScreen() {
     }
     if (!selectedAccountId) {
       Alert.alert('Tips', 'Please select an account.')
+      return
+    }
+    if (!selectedAccount) {
+      Alert.alert('Tips', 'Selected account is no longer available. Please re-select.')
+      return
+    }
+    const accountBalance = Number(selectedAccount.balance ?? 0)
+    if (!Number.isNaN(accountBalance) && accountBalance < total) {
+      Alert.alert('Insufficient balance', 'Selected account balance is lower than order total.')
       return
     }
 
