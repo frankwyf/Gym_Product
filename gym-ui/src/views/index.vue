@@ -46,6 +46,24 @@ export default {
       window.open(href, "_blank");
     },
     initCharts() {
+      const legendKeys = [
+        'dashboard.legend.basketball',
+        'dashboard.legend.football',
+        'dashboard.legend.volleyball',
+        'dashboard.legend.tennis',
+        'dashboard.legend.badminton'
+      ];
+      const legendLabels = legendKeys.map((key) => this.$tr(key));
+      const weekdayLabels = [
+        this.$tr('dashboard.weekday.mon'),
+        this.$tr('dashboard.weekday.tue'),
+        this.$tr('dashboard.weekday.wed'),
+        this.$tr('dashboard.weekday.thu'),
+        this.$tr('dashboard.weekday.fri'),
+        this.$tr('dashboard.weekday.sat'),
+        this.$tr('dashboard.weekday.sun')
+      ];
+
       getCharts().then((response) => {
         console.log(response.c);
         // console.log(response.d);
@@ -97,13 +115,7 @@ export default {
             },
           },
           legend: {
-            data: [
-              "Basketball",
-              "Football",
-              "Valleyball",
-              "Tennis",
-              "badminton",
-            ],
+            data: legendLabels,
             top:"5%",
           },
           grid: {
@@ -116,7 +128,7 @@ export default {
             {
               type: "category",
               boundaryGap: false,
-              data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              data: weekdayLabels,
             },
           ],
           yAxis: [
@@ -126,7 +138,7 @@ export default {
           ],
           series: [
             {
-              name: "Basketball",
+              name: legendLabels[0],
               type: "line",
               stack: "Total",
               areaStyle: {},
@@ -136,7 +148,7 @@ export default {
               data: [12, 13, 10, 13, 9, 23, 21],
             },
             {
-              name: "Football",
+              name: legendLabels[1],
               type: "line",
               stack: "Total",
               areaStyle: {},
@@ -146,7 +158,7 @@ export default {
               data: [22, 18, 19, 23, 29, 33, 31],
             },
             {
-              name: "Valleyball",
+              name: legendLabels[2],
               type: "line",
               stack: "Total",
               areaStyle: {},
@@ -156,7 +168,7 @@ export default {
               data: [15, 23, 20, 15, 19, 33, 41],
             },
             {
-              name: "Tennis",
+              name: legendLabels[3],
               type: "line",
               stack: "Total",
               areaStyle: {},
@@ -166,7 +178,7 @@ export default {
               data: [32, 33, 30, 33, 39, 33, 32],
             },
             {
-              name: "badminton",
+              name: legendLabels[4],
               type: "line",
               stack: "Total",
               label: {
