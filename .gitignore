@@ -21,6 +21,8 @@ Source_Code/gym-management-system-master/sql/ry-vue.sql
 # Node
 **/node_modules/
 **/dist/
+**/test-results/
+**/playwright-report/
 
 # Environment files
 .env
