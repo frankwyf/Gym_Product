@@ -17,6 +17,11 @@ Page({
     articles:[],
     slides: [],
     notices: [],
+    i18n: {},
+  },
+
+  syncI18n: function () {
+    this.setData({ i18n: app.getMessages() });
   },
 
   popup: function (e) {
@@ -34,9 +39,10 @@ Page({
   onLoad: function (options) {
     console.log('home onLoad');
     var that = this;
+    this.syncI18n();
     // get the banner from storage
     wx.setNavigationBarTitle({
-      title: "GymMaster - Home"
+      title: app.t('navHome')
     });
 
     // get current location
@@ -116,7 +122,7 @@ Page({
   onReady: function () {
     // show a toast when page is ready
     wx.showToast({
-        title: 'Welcome to GymMaster',
+      title: app.t('welcome'),
         icon: 'success',
         duration: 2000,
         mask: true,

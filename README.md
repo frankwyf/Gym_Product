@@ -84,6 +84,10 @@ powershell -ExecutionPolicy Bypass -File scripts/verify-all.ps1 -SkipInstall -Sk
 	- `npm --prefix gym-ui run test:e2e:smoke`（运行带 `@smoke` 标签的用例；环境缺浏览器时自动跳过）
 	- `npm --prefix gym-ui run test:e2e:full`（完整 E2E）
 - 已增强 E2E 稳定性：本地若未安装 Playwright 浏览器二进制，将自动跳过冒烟用例而不是直接失败。
+- 已完成三端国际化基础改造（英文/中文/日文）：
+	- `gym-mobile-app`：全局语言状态与持久化，导航与关键页面多语言化
+	- `gym-ui`：轻量 i18n 插件、导航语言切换、登录页多语言化
+	- `GymMaster_wx`：全局 i18n 工具、mine 页语言切换、home/mine 核心文案多语言化
 - 详细改造计划见 OPEN_SOURCE_OPTIMIZATION_PLAN.md
 
 ## English

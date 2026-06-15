@@ -5,9 +5,11 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { Facility, Venue } from '../../types/models'
 
 export function FacilityVenuesScreen({ route, navigation }: { route: any; navigation: any }) {
+  const { t } = useI18n()
   const facilityId = Number(route.params?.facilityId ?? 0)
   const [facility, setFacility] = useState<Facility | null>(null)
   const [venues, setVenues] = useState<Venue[]>([])
@@ -57,14 +59,14 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
 
   return (
     <Screen>
-      <SectionCard title={route.params?.title ?? facility?.fname ?? 'Facility'} subtitle="迁移自 facilities 页面：设施介绍 + 场馆分类 + 场馆预订入口。">
+      <SectionCard title={route.params?.title ?? facility?.fname ?? 'Facility'} subtitle={t('facilityVenues.subtitle')}>
         <Text style={styles.meta}>{facility?.location ?? 'Location unavailable'}</Text>
         <Text style={styles.desc}>{facility?.description ?? 'No facility description.'}</Text>
-        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh'} secondary onPress={loadFacilityVenues} disabled={loading || !facilityId} />
+        <PrimaryButton title={loading ? t('common.refreshing') : t('common.refresh')} secondary onPress={loadFacilityVenues} disabled={loading || !facilityId} />
       </SectionCard>
 
       <SectionCard title="Venue Categories" subtitle={`Found ${categories.length} category(s)`}>
-        {!loading && categories.length === 0 ? <Text style={styles.empty}>No venue categories available for this facility.</Text> : null}
+        {!loading && categories.length === 0 ? <Text style={styles.empty}>{t('facilityVenues.emptyCategories')}</Text> : null}
         <View style={styles.tabs}>
           {categories.map((name, index) => (
             <Pressable key={`${name}-${index}`} style={[styles.tab, index === activeIndex ? styles.tabActive : null]} onPress={() => setActiveIndex(index)}>
@@ -74,9 +76,9 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
         </View>
       </SectionCard>
 
-      <SectionCard title="Available Venues" subtitle={loading ? 'Loading venues...' : `Visible ${visibleVenues.length} venue(s)`}>
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        {!loading && visibleVenues.length === 0 ? <Text style={styles.empty}>No venues are currently available.</Text> : null}
+      <SectionCard title="Available Venues" subtitle={loading ? t('facilityVenues.loading') : `Visible ${visibleVenues.length} venue(s)`}>
+        {error ? <Text style={styles.error}>{t('facilityVenues.error')}</Text> : null}
+        {!loading && visibleVenues.length === 0 ? <Text style={styles.empty}>{t('facilityVenues.emptyVenues')}</Text> : null}
         {visibleVenues.map((venue, index) => (
           <View key={`${venue.vid ?? index}`} style={styles.venueCard}>
             {/** Guard navigation when venue id is missing from backend payload. */}

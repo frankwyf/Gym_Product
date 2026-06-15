@@ -20,18 +20,18 @@
    </view>
     <form style="width:100%" bindsubmit='searchForm'>
         <view class="search-container">
-            <input name='term' type="text" placeholder="Search for venue/facilities" class="search-input" style="background-color: #333; background-image: url('/images/search-icon.png'); background-repeat: no-repeat; background-position: 10px center; background-size: 15px 15px; text-align: left;"/>
+            <input name='term' type="text" placeholder="{{i18n.searchPlaceholder}}" class="search-input" style="background-color: #333; background-image: url('/images/search-icon.png'); background-repeat: no-repeat; background-position: 10px center; background-size: 15px 15px; text-align: left;"/>
             <button formType="submit" class="search-button" >
-                Search
+                {{i18n.search}}
             </button>
         </view>
     </form>
 <!-- about us -->
 <view class="zan-panel">
     <view class="zan-cell">
-        <view class="zan-cell__bd">About Us</view>
+                <view class="zan-cell__bd">{{i18n.aboutUs}}</view>
         <view class="zan-cell__ft">
-          <view class="img-box" bindtap="showmap">Your current Address
+                    <view class="img-box" bindtap="showmap">{{i18n.currentAddress}}
             <image src="../../images/ico-addr-red.png" class="img" />
           </view>
         </view>
@@ -42,9 +42,9 @@
     <!-- environment -->
 <view class="zan-panel">
     <view class="zan-cell zan-cell--access">
-        <view class="zan-cell__bd">Our Environment</view>
+        <view class="zan-cell__bd">{{i18n.ourEnvironment}}</view>
         <view class="zan-cell__ft">
-            <view class="img-box" bindtap="showvideo">Real Video Demo
+            <view class="img-box" bindtap="showvideo">{{i18n.videoDemo}}
                 <image src="../../images/video.png" class="imgvideo" />
             </view>
         </view>
@@ -56,8 +56,8 @@
     <!-- facilities -->
     <view class="zan-panel">
         <view class="zan-cell zan-cell--access">
-            <view class="zan-cell__bd">Our Facilities</view>
-            <view class="zan-cell__ft" bindtap="toAllVenuesTap">Book Venues</view>
+            <view class="zan-cell__bd">{{i18n.ourFacilities}}</view>
+            <view class="zan-cell__ft" bindtap="toAllVenuesTap">{{i18n.bookVenues}}</view>
         </view>
         <view class="swiper-container">
             <swiper autoplay="{{autoplay}}" class="swiper_box_facility" bindchange="coachswiperchange">
@@ -82,8 +82,8 @@
     <!-- coaches -->
   <view class="zan-panel">
     <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">Our Coaches</view>
-      <view class="zan-cell__ft" bindtap="toAllCoachesTap">All Coaches</view>
+    <view class="zan-cell__bd">{{i18n.ourCoaches}}</view>
+    <view class="zan-cell__ft" bindtap="toAllCoachesTap">{{i18n.allCoaches}}</view>
     </view>
    <view class="swiper-container">
         <swiper autoplay="{{autoplay}}" class="swiper_box" bindchange="coachswiperchange">
@@ -102,8 +102,8 @@
     <!-- notices -->
   <view class="zan-panel articles">
     <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">Recent Notices</view>
-      <view class="zan-cell__ft" bindtap="historyNotice">History Notices</view>
+    <view class="zan-cell__bd">{{i18n.recentNotices}}</view>
+    <view class="zan-cell__ft" bindtap="historyNotice">{{i18n.historyNotices}}</view>
     </view>
         <block wx:for="{{ notices }}">
             <navigator url="/pages/articles-detail/index?id={{item.nid}}">

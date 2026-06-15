@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { STORAGE_KEYS } from '../constants/config'
 import type { CartItem, ShippingAddress } from '../types/models'
+import type { Locale } from '../i18n'
 
 export async function getStoredToken() {
   return AsyncStorage.getItem(STORAGE_KEYS.token)
@@ -48,4 +49,16 @@ export async function getStoredAddresses(): Promise<ShippingAddress[]> {
 
 export async function setStoredAddresses(addresses: ShippingAddress[]) {
   await AsyncStorage.setItem(STORAGE_KEYS.addresses, JSON.stringify(addresses))
+}
+
+export async function getStoredLocale(): Promise<Locale | null> {
+  const value = await AsyncStorage.getItem(STORAGE_KEYS.locale)
+  if (value === 'en' || value === 'zh' || value === 'ja') {
+    return value
+  }
+  return null
+}
+
+export async function setStoredLocale(locale: Locale) {
+  await AsyncStorage.setItem(STORAGE_KEYS.locale, locale)
 }

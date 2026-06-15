@@ -5,11 +5,13 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { Post } from '../../types/models'
 
 const themes = ['ALL', 'Customer', 'Coach', 'Employee', 'Manager']
 
 export function CommunityScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [posts, setPosts] = useState<Post[]>([])
   const [activeTheme, setActiveTheme] = useState('ALL')
   const [loading, setLoading] = useState(false)
@@ -35,7 +37,7 @@ export function CommunityScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Community" subtitle="社区页迁移：分主题帖子流、详情、发帖入口。">
+      <SectionCard title={t('community.title')} subtitle={t('community.subtitle')}>
         <View style={styles.filterRow}>
           {themes.map((theme) => (
             <Pressable key={theme} style={[styles.filter, activeTheme === theme ? styles.filterActive : null]} onPress={() => setActiveTheme(theme)}>
@@ -44,12 +46,12 @@ export function CommunityScreen({ navigation }: { navigation: any }) {
           ))}
         </View>
         <PrimaryButton title="Create Post" onPress={() => navigation.navigate('SendPost')} />
-        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh Feed'} secondary onPress={loadPosts} disabled={loading} />
+        <PrimaryButton title={loading ? t('common.refreshing') : t('community.refreshFeed')} secondary onPress={loadPosts} disabled={loading} />
       </SectionCard>
 
-      <SectionCard title="Posts" subtitle={loading ? 'Loading posts...' : `Visible posts: ${visiblePosts.length}`}>
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        {!loading && visiblePosts.length === 0 ? <Text style={styles.empty}>No posts found for this theme.</Text> : null}
+      <SectionCard title={t('community.title')} subtitle={loading ? t('community.loading') : `Visible posts: ${visiblePosts.length}`}>
+        {error ? <Text style={styles.error}>{t('community.error')}</Text> : null}
+        {!loading && visiblePosts.length === 0 ? <Text style={styles.empty}>{t('community.empty')}</Text> : null}
         {visiblePosts.map((post, index) => (
           <Pressable
             key={`${post.pid ?? index}`}

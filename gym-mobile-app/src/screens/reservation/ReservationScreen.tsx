@@ -5,10 +5,12 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import { useAppContext } from '../../hooks/useAppContext'
 import type { CartItem, Facility } from '../../types/models'
 
 export function ReservationScreen({ navigation }: { navigation: any }) {
+  const { t } = useI18n()
   const [facilities, setFacilities] = useState<Facility[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -55,10 +57,10 @@ export function ReservationScreen({ navigation }: { navigation: any }) {
         <Text style={styles.summary}>{`Cart items: ${cart.length} · Estimated total: ¥${summary.toFixed(2)}`}</Text>
       </SectionCard>
 
-      <SectionCard title="Facilities" subtitle={loading ? 'Loading facilities...' : 'Maps from facilities / all-venues / venues flow in the mini-program.'}>
-        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh Facilities'} secondary onPress={loadFacilities} disabled={loading} />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        {!loading && facilities.length === 0 ? <Text style={styles.empty}>No facilities available right now.</Text> : null}
+      <SectionCard title={t('reservation.title')} subtitle={loading ? t('reservation.loadingFacilities') : t('reservation.subtitle')}>
+        <PrimaryButton title={loading ? t('common.refreshing') : t('reservation.refreshFacilities')} secondary onPress={loadFacilities} disabled={loading} />
+        {error ? <Text style={styles.error}>{t('reservation.errorFacilities')}</Text> : null}
+        {!loading && facilities.length === 0 ? <Text style={styles.empty}>{t('reservation.emptyFacilities')}</Text> : null}
         {facilities.map((facility, index) => (
           <View key={`${facility.fid ?? index}`} style={styles.item}>
             {/** Keep action buttons safe when backend returns invalid IDs. */}

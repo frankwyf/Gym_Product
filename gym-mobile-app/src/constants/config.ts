@@ -4,5 +4,6 @@ export const STORAGE_KEYS = {
   token: 'gym-mobile-token',
   cart: 'gym-mobile-cart',
   checkin: 'gym-mobile-checkin',
-  addresses: 'gym-mobile-addresses'
+  addresses: 'gym-mobile-addresses',
+  locale: 'gym-mobile-locale'
 } as const

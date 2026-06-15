@@ -7,10 +7,12 @@ import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors } from '../../constants/theme'
 import { useAppContext } from '../../hooks/useAppContext'
+import { useI18n } from '../../hooks/useI18n'
 import type { Account, CustomerProfile } from '../../types/models'
 
 export function ProfileScreen({ navigation }: { navigation: any }) {
-  const { token, setToken, cart } = useAppContext()
+  const { token, setToken, cart, locale, setLocale } = useAppContext()
+  const { t } = useI18n()
   const [profile, setProfile] = useState<CustomerProfile | null>(null)
   const [accounts, setAccounts] = useState<Account[]>([])
 
@@ -53,24 +55,32 @@ export function ProfileScreen({ navigation }: { navigation: any }) {
 
   return (
     <Screen>
-      <SectionCard title="Profile" subtitle="个人中心迁移：账号资料、会员等级、钱包账户、订单和登出。">
+      <SectionCard title={t('profile.title')} subtitle={t('profile.subtitle')}>
+        <View style={styles.languageRow}>
+          <Text style={styles.languageLabel}>{t('language.title')}</Text>
+          <View style={styles.languageActions}>
+            <PrimaryButton title={t('language.en')} secondary onPress={() => void setLocale('en')} disabled={locale === 'en'} />
+            <PrimaryButton title={t('language.zh')} secondary onPress={() => void setLocale('zh')} disabled={locale === 'zh'} />
+            <PrimaryButton title={t('language.ja')} secondary onPress={() => void setLocale('ja')} disabled={locale === 'ja'} />
+          </View>
+        </View>
         {token ? (
           <>
             <InfoRow label="Username" value={profile?.username} />
             <InfoRow label="Membership" value={profile?.membership} />
             <InfoRow label="Cart Items" value={cart.length} />
             <View style={styles.actions}>
-              <PrimaryButton title="Wallet" onPress={() => navigation.navigate('Wallet')} />
-              <PrimaryButton title="Orders" secondary onPress={() => navigation.navigate('Orders')} />
-              <PrimaryButton title="Daily Check-In" secondary onPress={() => navigation.navigate('CheckIn')} />
-              <PrimaryButton title="Addresses" secondary onPress={() => navigation.navigate('Addresses')} />
-              <PrimaryButton title="Logout" secondary onPress={() => void handleLogout()} />
+              <PrimaryButton title={t('profile.wallet')} onPress={() => navigation.navigate('Wallet')} />
+              <PrimaryButton title={t('profile.orders')} secondary onPress={() => navigation.navigate('Orders')} />
+              <PrimaryButton title={t('profile.checkin')} secondary onPress={() => navigation.navigate('CheckIn')} />
+              <PrimaryButton title={t('profile.addresses')} secondary onPress={() => navigation.navigate('Addresses')} />
+              <PrimaryButton title={t('profile.logout')} secondary onPress={() => void handleLogout()} />
             </View>
           </>
         ) : (
           <>
-            <Text style={styles.emptyText}>You are not logged in.</Text>
-            <PrimaryButton title="Go to Login" onPress={() => navigation.navigate('Login')} />
+            <Text style={styles.emptyText}>{t('profile.notLoggedIn')}</Text>
+            <PrimaryButton title={t('profile.goLogin')} onPress={() => navigation.navigate('Login')} />
           </>
         )}
       </SectionCard>
@@ -90,6 +100,18 @@ export function ProfileScreen({ navigation }: { navigation: any }) {
 }
 
 const styles = StyleSheet.create({
+  languageRow: {
+    gap: 8
+  },
+  languageLabel: {
+    color: colors.text,
+    fontWeight: '700'
+  },
+  languageActions: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap'
+  },
   actions: {
     gap: 12
   },

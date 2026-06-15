@@ -11,6 +11,7 @@ import '@/assets/styles/ruoyi.scss' // ruoyi css
 import App from './App'
 import store from './store'
 import router from './router'
+import { I18nPlugin } from './i18n'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
@@ -63,6 +64,7 @@ Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
 Vue.use(less)
+Vue.use(I18nPlugin)
 DictData.install()
 
 /**

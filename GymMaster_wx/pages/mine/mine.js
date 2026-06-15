@@ -9,6 +9,13 @@ Page({
     server: app.globalData.server,
     phoneNumber:'Enter your phone number',
     userInfo: {},
+    locale: 'en',
+    i18n: {},
+    localeOptions: [
+      { code: 'en', label: 'English' },
+      { code: 'zh', label: '中文' },
+      { code: 'ja', label: '日本語' }
+    ],
     items: [
       {
         icon: '../../images/mine/Fingerprint.png',
@@ -64,10 +71,19 @@ Page({
     upgradeLevel: null
   },
 
+  syncI18n: function() {
+    this.setData({
+      locale: app.globalData.locale,
+      i18n: app.getMessages()
+    });
+  },
+
  onShow() {
+    this.syncI18n();
     this.onLoad();
  },
   onLoad: function (options) {
+    this.syncI18n();
     var that = this;
     wx.request({
       url: that.data.server + 'account/page',
@@ -117,6 +133,15 @@ Page({
         });
       }
     })
+  },
+
+  changeLanguage: function(e) {
+    const locale = e.currentTarget.dataset.locale;
+    if (!locale) {
+      return;
+    }
+    app.setLanguage(locale);
+    this.syncI18n();
   },
 
   /**

@@ -5,9 +5,11 @@ import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
+import { useI18n } from '../../hooks/useI18n'
 import type { Notice } from '../../types/models'
 
 export function NoticesScreen() {
+  const { t } = useI18n()
   const [notices, setNotices] = useState<Notice[]>([])
   const [expandedNoticeId, setExpandedNoticeId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
@@ -33,13 +35,13 @@ export function NoticesScreen() {
 
   return (
     <Screen>
-      <SectionCard title="Notices" subtitle="迁移自 notices 页面，展示历史公告并可展开查看内容。">
-        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh'} secondary onPress={() => void loadNotices()} disabled={loading} />
+      <SectionCard title={t('notices.title')} subtitle={t('notices.subtitle')}>
+        <PrimaryButton title={loading ? t('common.refreshing') : t('common.refresh')} secondary onPress={() => void loadNotices()} disabled={loading} />
       </SectionCard>
 
-      <SectionCard title="Historical Notices" subtitle={`Loaded ${notices.length} notice(s)`}>
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        {!loading && notices.length === 0 ? <Text style={styles.empty}>No notices available.</Text> : null}
+      <SectionCard title={t('notices.title')} subtitle={`Loaded ${notices.length} notice(s)`}>
+        {error ? <Text style={styles.error}>{t('notices.error')}</Text> : null}
+        {!loading && notices.length === 0 ? <Text style={styles.empty}>{t('notices.empty')}</Text> : null}
         {notices.map((notice, index) => {
           const nid = Number(notice.nid ?? index)
           const isExpanded = expandedNoticeId === nid

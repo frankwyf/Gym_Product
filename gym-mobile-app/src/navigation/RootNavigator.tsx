@@ -1,6 +1,7 @@
 import { NavigationContainer, DarkTheme } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { colors } from '../constants/theme'
+import { useI18n } from '../hooks/useI18n'
 import { useAppContext } from '../hooks/useAppContext'
 import { LoginScreen } from '../screens/auth/LoginScreen'
 import { RegisterScreen } from '../screens/auth/RegisterScreen'
@@ -36,6 +37,7 @@ const theme = {
 
 export function RootNavigator() {
   const { initialized } = useAppContext()
+  const { t } = useI18n()
 
   if (!initialized) {
     return null
@@ -53,19 +55,19 @@ export function RootNavigator() {
         <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
-        <Stack.Screen name="CourseDetail" component={CourseDetailScreen} options={{ title: 'Course Detail' }} />
-        <Stack.Screen name="FacilityVenues" component={FacilityVenuesScreen} options={{ title: 'Facility Venues' }} />
-        <Stack.Screen name="VenueDetail" component={VenueDetailScreen} options={{ title: 'Venue Detail' }} />
-        <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{ title: 'Post Detail' }} />
-        <Stack.Screen name="SendPost" component={SendPostScreen} options={{ title: 'Create Post' }} />
-        <Stack.Screen name="Wallet" component={WalletScreen} />
-        <Stack.Screen name="Orders" component={OrdersScreen} />
-        <Stack.Screen name="Search" component={SearchScreen} options={{ title: 'Search' }} />
-        <Stack.Screen name="Notices" component={NoticesScreen} options={{ title: 'Notices' }} />
-        <Stack.Screen name="Video" component={VideoScreen} options={{ title: 'Video' }} />
-        <Stack.Screen name="CheckIn" component={CheckInScreen} options={{ title: 'Daily Check-In' }} />
-        <Stack.Screen name="Addresses" component={AddressesScreen} options={{ title: 'Addresses' }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: t('stack.forgotPassword') }} />
+        <Stack.Screen name="CourseDetail" component={CourseDetailScreen} options={{ title: t('stack.courseDetail') }} />
+        <Stack.Screen name="FacilityVenues" component={FacilityVenuesScreen} options={{ title: t('stack.facilityVenues') }} />
+        <Stack.Screen name="VenueDetail" component={VenueDetailScreen} options={{ title: t('stack.venueDetail') }} />
+        <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{ title: t('stack.postDetail') }} />
+        <Stack.Screen name="SendPost" component={SendPostScreen} options={{ title: t('stack.sendPost') }} />
+        <Stack.Screen name="Wallet" component={WalletScreen} options={{ title: t('stack.wallet') }} />
+        <Stack.Screen name="Orders" component={OrdersScreen} options={{ title: t('stack.orders') }} />
+        <Stack.Screen name="Search" component={SearchScreen} options={{ title: t('stack.search') }} />
+        <Stack.Screen name="Notices" component={NoticesScreen} options={{ title: t('stack.notices') }} />
+        <Stack.Screen name="Video" component={VideoScreen} options={{ title: t('stack.video') }} />
+        <Stack.Screen name="CheckIn" component={CheckInScreen} options={{ title: t('stack.checkin') }} />
+        <Stack.Screen name="Addresses" component={AddressesScreen} options={{ title: t('stack.addresses') }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

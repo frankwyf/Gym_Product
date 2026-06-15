@@ -17,6 +17,15 @@
 
       </template>
 
+      <el-dropdown class="right-menu-item hover-effect" trigger="click">
+        <span class="lang-trigger">{{ $tr('navbar.language') }}</span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="changeLocale('en')">{{ $tr('lang.english') }}</el-dropdown-item>
+          <el-dropdown-item @click.native="changeLocale('zh')">{{ $tr('lang.chinese') }}</el-dropdown-item>
+          <el-dropdown-item @click.native="changeLocale('ja')">{{ $tr('lang.japanese') }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">
@@ -24,7 +33,7 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
-            <el-dropdown-item>Personal Center</el-dropdown-item>
+            <el-dropdown-item>{{ $tr('navbar.personalCenter') }}</el-dropdown-item>
           </router-link>
 <!--          <el-dropdown-item @click.native="setting = true">-->
 <!--            <span>Layout Settings</span>-->
@@ -42,7 +51,7 @@
 <!--            <span>Assign gyms </span>-->
 <!--          </el-dropdown-item>-->
           <el-dropdown-item divided @click.native="logout">
-            <span>Log Out</span>
+            <span>{{ $tr('navbar.logout') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -96,6 +105,9 @@ export default {
     }
   },
   methods: {
+    changeLocale(locale) {
+      this.$i18n.setLocale(locale)
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -120,9 +132,9 @@ export default {
       this.$router.push(str);
     },
     async logout() {
-      this.$confirm('Confirm to log out and exit the system?', 'Tips', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
+      this.$confirm(this.$tr('navbar.confirmLogoutContent'), this.$tr('navbar.confirmLogoutTitle'), {
+        confirmButtonText: this.$tr('common.confirm'),
+        cancelButtonText: this.$tr('common.cancel'),
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {

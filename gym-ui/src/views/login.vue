@@ -8,7 +8,7 @@
           v-model="loginForm.username"
           type="text"
           auto-complete="off"
-          placeholder="Account"
+          :placeholder="$tr('login.account')"
         >
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
@@ -18,7 +18,7 @@
           v-model="loginForm.password"
           type="password"
           auto-complete="off"
-          placeholder="Password"
+          :placeholder="$tr('login.password')"
           @keyup.enter.native="handleLogin"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -28,7 +28,7 @@
         <el-input
           v-model="loginForm.code"
           auto-complete="off"
-          placeholder="Verification Code"
+          :placeholder="$tr('login.verificationCode')"
           style="width: 63%"
           @keyup.enter.native="handleLogin"
         >
@@ -38,7 +38,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">Remember password</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">{{ $tr('login.remember') }}</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -47,11 +47,11 @@
           style="width:100%;"
           @click.native.prevent="handleLogin"
         >
-          <span v-if="!loading">Log in</span>
-          <span v-else>loading...</span>
+          <span v-if="!loading">{{ $tr('login.submit') }}</span>
+          <span v-else>{{ $tr('login.loading') }}</span>
         </el-button>
         <div style="float: right;">
-          <router-link class="link-type" :to="'/register'">Register</router-link>
+          <router-link class="link-type" :to="'/register'">{{ $tr('login.register') }}</router-link>
         </div>
       </el-form-item>
     </el-form>
@@ -67,6 +67,7 @@ import { buildLoginFormFromCookies, persistLoginCookies } from './login.helpers'
 export default {
   name: "Login",
   data() {
+    const tr = this.$tr;
     return {
       codeUrl: "",
       loginForm: {
@@ -78,12 +79,12 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", message: "Please enter your account" }
+          { required: true, trigger: "blur", message: tr('login.requiredAccount') }
         ],
         password: [
-          { required: true, trigger: "blur", message: "Please enter your password" }
+          { required: true, trigger: "blur", message: tr('login.requiredPassword') }
         ],
-        code: [{ required: true, trigger: "change", message: "Please enter verification code" }]
+        code: [{ required: true, trigger: "change", message: tr('login.requiredCode') }]
       },
       loading: false,
       // 验证码开关
