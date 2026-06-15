@@ -10,10 +10,10 @@ export type RootStackParamList = {
   Wallet: undefined
   Orders: undefined
   Search: { term?: string }
-  Notices: { title?: string; description?: string } | undefined
-  Video: { title?: string; description?: string } | undefined
-  CheckIn: { title?: string; description?: string } | undefined
-  Addresses: { title?: string; description?: string } | undefined
+  Notices: undefined
+  Video: undefined
+  CheckIn: undefined
+  Addresses: undefined
 }
 
 export type MainTabParamList = {

@@ -8,10 +8,11 @@ This app is the iOS/Android rewrite of the WeChat mini-program in `GymMaster_wx`
 - Courses: category filter, search, course detail navigation
 - Reservation: facilities, venue detail entry, local cart reservation draft
 - Community: post feed, post detail, comments, create post with image upload
-- Profile: login state, customer info, membership upgrade entry, wallet, orders, logout
+- Profile: login state, customer info, membership upgrade entry, wallet, orders, daily check-in, addresses, logout
 - Wallet: account list, create account, top-up, delete
 - Orders: unpaid reservation drafts, paid reservations, bills
-- Auth: login ready, register/forgot password placeholders wired into navigation
+- Auth: login, register, forgot-password (captcha + backend flow)
+- Home extensions: notices list, search results, video playback
 
 ## Stack
 
@@ -38,6 +39,6 @@ npm --prefix gym-mobile-app run verify
 ## Notes
 
 - The backend base URL currently follows the mini-program default and is defined in `src/constants/config.ts`.
-- Some screens are already functional against the current REST endpoints; some detail flows remain placeholders where backend response shape still needs confirmation.
+- Core screens are functional against current REST endpoints; remaining enhancements are mostly UX parity and richer reservation matrix behavior.
 - The goal of this iteration is a readable, extensible native app foundation that preserves existing front-end feature boundaries before deep UI parity work.
 - Full feature mapping is documented in `../MOBILE_REWRITE_FEATURE_MAP.md`.

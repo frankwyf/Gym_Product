@@ -36,6 +36,10 @@ export type Course = {
   profile?: string
   type?: string
   price?: number
+  time?: string
+  cover?: string
+  courseFacility?: number
+  courseVenue?: number
   [key: string]: unknown
 }
 
@@ -89,4 +93,19 @@ export type CartItem = {
   name?: string
   price?: number
   active?: boolean
+}
+
+export type SearchResult = {
+  facilities: Facility[]
+  venues: Venue[]
+  courses: Course[]
+}
+
+export type ShippingAddress = {
+  id: number
+  linkMan: string
+  mobile: string
+  address: string
+  code?: string
+  isDefault?: boolean
 }

@@ -1,5 +1,5 @@
 import { apiRequest, uploadFile } from './client'
-import type { Account, CartItem, Coach, Comment, Course, CustomerProfile, Facility, Notice, Post, Slide, Venue } from '../types/models'
+import type { Account, CartItem, Coach, Comment, Course, CustomerProfile, Facility, Notice, Post, SearchResult, Slide, Venue } from '../types/models'
 
 type ApiEnvelope<T> = {
   code: number
@@ -23,6 +23,8 @@ export const gymApi = {
   coaches: () => apiRequest<ApiEnvelope<Coach[]>>('until/coaches'),
   courseSlides: () => apiRequest<ApiEnvelope<Slide[]>>('until/courseSlides'),
   allCourses: () => apiRequest<ApiEnvelope<Course[]>>('until/allCourses'),
+  search: (term: string) => apiRequest<ApiEnvelope<SearchResult>>(`until/search?name=${encodeURIComponent(term)}`),
+  specificCourse: (courseId: number) => apiRequest<ApiEnvelope<{ course: Course; coach?: Coach; content?: string }>>(`until/specificCourse?courseID=${courseId}`),
   allVenues: () => apiRequest<ApiEnvelope<Facility[]>>('facility/getAllFacilities'),
   venueById: (vid: number) => apiRequest<ApiEnvelope<Array<{ venue: Venue; cap: number[] }>>>(`venue/getById?vid=${vid}`),
   allPosts: () => apiRequest<ApiEnvelope<Post[]>>('until/allPosts'),
@@ -63,5 +65,19 @@ export const gymApi = {
     }, token),
   paidReservations: (token: string) => apiRequest<ApiEnvelope<CartItem[]>>('reservation/getPaid', { method: 'GET' }, token),
   bills: (token: string) => apiRequest<ApiEnvelope<unknown[]>>('bill/showall', { method: 'GET' }, token),
-  userId: (token: string) => apiRequest<ApiEnvelope<number>>('customer/getuid', { method: 'GET' }, token)
+  userId: (token: string) => apiRequest<ApiEnvelope<number>>('customer/getuid', { method: 'GET' }, token),
+  getCaptcha: (email: string) => apiRequest<ApiEnvelope<string | number>>(`getCaptcha?email=${encodeURIComponent(email)}`),
+  getCaptchaReset: (email: string, username: string) =>
+    apiRequest<ApiEnvelope<string | number>>(`getCaptchaReset?email=${encodeURIComponent(email)}&Username=${encodeURIComponent(username)}`),
+  getEmails: () => apiRequest<string[]>('loginCus/getEmails'),
+  register: (payload: { firstName: string; lastName: string; username: string; email: string; password: string }) =>
+    apiRequest<ApiEnvelope<unknown>>('customer/register', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+  resetPassword: (name: string, newPassword: string) =>
+    apiRequest<ApiEnvelope<unknown>>('loginCus/resetPassword', {
+      method: 'POST',
+      body: JSON.stringify({ name, newPassword })
+    })
 }

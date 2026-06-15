@@ -8,7 +8,7 @@ This document maps `GymMaster_wx` mini-program capabilities to the new native mo
 - Mini-program pages: `pages/home/home`, `pages/notices/notices`, `pages/video/video`, `pages/Search-result/Search-result`
 - Current mobile status:
   - Implemented native home shell with slides, notices, facilities, coaches, call CTA
-  - Video, notices, and search are exposed as dedicated native routes/placeholders for the next pass
+  - Implemented dedicated native pages for video playback, notices list, and search result aggregation
 
 2. Reservation
 - Mini-program pages: `pages/appointment/appointment`, `pages/all-venues/all-venues`, `pages/venues/venues`, `pages/facilities/facilities`
@@ -30,14 +30,14 @@ This document maps `GymMaster_wx` mini-program capabilities to the new native mo
 - Mini-program pages: `pages/mine/mine`, `pages/mine/user/user`, `pages/wallet/wallet`, `pages/order-list/index`, `pages/signin/sign-in`
 - Current mobile status:
   - Implemented profile overview, accounts list, wallet screen, orders screen, logout
-  - Daily check-in page is routed as placeholder for next integration
+  - Implemented daily check-in monthly calendar and local persistence
 
 ## Auth and support flows
 
 - Login: `pages/login/index` -> implemented
-- Register: `pages/regist/index` -> placeholder wired
-- Forgot password: `pages/findpassword/index` -> placeholder wired
-- Addresses: `pages/select-address/index`, `pages/address-add/index` -> placeholder route planned
+- Register: `pages/regist/index` -> implemented (email captcha + register API)
+- Forgot password: `pages/findpassword/index` -> implemented (email validation + reset API)
+- Addresses: `pages/select-address/index`, `pages/address-add/index` -> implemented (add/edit/delete/default with local persistence)
 
 ## Commerce / checkout flows
 
