@@ -11,7 +11,15 @@ const state = Vue.observable({
 
 function t(key) {
   const scoped = messages[state.locale] || messages.en
-  return scoped[key] || messages.en[key] || key
+  const value = scoped[key] || messages.en[key]
+  if (value) {
+    return value
+  }
+  if (process && process.env && process.env.NODE_ENV !== 'production') {
+    // Surface missing keys during development without changing production behavior.
+    console.warn(`[i18n] Missing key: ${key} (locale=${state.locale})`)
+  }
+  return key
 }
 
 const i18n = {
