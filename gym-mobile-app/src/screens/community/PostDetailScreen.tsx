@@ -13,6 +13,7 @@ export function PostDetailScreen({ route }: { route: any }) {
   const [post, setPost] = useState<Post | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [content, setContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const { token } = useAppContext()
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export function PostDetailScreen({ route }: { route: any }) {
       return
     }
     try {
+      setSubmitting(true)
       await gymApi.addComment(token, postId, trimmed)
       const commentRes = await gymApi.postComments(postId)
       setComments(commentRes.data ?? [])
@@ -48,6 +50,8 @@ export function PostDetailScreen({ route }: { route: any }) {
       setContent('')
     } catch (error) {
       Alert.alert('Comment failed', String(error))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -72,7 +76,7 @@ export function PostDetailScreen({ route }: { route: any }) {
           onChangeText={setContent}
           multiline
         />
-        <PrimaryButton title="Send Comment" onPress={() => void submitComment()} />
+        <PrimaryButton title={submitting ? 'Sending...' : 'Send Comment'} onPress={() => void submitComment()} disabled={submitting} />
       </SectionCard>
     </Screen>
   )

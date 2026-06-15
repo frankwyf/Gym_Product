@@ -12,6 +12,7 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
   const { token } = useAppContext()
   const [content, setContent] = useState('')
   const [imageUri, setImageUri] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -36,6 +37,7 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
       return
     }
     try {
+      setSubmitting(true)
       let uploadedMedia: string | undefined
       if (imageUri) {
         uploadedMedia = await gymApi.uploadPostImage(token, imageUri)
@@ -45,6 +47,8 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
       navigation.goBack()
     } catch (error) {
       Alert.alert('Post failed', String(error))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -60,8 +64,8 @@ export function SendPostScreen({ navigation }: { navigation: any }) {
           onChangeText={setContent}
         />
         {imageUri ? <Image source={{ uri: imageUri }} style={styles.preview} /> : null}
-        <PrimaryButton title="Choose Image" secondary onPress={() => void pickImage()} />
-        <PrimaryButton title="Submit Post" onPress={() => void submit()} />
+        <PrimaryButton title="Choose Image" secondary onPress={() => void pickImage()} disabled={submitting} />
+        <PrimaryButton title={submitting ? 'Submitting...' : 'Submit Post'} onPress={() => void submit()} disabled={submitting} />
       </SectionCard>
     </Screen>
   )

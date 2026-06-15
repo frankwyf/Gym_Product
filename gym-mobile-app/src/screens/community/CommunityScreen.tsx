@@ -12,9 +12,14 @@ const themes = ['ALL', 'Customer', 'Coach', 'Employee', 'Manager']
 export function CommunityScreen({ navigation }: { navigation: any }) {
   const [posts, setPosts] = useState<Post[]>([])
   const [activeTheme, setActiveTheme] = useState('ALL')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    gymApi.allPosts().then((res) => setPosts(res.data ?? [])).catch(() => setPosts([]))
+    setLoading(true)
+    gymApi.allPosts()
+      .then((res) => setPosts(res.data ?? []))
+      .catch(() => setPosts([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const visiblePosts = activeTheme === 'ALL' ? posts : posts.filter((post) => post.type === activeTheme)
@@ -32,7 +37,8 @@ export function CommunityScreen({ navigation }: { navigation: any }) {
         <PrimaryButton title="Create Post" onPress={() => navigation.navigate('SendPost')} />
       </SectionCard>
 
-      <SectionCard title="Posts" subtitle={`Visible posts: ${visiblePosts.length}`}>
+      <SectionCard title="Posts" subtitle={loading ? 'Loading posts...' : `Visible posts: ${visiblePosts.length}`}>
+        {!loading && visiblePosts.length === 0 ? <Text style={styles.empty}>No posts found for this theme.</Text> : null}
         {visiblePosts.map((post, index) => (
           <Pressable
             key={`${post.pid ?? index}`}
@@ -82,6 +88,10 @@ const styles = StyleSheet.create({
   },
   postContent: {
     color: colors.text,
+    lineHeight: 20
+  },
+  empty: {
+    color: colors.textMuted,
     lineHeight: 20
   }
 })

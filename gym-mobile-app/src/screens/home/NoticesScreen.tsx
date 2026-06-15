@@ -10,13 +10,17 @@ import type { Notice } from '../../types/models'
 export function NoticesScreen() {
   const [notices, setNotices] = useState<Notice[]>([])
   const [expandedNoticeId, setExpandedNoticeId] = useState<number | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const loadNotices = async () => {
     try {
+      setLoading(true)
       const response = await gymApi.notices()
       setNotices(response.data ?? [])
     } catch {
       setNotices([])
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -27,10 +31,11 @@ export function NoticesScreen() {
   return (
     <Screen>
       <SectionCard title="Notices" subtitle="迁移自 notices 页面，展示历史公告并可展开查看内容。">
-        <PrimaryButton title="Refresh" secondary onPress={() => void loadNotices()} />
+        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh'} secondary onPress={() => void loadNotices()} disabled={loading} />
       </SectionCard>
 
       <SectionCard title="Historical Notices" subtitle={`Loaded ${notices.length} notice(s)`}>
+        {!loading && notices.length === 0 ? <Text style={styles.empty}>No notices available.</Text> : null}
         {notices.map((notice, index) => {
           const nid = Number(notice.nid ?? index)
           const isExpanded = expandedNoticeId === nid
@@ -65,6 +70,10 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   noticeContent: {
+    color: colors.textMuted,
+    lineHeight: 20
+  },
+  empty: {
     color: colors.textMuted,
     lineHeight: 20
   }
