@@ -45,7 +45,8 @@ This document maps `GymMaster_wx` mini-program capabilities to the new native mo
 - Payment order: `pages/to-pay-order/index`
 - Current mobile status:
   - Local cart persistence implemented
-  - Dedicated cart/checkout native flows can be expanded from orders + reservation cart data
+  - Implemented account selection + pay flow in Orders screen (mapped to `bill/pay`)
+  - Note: payment success/failure branch behavior is implemented by backend response code convention and should be rechecked in real backend integration
 
 ## Backend/API observations
 

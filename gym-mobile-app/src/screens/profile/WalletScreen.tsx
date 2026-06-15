@@ -30,10 +30,19 @@ export function WalletScreen() {
     if (!token) {
       return
     }
+    const numericBalance = Number(balance || 0)
+    if (Number.isNaN(numericBalance) || numericBalance < 0) {
+      Alert.alert('Invalid balance', 'Balance must be a valid non-negative number.')
+      return
+    }
+    if (!method.trim()) {
+      Alert.alert('Invalid method', 'Please input a payment method name.')
+      return
+    }
     try {
       await gymApi.createAccount(token, {
-        balance: Number(balance || 0),
-        method,
+        balance: numericBalance,
+        method: method.trim(),
         isActive: true
       })
       setBalance('')
@@ -47,8 +56,13 @@ export function WalletScreen() {
     if (!token || !account.aid) {
       return
     }
+    const numericBalance = Number(balance || 0)
+    if (Number.isNaN(numericBalance) || numericBalance <= 0) {
+      Alert.alert('Invalid amount', 'Charge amount must be greater than 0.')
+      return
+    }
     try {
-      await gymApi.chargeAccount(token, account.aid, Number(balance || 0))
+      await gymApi.chargeAccount(token, account.aid, numericBalance)
       loadAccounts()
     } catch (error) {
       Alert.alert('Charge failed', String(error))

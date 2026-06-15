@@ -63,6 +63,11 @@ export const gymApi = {
       method: 'POST',
       body: JSON.stringify({ aid })
     }, token),
+  payBill: (token: string, aid: number, total: number, goodlist: CartItem[]) =>
+    apiRequest<ApiEnvelope<unknown>>(`bill/pay?aid=${aid}&total=${total}`, {
+      method: 'POST',
+      body: JSON.stringify({ goodlist })
+    }, token),
   paidReservations: (token: string) => apiRequest<ApiEnvelope<CartItem[]>>('reservation/getPaid', { method: 'GET' }, token),
   bills: (token: string) => apiRequest<ApiEnvelope<unknown[]>>('bill/showall', { method: 'GET' }, token),
   userId: (token: string) => apiRequest<ApiEnvelope<number>>('customer/getuid', { method: 'GET' }, token),
