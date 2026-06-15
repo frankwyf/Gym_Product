@@ -1,26 +1,26 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="Postcode" prop="postCode">
+      <el-form-item :label="$tr('post.code')" prop="postCode">
         <el-input
           v-model="queryParams.postCode"
-          placeholder="Please enter the post code"
+          :placeholder="$tr('post.placeholderCode')"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="Postname" prop="postName">
+      <el-form-item :label="$tr('post.name')" prop="postName">
         <el-input
           v-model="queryParams.postName"
-          placeholder="Please enter the post name"
+          :placeholder="$tr('post.placeholderName')"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="Status" prop="status">
-        <el-select v-model="queryParams.status" placeholder="Post status" clearable size="small">
+      <el-form-item :label="$tr('post.status')" prop="status">
+        <el-select v-model="queryParams.status" :placeholder="$tr('post.placeholderStatus')" clearable size="small">
           <el-option
             v-for="dict in dict.type.sys_normal_disable"
             :key="dict.value"
@@ -30,8 +30,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">Search</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">Reset</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{ $tr('post.search') }}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{ $tr('post.reset') }}</el-button>
       </el-form-item>
     </el-form>
 
@@ -44,7 +44,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:post:add']"
-        >Add</el-button>
+        >{{ $tr('post.add') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -55,7 +55,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:post:edit']"
-        >Edit</el-button>
+        >{{ $tr('post.edit') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -66,7 +66,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:post:remove']"
-        >Delete</el-button>
+        >{{ $tr('post.delete') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -76,28 +76,28 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:post:export']"
-        >Download</el-button>
+        >{{ $tr('post.download') }}</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="postId" />
-      <el-table-column label="Postcode" align="center" prop="postCode" />
-      <el-table-column label="Postname" align="center" prop="postName" />
-      <el-table-column label="Sort" align="center" prop="postSort" />
-      <el-table-column label="Status" align="center" prop="status">
+      <el-table-column :label="$tr('post.id')" align="center" prop="postId" />
+      <el-table-column :label="$tr('post.code')" align="center" prop="postCode" />
+      <el-table-column :label="$tr('post.name')" align="center" prop="postName" />
+      <el-table-column :label="$tr('post.sort')" align="center" prop="postSort" />
+      <el-table-column :label="$tr('post.status')" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="Time" align="center" prop="createTime" width="180">
+      <el-table-column :label="$tr('post.time')" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Operation" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$tr('post.operation')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -105,14 +105,14 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:post:edit']"
-          >Edit</el-button>
+          >{{ $tr('post.edit') }}</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:post:remove']"
-          >Delete</el-button>
+          >{{ $tr('post.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,16 +128,16 @@
     <!-- 添加或修改岗位对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="Postname" prop="postName">
-          <el-input v-model="form.postName" placeholder="Please enter the post name" />
+        <el-form-item :label="$tr('post.name')" prop="postName">
+          <el-input v-model="form.postName" :placeholder="$tr('post.placeholderName')" />
         </el-form-item>
-        <el-form-item label="Postcode" prop="postCode">
-          <el-input v-model="form.postCode" placeholder="Please enter the post code" />
+        <el-form-item :label="$tr('post.code')" prop="postCode">
+          <el-input v-model="form.postCode" :placeholder="$tr('post.placeholderCode')" />
         </el-form-item>
-        <el-form-item label="Sort" prop="postSort">
+        <el-form-item :label="$tr('post.sort')" prop="postSort">
           <el-input-number v-model="form.postSort" controls-position="right" :min="0" />
         </el-form-item>
-        <el-form-item label="Status" prop="status">
+        <el-form-item :label="$tr('post.status')" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
               v-for="dict in dict.type.sys_normal_disable"
@@ -146,13 +146,13 @@
             >{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Remark" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="Please enter remark" />
+        <el-form-item :label="$tr('post.remark')" prop="remark">
+          <el-input v-model="form.remark" type="textarea" :placeholder="$tr('post.placeholderRemark')" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">Submit</el-button>
-        <el-button @click="cancel">Cancel</el-button>
+        <el-button type="primary" @click="submitForm">{{ $tr('common.confirm') }}</el-button>
+        <el-button @click="cancel">{{ $tr('common.cancel') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -197,13 +197,13 @@ export default {
       // 表单校验
       rules: {
         postName: [
-          { required: true, message: "Post name cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('post.nameRequired'), trigger: "blur" }
         ],
         postCode: [
-          { required: true, message: "Post code cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('post.codeRequired'), trigger: "blur" }
         ],
         postSort: [
-          { required: true, message: "Sort cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('post.sortRequired'), trigger: "blur" }
         ]
       }
     };
@@ -258,7 +258,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "Add post";
+      this.title = this.$tr('post.addTitle');
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -267,7 +267,7 @@ export default {
       getPost(postId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "Edit post";
+        this.title = this.$tr('post.editTitle');
       });
     },
     /** 提交按钮 */
@@ -276,13 +276,13 @@ export default {
         if (valid) {
           if (this.form.postId != undefined) {
             updatePost(this.form).then(response => {
-              this.$modal.msgSuccess("Edit successfully");
+              this.$modal.msgSuccess(this.$tr('post.updateSuccess'));
               this.open = false;
               this.getList();
             });
           } else {
             addPost(this.form).then(response => {
-              this.$modal.msgSuccess("Add successfully");
+              this.$modal.msgSuccess(this.$tr('post.addSuccess'));
               this.open = false;
               this.getList();
             });
@@ -293,11 +293,11 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const postIds = row.postId || this.ids;
-      this.$modal.confirm('Do you want to delete the data item with post number "' + postIds + '"? ').then(function() {
+      this.$modal.confirm(this.$tr('post.deleteConfirm').replace('{id}', postIds)).then(function() {
         return delPost(postIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("Delete successfully");
+        this.$modal.msgSuccess(this.$tr('post.deleteSuccess'));
       }).catch(() => {});
     },
     /** 导出按钮操作 */
