@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
-      <el-form-item label="Dept" prop="deptName">
+      <el-form-item :label="$tr('dept.name')" prop="deptName">
         <el-input
           v-model="queryParams.deptName"
-          placeholder="Please enter the dept"
+          :placeholder="$tr('dept.placeholderName')"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="Status" prop="status">
-        <el-select v-model="queryParams.status" placeholder="Dept status" clearable size="small">
+      <el-form-item :label="$tr('dept.status')" prop="status">
+        <el-select v-model="queryParams.status" :placeholder="$tr('dept.placeholderStatus')" clearable size="small">
           <el-option
             v-for="dict in dict.type.sys_normal_disable"
             :key="dict.value"
@@ -21,8 +21,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">Search</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">Reset</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{ $tr('dept.search') }}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{ $tr('dept.reset') }}</el-button>
       </el-form-item>
     </el-form>
 
@@ -35,7 +35,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:dept:add']"
-        >Add</el-button>
+        >{{ $tr('dept.add') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -44,7 +44,7 @@
           icon="el-icon-sort"
           size="mini"
           @click="toggleExpandAll"
-        >Fold/Unfold</el-button>
+        >{{ $tr('dept.foldUnfold') }}</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -57,19 +57,19 @@
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="deptName" label="Dept" width="260"></el-table-column>
-      <el-table-column prop="orderNum" label="Sort" width="200"></el-table-column>
-      <el-table-column prop="status" label="Status" width="100">
+      <el-table-column prop="deptName" :label="$tr('dept.name')" width="260"></el-table-column>
+      <el-table-column prop="orderNum" :label="$tr('dept.sort')" width="200"></el-table-column>
+      <el-table-column prop="status" :label="$tr('dept.status')" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="Time" align="center" prop="createTime" width="200">
+      <el-table-column :label="$tr('dept.time')" align="center" prop="createTime" width="200">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Operation" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$tr('dept.operation')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -77,14 +77,14 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:dept:edit']"
-          >Edit</el-button>
+          >{{ $tr('dept.edit') }}</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-plus"
             @click="handleAdd(scope.row)"
             v-hasPermi="['system:dept:add']"
-          >Add</el-button>
+          >{{ $tr('dept.add') }}</el-button>
           <el-button
             v-if="scope.row.parentId != 0"
             size="mini"
@@ -92,7 +92,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:dept:remove']"
-          >Delete</el-button>
+          >{{ $tr('dept.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,43 +102,43 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="24" v-if="form.parentId !== 0">
-            <el-form-item label="superior dept" prop="parentId">
-              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="Choose superior dept" />
+            <el-form-item :label="$tr('dept.superior')" prop="parentId">
+              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" :placeholder="$tr('dept.chooseSuperior')" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Dept name" prop="deptName">
-              <el-input v-model="form.deptName" placeholder="Please enter the dept name" />
+            <el-form-item :label="$tr('dept.name')" prop="deptName">
+              <el-input v-model="form.deptName" :placeholder="$tr('dept.placeholderName')" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Sort" prop="orderNum">
+            <el-form-item :label="$tr('dept.sort')" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Leader" prop="leader">
-              <el-input v-model="form.leader" placeholder="Please enter leader name" maxlength="20" />
+            <el-form-item :label="$tr('dept.leader')" prop="leader">
+              <el-input v-model="form.leader" :placeholder="$tr('dept.placeholderLeader')" maxlength="20" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Phone" prop="phone">
-              <el-input v-model="form.phone" placeholder="Please enter phone number" maxlength="11" />
+            <el-form-item :label="$tr('dept.phone')" prop="phone">
+              <el-input v-model="form.phone" :placeholder="$tr('dept.placeholderPhone')" maxlength="11" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Email" prop="email">
-              <el-input v-model="form.email" placeholder="Please enter email" maxlength="50" />
+            <el-form-item :label="$tr('dept.email')" prop="email">
+              <el-input v-model="form.email" :placeholder="$tr('dept.placeholderEmail')" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Dept status">
+            <el-form-item :label="$tr('dept.statusLabel')">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in dict.type.sys_normal_disable"
@@ -151,8 +151,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">Submit</el-button>
-        <el-button @click="cancel">Cancel</el-button>
+        <el-button type="primary" @click="submitForm">{{ $tr('common.confirm') }}</el-button>
+        <el-button @click="cancel">{{ $tr('common.cancel') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -195,25 +195,25 @@ export default {
       // 表单校验
       rules: {
         parentId: [
-          { required: true, message: "Superior dept cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('dept.superiorRequired'), trigger: "blur" }
         ],
         deptName: [
-          { required: true, message: "Dept name cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('dept.nameRequired'), trigger: "blur" }
         ],
         orderNum: [
-          { required: true, message: "Sort cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('dept.sortRequired'), trigger: "blur" }
         ],
         email: [
           {
             type: "email",
-            message: "'Please enter the correct email address",
+            message: this.$tr('dept.emailInvalid'),
             trigger: ["blur", "change"]
           }
         ],
         phone: [
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "Please enter the correct phone number",
+            message: this.$tr('dept.phoneInvalid'),
             trigger: "blur"
           }
         ]
@@ -278,7 +278,7 @@ export default {
         this.form.parentId = row.deptId;
       }
       this.open = true;
-      this.title = "Add dept";
+      this.title = this.$tr('dept.addTitle');
       listDept().then(response => {
         this.deptOptions = this.handleTree(response.data, "deptId");
       });
@@ -297,7 +297,7 @@ export default {
       getDept(row.deptId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "Edit dept";
+        this.title = this.$tr('dept.editTitle');
       });
       listDeptExcludeChild(row.deptId).then(response => {
         this.deptOptions = this.handleTree(response.data, "deptId");
@@ -309,13 +309,13 @@ export default {
         if (valid) {
           if (this.form.deptId != undefined) {
             updateDept(this.form).then(response => {
-              this.$modal.msgSuccess("Edit successfully");
+              this.$modal.msgSuccess(this.$tr('dept.updateSuccess'));
               this.open = false;
               this.getList();
             });
           } else {
             addDept(this.form).then(response => {
-              this.$modal.msgSuccess("Add successfully");
+              this.$modal.msgSuccess(this.$tr('dept.addSuccess'));
               this.open = false;
               this.getList();
             });
@@ -325,11 +325,11 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('Confirm to delete the data item named "' + row.deptName + '"? ').then(function() {
+      this.$modal.confirm(this.$tr('dept.deleteConfirm').replace('{name}', row.deptName)).then(function() {
         return delDept(row.deptId);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("Delete successfully");
+        this.$modal.msgSuccess(this.$tr('dept.deleteSuccess'));
       }).catch(() => {});
     }
   }

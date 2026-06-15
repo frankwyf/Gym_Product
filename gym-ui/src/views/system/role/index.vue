@@ -172,7 +172,7 @@
             <el-tooltip content="Permission characters defined in a controller, such as: @PreAuthorize(' @ss.hasRole('admin') `)" placement="top">
               <i class="el-icon-question"></i>
             </el-tooltip>
-            Authority
+            {{ $tr('role.key') }}
           </span>
           <el-input v-model="form.roleKey" :placeholder="$tr('role.placeholderKey')" />
         </el-form-item>
