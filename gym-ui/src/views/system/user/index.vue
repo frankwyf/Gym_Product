@@ -6,7 +6,7 @@
         <div class="head-container">
           <el-input
             v-model="deptName"
-            placeholder="Department"
+            :placeholder="$tr('user.department')"
             clearable
             size="small"
             prefix-icon="el-icon-search"
@@ -28,30 +28,30 @@
       <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-          <el-form-item label="username" prop="userName">
+          <el-form-item :label="$tr('user.username')" prop="userName">
             <el-input
               v-model="queryParams.userName"
-              placeholder="Username"
+              :placeholder="$tr('user.username')"
               clearable
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="Phone" prop="phonenumber">
+          <el-form-item :label="$tr('user.phone')" prop="phonenumber">
             <el-input
               v-model="queryParams.phonenumber"
-              placeholder="Phone number"
+              :placeholder="$tr('user.phone')"
               clearable
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="status" prop="status">
+          <el-form-item :label="$tr('user.status')" prop="status">
             <el-select
               v-model="queryParams.status"
-              placeholder="Status"
+              :placeholder="$tr('user.status')"
               clearable
               size="small"
               style="width: 240px"
@@ -64,7 +64,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Time">
+          <el-form-item :label="$tr('user.time')">
             <el-date-picker
               v-model="dateRange"
               size="small"
@@ -72,13 +72,13 @@
               value-format="yyyy-MM-dd"
               type="daterange"
               range-separator="-"
-              start-placeholder="Start date"
-              end-placeholder="End date"
+              :start-placeholder="$tr('user.startDate')"
+              :end-placeholder="$tr('user.endDate')"
             ></el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">Search</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">Reset</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{ $tr('user.search') }}</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{ $tr('user.reset') }}</el-button>
           </el-form-item>
         </el-form>
 
@@ -91,7 +91,7 @@
               size="mini"
               @click="handleAdd"
               v-hasPermi="['system:user:add']"
-            >Add</el-button>
+            >{{ $tr('user.add') }}</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -102,7 +102,7 @@
               :disabled="single"
               @click="handleUpdate"
               v-hasPermi="['system:user:edit']"
-            >Edit</el-button>
+            >{{ $tr('user.edit') }}</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -113,7 +113,7 @@
               :disabled="multiple"
               @click="handleDelete"
               v-hasPermi="['system:user:remove']"
-            >Delete</el-button>
+            >{{ $tr('user.delete') }}</el-button>
           </el-col>
           <!-- <el-col :span="1.5">
             <el-button
@@ -133,7 +133,7 @@
               size="mini"
               @click="handleExport"
               v-hasPermi="['system:user:export']"
-            >Download</el-button>
+            >{{ $tr('user.download') }}</el-button>
           </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
         </el-row>
@@ -141,11 +141,11 @@
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="ID" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
-          <el-table-column label="Username" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="Nickname" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="Depart" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="Phone" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
-          <el-table-column label="Status" align="center" key="status" v-if="columns[5].visible">
+          <el-table-column :label="$tr('user.username')" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
+          <el-table-column :label="$tr('user.nickname')" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+          <el-table-column :label="$tr('user.department')" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
+          <el-table-column :label="$tr('user.phone')" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
+          <el-table-column :label="$tr('user.status')" align="center" key="status" v-if="columns[5].visible">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -155,13 +155,13 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="Time" align="center" prop="createTime" v-if="columns[6].visible" width="160">
+          <el-table-column :label="$tr('user.time')" align="center" prop="createTime" v-if="columns[6].visible" width="160">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="Manupulation"
+            :label="$tr('user.operation')"
             align="center"
             width="160"
             class-name="small-padding fixed-width"
@@ -173,23 +173,23 @@
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['system:user:edit']"
-              >Edit</el-button>
+              >{{ $tr('user.edit') }}</el-button>
               <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
                 @click="handleDelete(scope.row)"
                 v-hasPermi="['system:user:remove']"
-              >Delete</el-button>
+              >{{ $tr('user.delete') }}</el-button>
               <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:user:resetPwd', 'system:user:edit']">
                 <span class="el-dropdown-link">
-                  <i class="el-icon-d-arrow-right el-icon--right"></i>More
+                  <i class="el-icon-d-arrow-right el-icon--right"></i>{{ $tr('user.more') }}
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="handleResetPwd" icon="el-icon-key"
-                    v-hasPermi="['system:user:resetPwd']">Reset password</el-dropdown-item>
+                    v-hasPermi="['system:user:resetPwd']">{{ $tr('user.resetPassword') }}</el-dropdown-item>
                   <el-dropdown-item command="handleAuthRole" icon="el-icon-circle-check"
-                    v-hasPermi="['system:user:edit']">Role distribution</el-dropdown-item>
+                    v-hasPermi="['system:user:edit']">{{ $tr('user.roleAssign') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -211,44 +211,44 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Nickname" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="Nickname" maxlength="30" />
+            <el-form-item :label="$tr('user.nickname')" prop="nickName">
+              <el-input v-model="form.nickName" :placeholder="$tr('user.nickname')" maxlength="30" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Depart" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="Depart" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="Phone" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="Phone number" maxlength="11" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="Email" prop="email">
-              <el-input v-model="form.email" placeholder="Email" maxlength="50" />
+            <el-form-item :label="$tr('user.department')" prop="deptId">
+              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" :placeholder="$tr('user.department')" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="Username" prop="userName">
-              <el-input v-model="form.userName" placeholder="Username" maxlength="30" />
+            <el-form-item :label="$tr('user.phone')" prop="phonenumber">
+              <el-input v-model="form.phonenumber" :placeholder="$tr('user.phone')" maxlength="11" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="Password" prop="password">
-              <el-input v-model="form.password" placeholder="Password" type="password" maxlength="20" show-password/>
+            <el-form-item :label="$tr('user.email')" prop="email">
+              <el-input v-model="form.email" :placeholder="$tr('user.email')" maxlength="50" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Gender">
-              <el-select v-model="form.sex" placeholder="Please choose">
+            <el-form-item v-if="form.userId == undefined" :label="$tr('user.username')" prop="userName">
+              <el-input v-model="form.userName" :placeholder="$tr('user.username')" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" :label="$tr('user.password')" prop="password">
+              <el-input v-model="form.password" :placeholder="$tr('user.password')" type="password" maxlength="20" show-password/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$tr('user.gender')">
+              <el-select v-model="form.sex" :placeholder="$tr('user.choose')">
                 <el-option
                   v-for="dict in dict.type.sys_user_sex"
                   :key="dict.value"
@@ -259,7 +259,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Status">
+            <el-form-item :label="$tr('user.status')">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in dict.type.sys_normal_disable"
@@ -272,7 +272,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="Job">
+            <el-form-item :label="$tr('user.job')">
               <el-select v-model="form.postIds" multiple placeholder="">
                 <el-option
                   v-for="item in postOptions"
@@ -285,7 +285,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Role">
+            <el-form-item :label="$tr('user.role')">
               <el-select v-model="form.roleIds" multiple placeholder="">
                 <el-option
                   v-for="item in roleOptions"
@@ -300,15 +300,15 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="Remark">
+            <el-form-item :label="$tr('user.remark')">
               <el-input v-model="form.remark" type="textarea" placeholder=""></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">Submit</el-button>
-        <el-button @click="cancel">Cancel</el-button>
+        <el-button type="primary" @click="submitForm">{{ $tr('common.confirm') }}</el-button>
+        <el-button @click="cancel">{{ $tr('common.cancel') }}</el-button>
       </div>
     </el-dialog>
 
@@ -420,37 +420,37 @@ export default {
       // 列信息
       columns: [
         { key: 0, label: `ID`, visible: true },
-        { key: 1, label: `Username`, visible: true },
-        { key: 2, label: `Nickname`, visible: true },
-        { key: 3, label: `Depart`, visible: true },
-        { key: 4, label: `Phone`, visible: true },
-        { key: 5, label: `Status`, visible: true },
-        { key: 6, label: `Time`, visible: true }
+        { key: 1, label: this.$tr('user.username'), visible: true },
+        { key: 2, label: this.$tr('user.nickname'), visible: true },
+        { key: 3, label: this.$tr('user.department'), visible: true },
+        { key: 4, label: this.$tr('user.phone'), visible: true },
+        { key: 5, label: this.$tr('user.status'), visible: true },
+        { key: 6, label: this.$tr('user.time'), visible: true }
       ],
       // 表单校验
       rules: {
         userName: [
-          { required: true, message: "Username cannot be empty", trigger: "blur" },
-          { min: 2, max: 20, message: 'The user name length must be between 2 and 20', trigger: 'blur' }
+          { required: true, message: this.$tr('user.usernameRequired'), trigger: "blur" },
+          { min: 2, max: 20, message: this.$tr('user.usernameLength'), trigger: 'blur' }
         ],
         nickName: [
-          { required: true, message: "Nickname cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('user.nicknameRequired'), trigger: "blur" }
         ],
         password: [
-          { required: true, message: "Password cannot be empty", trigger: "blur" },
-          { min: 5, max: 20, message: 'Password must be between 5 and 20', trigger: 'blur' }
+          { required: true, message: this.$tr('user.passwordRequired'), trigger: "blur" },
+          { min: 5, max: 20, message: this.$tr('user.passwordRange'), trigger: 'blur' }
         ],
         email: [
           {
             type: "email",
-            message: "'Please enter the correct email address",
+            message: this.$tr('user.emailInvalid'),
             trigger: ["blur", "change"]
           }
         ],
         phonenumber: [
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "Please enter the correct mobile phone number",
+            message: this.$tr('user.phoneInvalid'),
             trigger: "blur"
           }
         ]
@@ -499,11 +499,12 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-      let text = row.status === "0" ? "Activate" : "Deactivate";
-      this.$modal.confirm(text + '" "' + row.userName + '" ?').then(function() {
+      const text = row.status === "0" ? this.$tr('user.activate') : this.$tr('user.deactivate');
+      const confirmText = this.$tr('user.statusConfirm').replace('{action}', text).replace('{name}', row.userName);
+      this.$modal.confirm(confirmText).then(function() {
         return changeUserStatus(row.userId, row.status);
       }).then(() => {
-        this.$modal.msgSuccess(text + " successfully");
+        this.$modal.msgSuccess(this.$tr('user.statusSuccess').replace('{action}', text));
       }).catch(function() {
         row.status = row.status === "0" ? "1" : "0";
       });
@@ -569,7 +570,7 @@ export default {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
-        this.title = "添加用户";
+        this.title = this.$tr('user.addTitle');
         this.form.password = this.initPassword;
       });
     },
@@ -585,21 +586,21 @@ export default {
         this.form.postIds = response.postIds;
         this.form.roleIds = response.roleIds;
         this.open = true;
-        this.title = "修改用户";
+        this.title = this.$tr('user.editTitle');
         this.form.password = "";
       });
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      this.$prompt('New password', "", {
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel",
+      this.$prompt(this.$tr('user.newPassword'), "", {
+        confirmButtonText: this.$tr('common.confirm'),
+        cancelButtonText: this.$tr('common.cancel'),
         closeOnClickModal: false,
         inputPattern: /^.{5,20}$/,
-        inputErrorMessage: "Password must be between 5 and 20"
+        inputErrorMessage: this.$tr('user.passwordRange')
       }).then(({ value }) => {
           resetUserPwd(row.userId, value).then(response => {
-            this.$modal.msgSuccess("Changed successfully, the new password is: " + value);
+            this.$modal.msgSuccess(this.$tr('user.passwordChanged').replace('{password}', value));
           });
         }).catch(() => {});
     },
@@ -614,13 +615,13 @@ export default {
         if (valid) {
           if (this.form.userId != undefined) {
             updateUser(this.form).then(response => {
-              this.$modal.msgSuccess("Modify successfully");
+              this.$modal.msgSuccess(this.$tr('user.updateSuccess'));
               this.open = false;
               this.getList();
             });
           } else {
             addUser(this.form).then(response => {
-              this.$modal.msgSuccess("Added success");
+              this.$modal.msgSuccess(this.$tr('user.addSuccess'));
               this.open = false;
               this.getList();
             });
@@ -631,11 +632,11 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$modal.confirm('Delete "' + userIds + '" ?').then(function() {
+      this.$modal.confirm(this.$tr('user.deleteConfirm').replace('{id}', userIds)).then(function() {
         return delUser(userIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("Deleted successfully");
+        this.$modal.msgSuccess(this.$tr('user.deleteSuccess'));
       }).catch(() => {});
     },
     /** 导出按钮操作 */
