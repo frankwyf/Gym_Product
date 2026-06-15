@@ -13,13 +13,15 @@ This document maps `GymMaster_wx` mini-program capabilities to the new native mo
 2. Reservation
 - Mini-program pages: `pages/appointment/appointment`, `pages/all-venues/all-venues`, `pages/venues/venues`, `pages/facilities/facilities`
 - Current mobile status:
-  - Implemented facility list, venue detail entry, cart draft persistence
+  - Implemented facility list -> venue category screen -> venue detail entry, cart draft persistence
+  - Added loading/empty/error states and retry actions for reservation list pages
   - Reservation matrix/time slot UI is planned next
 
 3. Community
 - Mini-program pages: `pages/post-index/post-index`, `pages/post-details/post-details`, `pages/send/send`
 - Current mobile status:
   - Implemented post feed, post detail, comment submission, create-post with image upload
+  - Added feed error-state/retry handling and submit-in-progress guards to avoid duplicate actions
 
 4. Courses / Shop
 - Mini-program pages: `pages/index/index`, `pages/goods-details/goods-details`
