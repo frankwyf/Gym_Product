@@ -162,7 +162,7 @@
           <el-col :span="12" v-if="form.menuType != 'F'">
             <el-form-item>
               <span slot="label">
-                <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
+                <el-tooltip :content="$tr('menu.tipExternal')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.isExternal') }}
@@ -176,7 +176,7 @@
           <el-col :span="12" v-if="form.menuType != 'F'">
             <el-form-item prop="path">
               <span slot="label">
-                <el-tooltip content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" placement="top">
+                <el-tooltip :content="$tr('menu.tipRoute')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.routePath') }}
@@ -187,7 +187,7 @@
           <el-col :span="12" v-if="form.menuType == 'C'">
             <el-form-item prop="component">
               <span slot="label">
-                <el-tooltip content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top">
+                <el-tooltip :content="$tr('menu.tipComponent')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.componentPath') }}
@@ -199,7 +199,7 @@
             <el-form-item>
               <el-input v-model="form.perms" :placeholder="$tr('menu.placeholderPerms')" maxlength="100" />
               <span slot="label">
-                <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)" placement="top">
+                <el-tooltip :content="$tr('menu.tipPerms')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.perms') }}
@@ -210,7 +210,7 @@
             <el-form-item>
               <el-input v-model="form.query" :placeholder="$tr('menu.placeholderParams')" maxlength="255" />
               <span slot="label">
-                <el-tooltip content='访问路由的默认传递参数，如：`{"id": 1, "name": "ry"}`' placement="top">
+                <el-tooltip :content="$tr('menu.tipParams')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.routeParams') }}
@@ -220,7 +220,7 @@
           <el-col :span="12" v-if="form.menuType == 'C'">
             <el-form-item>
               <span slot="label">
-                <el-tooltip content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致" placement="top">
+                <el-tooltip :content="$tr('menu.tipCache')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.keepAlive') }}
@@ -234,7 +234,7 @@
           <el-col :span="12" v-if="form.menuType != 'F'">
             <el-form-item>
               <span slot="label">
-                <el-tooltip content="选择隐藏则路由将不会出现在侧边栏，但仍然可以访问" placement="top">
+                <el-tooltip :content="$tr('menu.tipVisible')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.visible') }}
@@ -251,7 +251,7 @@
           <el-col :span="12" v-if="form.menuType != 'F'">
             <el-form-item>
               <span slot="label">
-                <el-tooltip content="选择停用则路由将不会出现在侧边栏，也不能被访问" placement="top">
+                <el-tooltip :content="$tr('menu.tipStatus')" placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 {{ $tr('menu.menuStatus') }}

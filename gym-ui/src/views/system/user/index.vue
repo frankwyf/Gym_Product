@@ -140,7 +140,7 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="ID" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
+          <el-table-column :label="$tr('user.id')" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
           <el-table-column :label="$tr('user.username')" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="$tr('user.nickname')" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column :label="$tr('user.department')" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
@@ -273,7 +273,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$tr('user.job')">
-              <el-select v-model="form.postIds" multiple placeholder="">
+              <el-select v-model="form.postIds" multiple :placeholder="$tr('user.choose')">
                 <el-option
                   v-for="item in postOptions"
                   :key="item.postId"
@@ -286,7 +286,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$tr('user.role')">
-              <el-select v-model="form.roleIds" multiple placeholder="">
+              <el-select v-model="form.roleIds" multiple :placeholder="$tr('user.choose')">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleId"
@@ -301,7 +301,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$tr('user.remark')">
-              <el-input v-model="form.remark" type="textarea" placeholder=""></el-input>
+              <el-input v-model="form.remark" type="textarea" :placeholder="$tr('user.remark')"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -419,7 +419,7 @@ export default {
       },
       // 列信息
       columns: [
-        { key: 0, label: `ID`, visible: true },
+        { key: 0, label: this.$tr('user.id'), visible: true },
         { key: 1, label: this.$tr('user.username'), visible: true },
         { key: 2, label: this.$tr('user.nickname'), visible: true },
         { key: 3, label: this.$tr('user.department'), visible: true },
@@ -647,7 +647,7 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "User import";
+      this.upload.title = this.$tr('user.importTitle');
       this.upload.open = true;
     },
     /** 下载模板操作 */
@@ -664,7 +664,7 @@ export default {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "Importing results", { dangerouslyUseHTMLString: true });
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", this.$tr('user.importResultTitle'), { dangerouslyUseHTMLString: true });
       this.getList();
     },
     // 提交上传文件
