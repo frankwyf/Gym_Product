@@ -1,30 +1,30 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" v-show="showSearch" :inline="true">
-      <el-form-item label="Role name" prop="roleName">
+      <el-form-item :label="$tr('role.name')" prop="roleName">
         <el-input
           v-model="queryParams.roleName"
-          placeholder="Please enter the role name"
+          :placeholder="$tr('role.placeholderName')"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="Authority" prop="roleKey">
+      <el-form-item :label="$tr('role.key')" prop="roleKey">
         <el-input
           v-model="queryParams.roleKey"
-          placeholder="Please enter the authority"
+          :placeholder="$tr('role.placeholderKey')"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="status" prop="status">
+      <el-form-item :label="$tr('role.status')" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="role status"
+          :placeholder="$tr('role.placeholderStatus')"
           clearable
           size="small"
           style="width: 240px"
@@ -37,7 +37,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="time">
+      <el-form-item :label="$tr('role.time')">
         <el-date-picker
           v-model="dateRange"
           size="small"
@@ -45,13 +45,13 @@
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholder="Start date"
-          end-placeholder="End date"
+          :start-placeholder="$tr('role.startDate')"
+          :end-placeholder="$tr('role.endDate')"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">Search</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">Reset</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{ $tr('role.search') }}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{ $tr('role.reset') }}</el-button>
       </el-form-item>
     </el-form>
 
@@ -64,7 +64,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:role:add']"
-        >Add</el-button>
+        >{{ $tr('role.add') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -75,7 +75,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:role:edit']"
-        >Edit</el-button>
+        >{{ $tr('role.edit') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -86,7 +86,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:role:remove']"
-        >Delete</el-button>
+        >{{ $tr('role.delete') }}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -96,18 +96,18 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['system:role:export']"
-        >Download</el-button>
+        >{{ $tr('role.download') }}</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" prop="roleId" width="120" />
-      <el-table-column label="Rolename" prop="roleName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="Authority" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="Sort" prop="roleSort" width="100" />
-      <el-table-column label="Status" align="center" width="100">
+      <el-table-column :label="$tr('role.id')" prop="roleId" width="120" />
+      <el-table-column :label="$tr('role.name')" prop="roleName" :show-overflow-tooltip="true" width="150" />
+      <el-table-column :label="$tr('role.key')" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+      <el-table-column :label="$tr('role.sort')" prop="roleSort" width="100" />
+      <el-table-column :label="$tr('role.status')" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
@@ -117,12 +117,12 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="Time" align="center" prop="createTime" width="180">
+      <el-table-column :label="$tr('role.time')" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Operation" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$tr('role.operation')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
             size="mini"
@@ -130,23 +130,23 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:role:edit']"
-          >Edit</el-button>
+          >{{ $tr('role.edit') }}</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:role:remove']"
-          >Delete</el-button>
+          >{{ $tr('role.delete') }}</el-button>
           <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
             <span class="el-dropdown-link">
-              <i class="el-icon-d-arrow-right el-icon--right"></i>More
+              <i class="el-icon-d-arrow-right el-icon--right"></i>{{ $tr('role.more') }}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="handleDataScope" icon="el-icon-circle-check"
-                v-hasPermi="['system:role:edit']">Data permission</el-dropdown-item>
+                v-hasPermi="['system:role:edit']">{{ $tr('role.dataPermission') }}</el-dropdown-item>
               <el-dropdown-item command="handleAuthUser" icon="el-icon-user"
-                v-hasPermi="['system:role:edit']">Distribution</el-dropdown-item>
+                v-hasPermi="['system:role:edit']">{{ $tr('role.distribution') }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -164,8 +164,8 @@
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="Rolename" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="Please enter rolename" />
+        <el-form-item :label="$tr('role.name')" prop="roleName">
+          <el-input v-model="form.roleName" :placeholder="$tr('role.placeholderName')" />
         </el-form-item>
         <el-form-item prop="roleKey">
           <span slot="label">
@@ -174,12 +174,12 @@
             </el-tooltip>
             Authority
           </span>
-          <el-input v-model="form.roleKey" placeholder="Please enter authority" />
+          <el-input v-model="form.roleKey" :placeholder="$tr('role.placeholderKey')" />
         </el-form-item>
-        <el-form-item label="Sort" prop="roleSort">
+        <el-form-item :label="$tr('role.sort')" prop="roleSort">
           <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
         </el-form-item>
-        <el-form-item label="Status">
+        <el-form-item :label="$tr('role.status')">
           <el-radio-group v-model="form.status">
             <el-radio
               v-for="dict in dict.type.sys_normal_disable"
@@ -188,10 +188,10 @@
             >{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Menu">
-          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">Unfold/fold</el-checkbox>
-          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">Select All/Select none</el-checkbox>
-          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">Father node</el-checkbox>
+        <el-form-item :label="$tr('role.menu')">
+          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">{{ $tr('role.expandFold') }}</el-checkbox>
+          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">{{ $tr('role.selectAllNone') }}</el-checkbox>
+          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">{{ $tr('role.parentChildLink') }}</el-checkbox>
           <el-tree
             class="tree-border"
             :data="menuOptions"
@@ -199,30 +199,30 @@
             ref="menu"
             node-key="id"
             :check-strictly="!form.menuCheckStrictly"
-            empty-text="Please wait while loading"
+            :empty-text="$tr('role.loading')"
             :props="defaultProps"
           ></el-tree>
         </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="Please enter the content"></el-input>
+        <el-form-item :label="$tr('role.remark')">
+          <el-input v-model="form.remark" type="textarea" :placeholder="$tr('role.placeholderRemark')"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">Confirm</el-button>
-        <el-button @click="cancel">Cancel</el-button>
+        <el-button type="primary" @click="submitForm">{{ $tr('common.confirm') }}</el-button>
+        <el-button @click="cancel">{{ $tr('common.cancel') }}</el-button>
       </div>
     </el-dialog>
 
     <!-- 分配角色数据权限对话框 -->
     <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body>
       <el-form :model="form" label-width="80px">
-        <el-form-item label="Rolename">
+        <el-form-item :label="$tr('role.name')">
           <el-input v-model="form.roleName" :disabled="true" />
         </el-form-item>
-        <el-form-item label="Authority">
+        <el-form-item :label="$tr('role.key')">
           <el-input v-model="form.roleKey" :disabled="true" />
         </el-form-item>
-        <el-form-item label="Data permission">
+        <el-form-item :label="$tr('role.dataPermission')">
           <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
             <el-option
               v-for="item in dataScopeOptions"
@@ -232,10 +232,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Menu" v-show="form.dataScope == 2">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">Unfold/fold</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">Select All/Select none</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">Father node</el-checkbox>
+        <el-form-item :label="$tr('role.menu')" v-show="form.dataScope == 2">
+          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">{{ $tr('role.expandFold') }}</el-checkbox>
+          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">{{ $tr('role.selectAllNone') }}</el-checkbox>
+          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">{{ $tr('role.parentChildLink') }}</el-checkbox>
           <el-tree
             class="tree-border"
             :data="deptOptions"
@@ -244,14 +244,14 @@
             ref="dept"
             node-key="id"
             :check-strictly="!form.deptCheckStrictly"
-            empty-text="Please wait while loading"
+            :empty-text="$tr('role.loading')"
             :props="defaultProps"
           ></el-tree>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">Submit</el-button>
-        <el-button @click="cancelDataScope">Cancel</el-button>
+        <el-button type="primary" @click="submitDataScope">{{ $tr('common.confirm') }}</el-button>
+        <el-button @click="cancelDataScope">{{ $tr('common.cancel') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -297,23 +297,23 @@ export default {
       dataScopeOptions: [
         {
           value: "1",
-          label: "Full data permission"
+          label: this.$tr('role.fullData')
         },
         {
           value: "2",
-          label: "Customize data permissions"
+          label: this.$tr('role.customData')
         },
         {
           value: "3",
-          label: "Data permission of the department"
+          label: this.$tr('role.deptData')
         },
         {
           value: "4",
-          label: "The department and the following data rights"
+          label: this.$tr('role.deptAndSubData')
         },
         {
           value: "5",
-          label: "Personal data permission only"
+          label: this.$tr('role.selfData')
         }
       ],
       // 菜单列表
@@ -337,13 +337,13 @@ export default {
       // 表单校验
       rules: {
         roleName: [
-          { required: true, message: "The role name cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('role.nameRequired'), trigger: "blur" }
         ],
         roleKey: [
-          { required: true, message: "The authority cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('role.keyRequired'), trigger: "blur" }
         ],
         roleSort: [
-          { required: true, message: "Role order cannot be empty", trigger: "blur" }
+          { required: true, message: this.$tr('role.sortRequired'), trigger: "blur" }
         ]
       }
     };
@@ -408,11 +408,12 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      let text = row.status === "0" ? "Able" : "Unable";
-      this.$modal.confirm('Are you sure you want the "' + text + '""' + row.roleName + '" role? ').then(function() {
+      const text = row.status === "0" ? this.$tr('role.enable') : this.$tr('role.disable');
+      const confirmText = this.$tr('role.statusConfirm').replace('{action}', text).replace('{name}', row.roleName);
+      this.$modal.confirm(confirmText).then(function() {
         return changeRoleStatus(row.roleId, row.status);
       }).then(() => {
-        this.$modal.msgSuccess(text + " successfully");
+        this.$modal.msgSuccess(this.$tr('role.statusSuccess').replace('{action}', text));
       }).catch(function() {
         row.status = row.status === "0" ? "1" : "0";
       });
@@ -515,7 +516,7 @@ export default {
       this.reset();
       this.getMenuTreeselect();
       this.open = true;
-      this.title = "add role";
+      this.title = this.$tr('role.addTitle');
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -535,7 +536,7 @@ export default {
             })
           });
         });
-        this.title = "edit role";
+        this.title = this.$tr('role.editTitle');
       });
     },
     /** 选择角色权限范围触发 */
@@ -556,7 +557,7 @@ export default {
             this.$refs.dept.setCheckedKeys(res.checkedKeys);
           });
         });
-        this.title = "distribute authority";
+        this.title = this.$tr('role.dataScopeTitle');
       });
     },
     /** 分配用户操作 */
@@ -571,14 +572,14 @@ export default {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             updateRole(this.form).then(response => {
-              this.$modal.msgSuccess("Edit successfully");
+              this.$modal.msgSuccess(this.$tr('role.updateSuccess'));
               this.open = false;
               this.getList();
             });
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             addRole(this.form).then(response => {
-              this.$modal.msgSuccess("Add successfully");
+              this.$modal.msgSuccess(this.$tr('role.addSuccess'));
               this.open = false;
               this.getList();
             });
@@ -591,7 +592,7 @@ export default {
       if (this.form.roleId != undefined) {
         this.form.deptIds = this.getDeptAllCheckedKeys();
         dataScope(this.form).then(response => {
-          this.$modal.msgSuccess("Edit successfully");
+          this.$modal.msgSuccess(this.$tr('role.dataScopeSuccess'));
           this.openDataScope = false;
           this.getList();
         });
@@ -600,11 +601,11 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const roleIds = row.roleId || this.ids;
-      this.$modal.confirm('Do you want to delete the data item whose role number is "' + roleIds + '"? ').then(function() {
+      this.$modal.confirm(this.$tr('role.deleteConfirm').replace('{id}', roleIds)).then(function() {
         return delRole(roleIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("Delete success");
+        this.$modal.msgSuccess(this.$tr('role.deleteSuccess'));
       }).catch(() => {});
     },
     /** 导出按钮操作 */
