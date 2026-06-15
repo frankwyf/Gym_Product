@@ -13,13 +13,22 @@ export function CommunityScreen({ navigation }: { navigation: any }) {
   const [posts, setPosts] = useState<Post[]>([])
   const [activeTheme, setActiveTheme] = useState('ALL')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  const loadPosts = () => {
     setLoading(true)
+    setError(null)
     gymApi.allPosts()
       .then((res) => setPosts(res.data ?? []))
-      .catch(() => setPosts([]))
+      .catch(() => {
+        setPosts([])
+        setError('Failed to load posts. Please try again.')
+      })
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    loadPosts()
   }, [])
 
   const visiblePosts = activeTheme === 'ALL' ? posts : posts.filter((post) => post.type === activeTheme)
@@ -35,15 +44,23 @@ export function CommunityScreen({ navigation }: { navigation: any }) {
           ))}
         </View>
         <PrimaryButton title="Create Post" onPress={() => navigation.navigate('SendPost')} />
+        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh Feed'} secondary onPress={loadPosts} disabled={loading} />
       </SectionCard>
 
       <SectionCard title="Posts" subtitle={loading ? 'Loading posts...' : `Visible posts: ${visiblePosts.length}`}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         {!loading && visiblePosts.length === 0 ? <Text style={styles.empty}>No posts found for this theme.</Text> : null}
         {visiblePosts.map((post, index) => (
           <Pressable
             key={`${post.pid ?? index}`}
             style={styles.postItem}
-            onPress={() => navigation.navigate('PostDetail', { postId: Number(post.pid ?? 0), title: 'Post detail' })}
+            onPress={() => {
+              const postId = Number(post.pid ?? 0)
+              if (!postId) {
+                return
+              }
+              navigation.navigate('PostDetail', { postId, title: 'Post detail' })
+            }}
           >
             <Text style={styles.postType}>{post.type ?? 'General'}</Text>
             <Text style={styles.postContent} numberOfLines={3}>{post.content ?? 'No content'}</Text>
@@ -92,6 +109,10 @@ const styles = StyleSheet.create({
   },
   empty: {
     color: colors.textMuted,
+    lineHeight: 20
+  },
+  error: {
+    color: colors.danger,
     lineHeight: 20
   }
 })

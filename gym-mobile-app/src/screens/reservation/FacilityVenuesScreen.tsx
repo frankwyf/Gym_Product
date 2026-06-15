@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { gymApi } from '../../api/gymApi'
+import { PrimaryButton } from '../../components/PrimaryButton'
 import { Screen } from '../../components/Screen'
 import { SectionCard } from '../../components/SectionCard'
 import { colors, spacing } from '../../constants/theme'
@@ -12,13 +13,15 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
   const [venues, setVenues] = useState<Venue[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  const loadFacilityVenues = () => {
     if (!facilityId) {
       return
     }
 
     setLoading(true)
+    setError(null)
     Promise.all([gymApi.specificFacility(facilityId), gymApi.venuesInfoByFacility(facilityId)])
       .then(([facilityRes, venuesRes]) => {
         setFacility(facilityRes.data ?? null)
@@ -28,10 +31,15 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
       .catch(() => {
         setFacility(null)
         setVenues([])
+        setError('Failed to load facility venues. Please try again.')
       })
       .finally(() => {
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    loadFacilityVenues()
   }, [facilityId])
 
   const categories = useMemo(() => {
@@ -52,6 +60,7 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
       <SectionCard title={route.params?.title ?? facility?.fname ?? 'Facility'} subtitle="迁移自 facilities 页面：设施介绍 + 场馆分类 + 场馆预订入口。">
         <Text style={styles.meta}>{facility?.location ?? 'Location unavailable'}</Text>
         <Text style={styles.desc}>{facility?.description ?? 'No facility description.'}</Text>
+        <PrimaryButton title={loading ? 'Refreshing...' : 'Refresh'} secondary onPress={loadFacilityVenues} disabled={loading || !facilityId} />
       </SectionCard>
 
       <SectionCard title="Venue Categories" subtitle={`Found ${categories.length} category(s)`}>
@@ -66,23 +75,38 @@ export function FacilityVenuesScreen({ route, navigation }: { route: any; naviga
       </SectionCard>
 
       <SectionCard title="Available Venues" subtitle={loading ? 'Loading venues...' : `Visible ${visibleVenues.length} venue(s)`}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         {!loading && visibleVenues.length === 0 ? <Text style={styles.empty}>No venues are currently available.</Text> : null}
         {visibleVenues.map((venue, index) => (
           <View key={`${venue.vid ?? index}`} style={styles.venueCard}>
-            <Text style={styles.venueTitle}>{venue.vname ?? `Venue ${index + 1}`}</Text>
-            <Text style={styles.venueMeta}>{`Price: ¥${venue.price ?? 0} / hour`}</Text>
-            <Text style={styles.venueMeta}>{`Capacity: ${venue.capacity ?? '-'}`}</Text>
-            <Text style={styles.venueDesc}>{venue.description ?? 'No venue description.'}</Text>
-            <Pressable
-              style={styles.bookBtn}
-              onPress={() => navigation.navigate('VenueDetail', {
-                venueId: Number(venue.vid ?? 0),
-                facilityId,
-                title: venue.vname ?? 'Venue'
-              })}
-            >
-              <Text style={styles.bookBtnText}>Book A Session</Text>
-            </Pressable>
+            {/** Guard navigation when venue id is missing from backend payload. */}
+            {(() => {
+              const venueId = Number(venue.vid ?? 0)
+              const hasValidVenueId = venueId > 0
+              return (
+                <>
+                  <Text style={styles.venueTitle}>{venue.vname ?? `Venue ${index + 1}`}</Text>
+                  <Text style={styles.venueMeta}>{`Price: ¥${venue.price ?? 0} / hour`}</Text>
+                  <Text style={styles.venueMeta}>{`Capacity: ${venue.capacity ?? '-'}`}</Text>
+                  <Text style={styles.venueDesc}>{venue.description ?? 'No venue description.'}</Text>
+                  <Pressable
+                    style={[styles.bookBtn, !hasValidVenueId ? styles.bookBtnDisabled : null]}
+                    onPress={() => {
+                      if (!hasValidVenueId) {
+                        return
+                      }
+                      navigation.navigate('VenueDetail', {
+                        venueId,
+                        facilityId,
+                        title: venue.vname ?? 'Venue'
+                      })
+                    }}
+                  >
+                    <Text style={styles.bookBtnText}>Book A Session</Text>
+                  </Pressable>
+                </>
+              )
+            })()}
           </View>
         ))}
       </SectionCard>
@@ -147,12 +171,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs
   },
+  bookBtnDisabled: {
+    opacity: 0.5
+  },
   bookBtnText: {
     color: '#fff',
     fontWeight: '700'
   },
   empty: {
     color: colors.textMuted,
+    lineHeight: 20
+  },
+  error: {
+    color: colors.danger,
     lineHeight: 20
   }
 })

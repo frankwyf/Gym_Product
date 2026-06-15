@@ -11,14 +11,17 @@ export function NoticesScreen() {
   const [notices, setNotices] = useState<Notice[]>([])
   const [expandedNoticeId, setExpandedNoticeId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const loadNotices = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await gymApi.notices()
       setNotices(response.data ?? [])
     } catch {
       setNotices([])
+      setError('Failed to load notices. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -35,6 +38,7 @@ export function NoticesScreen() {
       </SectionCard>
 
       <SectionCard title="Historical Notices" subtitle={`Loaded ${notices.length} notice(s)`}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         {!loading && notices.length === 0 ? <Text style={styles.empty}>No notices available.</Text> : null}
         {notices.map((notice, index) => {
           const nid = Number(notice.nid ?? index)
@@ -75,6 +79,10 @@ const styles = StyleSheet.create({
   },
   empty: {
     color: colors.textMuted,
+    lineHeight: 20
+  },
+  error: {
+    color: colors.danger,
     lineHeight: 20
   }
 })
