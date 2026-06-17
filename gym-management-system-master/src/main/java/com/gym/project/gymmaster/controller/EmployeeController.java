@@ -1,18 +1,26 @@
 package com.gym.project.gymmaster.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gym.project.gymmaster.common.BackMsg;
 import com.gym.project.gymmaster.entity.Employee;
 import com.gym.project.gymmaster.service.EmployeeService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -69,12 +77,10 @@ public class EmployeeController {
         return BackMsg.success("new employee added successfully");
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Employee>> page(int page, int pageSize, String name){
 
-
-
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper();
+        Page<Employee> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Employee::getUsername,name);
         queryWrapper.orderByDesc(Employee::getEid);
         employeeService.page(pageInfo,queryWrapper);

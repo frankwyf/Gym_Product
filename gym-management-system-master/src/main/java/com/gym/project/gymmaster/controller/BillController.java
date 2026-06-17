@@ -1,15 +1,5 @@
 package com.gym.project.gymmaster.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gym.project.gymmaster.common.BackMsg;
-import com.gym.project.gymmaster.entity.Bill;
-import com.gym.project.gymmaster.service.BillService;
-import com.gym.project.gymmaster.service.FacilityService;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -18,6 +8,21 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gym.project.gymmaster.common.BackMsg;
+import com.gym.project.gymmaster.entity.Bill;
+import com.gym.project.gymmaster.service.BillService;
+import com.gym.project.gymmaster.service.FacilityService;
 
 @RestController
 @RequestMapping("/bill")
@@ -30,7 +35,7 @@ public class BillController {
     //FacilityService
     //按照种类查看流水，按照月份、周查看流水，
     @GetMapping("/page/period")
-    public BackMsg<Map> pagePeriod(Timestamp start, Timestamp endTime) {
+    public BackMsg<Map<String, BigDecimal>> pagePeriod(Timestamp start, Timestamp endTime) {
         if(start == null){
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -51,7 +56,7 @@ public class BillController {
             return BackMsg.error("wrong date entered!");
         }
 
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
         List<Bill> orders = billService.list(queryWrapper);
 
 //        LambdaQueryWrapper<Facility> queryWrapper0 = new LambdaQueryWrapper();
@@ -76,10 +81,10 @@ public class BillController {
         return BackMsg.success(statistic);
     }
     @GetMapping("/page/facility")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Bill>> page(int page, int pageSize, String name){
 
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper();
+        Page<Bill> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Bill::getFname,name);
         queryWrapper.orderByDesc(Bill::getBid);
         billService.page(pageInfo,queryWrapper);

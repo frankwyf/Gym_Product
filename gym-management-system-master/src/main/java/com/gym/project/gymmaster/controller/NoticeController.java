@@ -1,18 +1,25 @@
 package com.gym.project.gymmaster.controller;
 
+import java.sql.Timestamp;
+import java.util.Objects;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gym.project.gymmaster.common.BackMsg;
 import com.gym.project.gymmaster.common.ThreadContext;
 import com.gym.project.gymmaster.entity.Notice;
 import com.gym.project.gymmaster.service.NoticeService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -46,10 +53,10 @@ public class NoticeController {
         return BackMsg.success("remove the employe successfully");
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Notice>> page(int page, int pageSize, String name){
 
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper();
+        Page<Notice> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Notice::getTitle,name);
         queryWrapper.orderByDesc(Notice::getNid);
         noticeService.page(pageInfo,queryWrapper);

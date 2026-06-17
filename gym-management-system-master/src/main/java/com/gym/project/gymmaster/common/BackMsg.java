@@ -1,10 +1,10 @@
 package com.gym.project.gymmaster.common;
 
 
-import lombok.Data;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Data;
 
 /**
  * a class to determine the return message from the server
