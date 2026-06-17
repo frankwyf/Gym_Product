@@ -28,35 +28,35 @@ public class ReservationController {
     @Autowired
     VenueService venueService;
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, String name, Date date, int id){
+    public BackMsg<Page<Reservation>> page(int page, int pageSize, String name, Date date, int id){
 
 //        int page1 = Integer.parseInt(page);
 //        int pageSize1 = Integer.parseInt(pageSize);
-        Page pageInfo = new Page(page, pageSize);
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
         if(date == null && name != null) {
-            LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper<>();
             queryWrapper0.like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
 
             Customer customer = customerService.getOne(queryWrapper0);
 
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.like(StringUtils.isNotEmpty(name), Reservation::getRuid, customer.getUid());
             queryWrapper.orderByDesc(Reservation::getRdate);
             reservationService.page(pageInfo, queryWrapper);
         }
         else if(name == null && date !=null){
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.like(Reservation::getRdate, date);
             queryWrapper.orderByDesc(Reservation::getRuid);
             reservationService.page(pageInfo, queryWrapper);
         }
         else if(name != null && date!=null){
-            LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper<>();
             queryWrapper0.like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
 
             Customer customer = customerService.getOne(queryWrapper0);
 
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.like(StringUtils.isNotEmpty(name), Reservation::getRuid, customer.getUid());
             queryWrapper.eq(Reservation::getRdate,date);
             reservationService.page(pageInfo, queryWrapper);
@@ -69,7 +69,7 @@ public class ReservationController {
             reservationService.page(pageInfo,queryWrapper);
         }
         else{
-            LambdaQueryWrapper<Reservation> queryWrapper0 = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Reservation> queryWrapper0 = new LambdaQueryWrapper<>();
             queryWrapper0.orderByAsc(Reservation::getRid);
             reservationService.page(pageInfo,queryWrapper0);
         }

@@ -53,12 +53,12 @@ public class ManagerController {
         return BackMsg.success(manager);
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(String page, String pageSize, String name){
+    public BackMsg<Page<Manager>> page(String page, String pageSize, String name){
 
         int page1 = Integer.parseInt(page);
         int pageSize1 = Integer.parseInt(pageSize);
-        Page pageInfo = new Page(page1,pageSize1);
-        LambdaQueryWrapper<Manager> queryWrapper = new LambdaQueryWrapper();
+        Page<Manager> pageInfo = new Page<>(page1, pageSize1);
+        LambdaQueryWrapper<Manager> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Manager::getUsername,name);
         queryWrapper.orderByDesc(Manager::getMid);
         managerService.page(pageInfo,queryWrapper);
