@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.DateTimeException;
 
 @Data
 public class Comments implements Serializable {

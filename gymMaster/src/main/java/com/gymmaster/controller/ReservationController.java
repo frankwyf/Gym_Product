@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,31 +34,31 @@ public class ReservationController {
     @Autowired
     VenueService venueService;
     @GetMapping("/page/username")
-    public BackMsg<Page> pageUsername(int page, int pageSize, String name) {
-        Page pageInfo = new Page(page, pageSize);
-        LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper();
+    public BackMsg<Page<Reservation>> pageUsername(int page, int pageSize, String name) {
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper<>();
             queryWrapper0.like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
 
             Customer customer = customerService.getOne(queryWrapper0);
 
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper();
+            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.like(StringUtils.isNotEmpty(name), Reservation::getRuid, customer.getUid());
             queryWrapper.orderByDesc(Reservation::getRdate);
             reservationService.page(pageInfo, queryWrapper);
             return BackMsg.success(pageInfo);
     }
     @GetMapping("/page/date")
-    public BackMsg<Page> pageDate(int page, int pageSize, Date date) {
-        Page pageInfo = new Page(page, pageSize);
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper();
+    public BackMsg<Page<Reservation>> pageDate(int page, int pageSize, Date date) {
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.like(Reservation::getRdate, date);
             queryWrapper.orderByDesc(Reservation::getRuid);
             reservationService.page(pageInfo, queryWrapper);
         return BackMsg.success(pageInfo);
     }
     @GetMapping("/page/id")
-    public BackMsg<Page> pageId(int page, int pageSize, int id) {
-        Page pageInfo = new Page(page, pageSize);
+    public BackMsg<Page<Reservation>> pageId(int page, int pageSize, int id) {
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
         LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
 
             queryWrapper.eq(Reservation::getRuid,id);
@@ -72,16 +68,16 @@ public class ReservationController {
     }
 
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize){
-        Page pageInfo = new Page(page, pageSize);
-        LambdaQueryWrapper<Reservation> queryWrapper0 = new LambdaQueryWrapper();
+    public BackMsg<Page<Reservation>> page(int page, int pageSize){
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Reservation> queryWrapper0 = new LambdaQueryWrapper<>();
         queryWrapper0.orderByAsc(Reservation::getRid);
         reservationService.page(pageInfo,queryWrapper0);
         return BackMsg.success(pageInfo);
     }
 
     @PutMapping("/ban")
-    public BackMsg ban(@RequestBody Reservation reservation, int x ){
+    public BackMsg<String> ban(@RequestBody Reservation reservation, int x ){
         if(x==0) {
             LambdaQueryWrapper<Reservation> exist = new LambdaQueryWrapper<>();
             exist.eq(Reservation::getRdate, reservation.getRdate())
@@ -98,10 +94,8 @@ public class ReservationController {
 
             int[] curCap = new int[8];
             for (Reservation res : periods) {
-                String[] per1 = null;
-                int[] per = null;
-                per1 = res.getPeriod().split(",");
-                per = new int[per1.length];
+                String[] per1 = res.getPeriod().split(",");
+                int[] per = new int[per1.length];
                 for (int i = 0; i < per.length; i++) {
                     per[i] = Integer.parseInt(per1[i]);
                 }
@@ -129,20 +123,20 @@ public class ReservationController {
     }
 
     @GetMapping("/findId")
-    public BackMsg find(int id){
+    public BackMsg<Reservation> find(int id){
         LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Reservation::getRid,id);
         Reservation reservation = reservationService.getOne(queryWrapper);
         return BackMsg.success(reservation);
     }
     @GetMapping("/findVid")
-    public BackMsg findvid(int id){
+    public BackMsg<List<Reservation>> findvid(int id){
         LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Reservation::getVenue,id);
         return BackMsg.success(reservationService.list(queryWrapper));
     }
     @GetMapping("/findvname")
-    public BackMsg find(String name1){
+    public BackMsg<List<Reservation>> find(String name1){
         LambdaQueryWrapper<Venue> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Venue::getVname,name1);
         Venue venue = venueService.getOne(queryWrapper);
@@ -168,10 +162,8 @@ public class ReservationController {
 
         int [] curCap= new int[8];
         for(Reservation res: periods){
-            String [] per1 = null;
-            int [] per = null;
-            per1 = res.getPeriod().split(",");
-            per = new int[per1.length];
+            String [] per1 = res.getPeriod().split(",");
+            int [] per = new int[per1.length];
             for (int i = 0;i<per.length;i++){
                 per[i] = Integer.parseInt(per1[i]);
             }
@@ -201,7 +193,7 @@ public class ReservationController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("illegal token in /reservation/add", e);
             throw  new RuntimeException("illegal token");
         }
         int id = Integer.parseInt(userid);
@@ -220,7 +212,7 @@ public class ReservationController {
     @Autowired
     RedisCache redisCache;
     @GetMapping("/getUnpaid")
-    public BackMsg getUnpaid(HttpServletRequest request){
+    public BackMsg<List<Reservation>> getUnpaid(HttpServletRequest request){
         LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
         String token = request.getHeader("token");
         String userid;
@@ -228,19 +220,20 @@ public class ReservationController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("illegal token in /reservation/getUnpaid", e);
             throw  new RuntimeException("illegal token");
         }
         String redisKey = "login"+userid;
-        // get information from redis
-        LoginUser user = redisCache.getCacheObject(redisKey);
-        queryWrapper.eq(Reservation::getRuid,Integer.parseInt(userid))
+        // keep redis touch to preserve login-state behavior
+        redisCache.getCacheObject(redisKey);
+        int uid = Integer.parseInt(userid);
+        queryWrapper.eq(Reservation::getRuid, uid)
                 .eq(Reservation::getStatus,"unpaid");
 
         return BackMsg.success(reservationService.list(queryWrapper));
     }
     @GetMapping("/getPaid")
-    public BackMsg getPaid(HttpServletRequest request){
+    public BackMsg<List<Reservation>> getPaid(HttpServletRequest request){
         LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
         String token = request.getHeader("token");
         String userid;
@@ -248,10 +241,11 @@ public class ReservationController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("illegal token in /reservation/getPaid", e);
             throw  new RuntimeException("illegal token");
         }
-        queryWrapper.eq(Reservation::getRuid,Integer.parseInt(userid))
+        int uid = Integer.parseInt(userid);
+        queryWrapper.eq(Reservation::getRuid, uid)
                 .eq(Reservation::getStatus,"valid");
         return BackMsg.success(reservationService.list(queryWrapper));
     }
@@ -281,10 +275,8 @@ public class ReservationController {
 
         int [] curCap= new int[8];
         for(Reservation res: periods){
-            String [] per1 = null;
-            int [] per = null;
-            per1 = res.getPeriod().split(",");
-            per = new int[per1.length];
+            String [] per1 = res.getPeriod().split(",");
+            int [] per = new int[per1.length];
             for (int i = 0;i<per.length;i++){
                 per[i] = Integer.parseInt(per1[i]);
             }

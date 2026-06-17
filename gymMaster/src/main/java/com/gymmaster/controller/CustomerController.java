@@ -150,7 +150,7 @@ public class CustomerController {
         try {
             customerService.save(customer);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("register failed", e);
             return BackMsg.error(e.toString());
         }
 

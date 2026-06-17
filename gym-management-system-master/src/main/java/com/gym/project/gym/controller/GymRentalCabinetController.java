@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gym.project.gym.domain.GymCommodity;
 import com.gym.project.gym.domain.GymMember;
-import com.gym.project.gym.domain.GymVip;
 import com.gym.project.gym.service.IGymMemberService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +86,7 @@ public class GymRentalCabinetController extends BaseController
     public void export(HttpServletResponse response, GymRentalCabinet gymRentalCabinet)
     {
         List<GymRentalCabinet> list = gymRentalCabinetService.selectGymRentalCabinetList(gymRentalCabinet);
-        ExcelUtil<GymRentalCabinet> util = new ExcelUtil<GymRentalCabinet>(GymRentalCabinet.class);
+        ExcelUtil<GymRentalCabinet> util = new ExcelUtil<>(GymRentalCabinet.class);
         util.exportExcel(response, list, "租柜数据");
     }
 

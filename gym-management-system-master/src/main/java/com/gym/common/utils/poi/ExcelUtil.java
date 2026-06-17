@@ -145,7 +145,7 @@ public class ExcelUtil<T>
     /**
      * 统计列表
      */
-    private Map<Integer, Double> statistics = new HashMap<Integer, Double>();
+    private final Map<Integer, Double> statistics = new HashMap<>();
 
     /**
      * 数字格式
@@ -166,7 +166,7 @@ public class ExcelUtil<T>
     {
         if (list == null)
         {
-            list = new ArrayList<T>();
+            list = new ArrayList<>();
         }
         this.list = list;
         this.sheetName = sheetName;
@@ -229,10 +229,10 @@ public class ExcelUtil<T>
     {
         this.type = Type.IMPORT;
         this.wb = WorkbookFactory.create(is);
-        List<T> list = new ArrayList<T>();
+        List<T> dataList = new ArrayList<>();
         // 如果指定sheet名,则取指定sheet中的内容 否则默认指向第1个sheet
-        Sheet sheet = StringUtils.isNotEmpty(sheetName) ? wb.getSheet(sheetName) : wb.getSheetAt(0);
-        if (sheet == null)
+        Sheet currentSheet = StringUtils.isNotEmpty(sheetName) ? wb.getSheet(sheetName) : wb.getSheetAt(0);
+        if (currentSheet == null)
         {
             throw new IOException("文件sheet不存在");
         }
@@ -240,21 +240,21 @@ public class ExcelUtil<T>
         Map<String, PictureData> pictures;
         if (isXSSFWorkbook)
         {
-            pictures = getSheetPictures07((XSSFSheet) sheet, (XSSFWorkbook) wb);
+            pictures = getSheetPictures07((XSSFSheet) currentSheet, (XSSFWorkbook) wb);
         }
         else
         {
-            pictures = getSheetPictures03((HSSFSheet) sheet, (HSSFWorkbook) wb);
+            pictures = getSheetPictures03((HSSFSheet) currentSheet, (HSSFWorkbook) wb);
         }
         // 获取最后一个非空行的行下标，比如总行数为n，则返回的为n-1
-        int rows = sheet.getLastRowNum();
+        int rows = currentSheet.getLastRowNum();
 
         if (rows > 0)
         {
             // 定义一个map用于存放excel列的序号和field.
-            Map<String, Integer> cellMap = new HashMap<String, Integer>();
+            Map<String, Integer> cellMap = new HashMap<>();
             // 获取表头
-            Row heard = sheet.getRow(titleNum);
+            Row heard = currentSheet.getRow(titleNum);
             for (int i = 0; i < heard.getPhysicalNumberOfCells(); i++)
             {
                 Cell cell = heard.getCell(i);
@@ -269,9 +269,9 @@ public class ExcelUtil<T>
                 }
             }
             // 有数据时才处理 得到类的所有field.
-            List<Object[]> fields = this.getFields();
-            Map<Integer, Object[]> fieldsMap = new HashMap<Integer, Object[]>();
-            for (Object[] objects : fields)
+            List<Object[]> fieldList = this.getFields();
+            Map<Integer, Object[]> fieldsMap = new HashMap<>();
+            for (Object[] objects : fieldList)
             {
                 Excel attr = (Excel) objects[1];
                 Integer column = cellMap.get(attr.name());
@@ -283,7 +283,7 @@ public class ExcelUtil<T>
             for (int i = titleNum + 1; i <= rows; i++)
             {
                 // 从第2行开始取数据,默认第一行是表头.
-                Row row = sheet.getRow(i);
+                Row row = currentSheet.getRow(i);
                 // 判断当前行是否是空行
                 if (isRowEmpty(row))
                 {
@@ -347,9 +347,9 @@ public class ExcelUtil<T>
                         {
                             val = DateUtils.parseDate(val);
                         }
-                        else if (val instanceof Double)
+                        else if (val instanceof Double numericVal)
                         {
-                            val = DateUtil.getJavaDate((Double) val);
+                            val = DateUtil.getJavaDate(numericVal);
                         }
                     }
                     else if (Boolean.TYPE == fieldType || Boolean.class == fieldType)
@@ -391,10 +391,10 @@ public class ExcelUtil<T>
                         ReflectUtils.invokeSetter(entity, propertyName, val);
                     }
                 }
-                list.add(entity);
+                dataList.add(entity);
             }
         }
-        return list;
+        return dataList;
     }
 
     /**
@@ -617,7 +617,7 @@ public class ExcelUtil<T>
     private Map<String, CellStyle> createStyles(Workbook wb)
     {
         // 写入各条记录,每条记录对应excel表中的一行
-        Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
+        Map<String, CellStyle> styleMap = new HashMap<>();
         CellStyle style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -626,7 +626,7 @@ public class ExcelUtil<T>
         titleFont.setFontHeightInPoints((short) 16);
         titleFont.setBold(true);
         style.setFont(titleFont);
-        styles.put("title", style);
+        styleMap.put("title", style);
 
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
@@ -643,10 +643,10 @@ public class ExcelUtil<T>
         dataFont.setFontName("Arial");
         dataFont.setFontHeightInPoints((short) 10);
         style.setFont(dataFont);
-        styles.put("data", style);
+        styleMap.put("data", style);
 
         style = wb.createCellStyle();
-        style.cloneStyleFrom(styles.get("data"));
+        style.cloneStyleFrom(styleMap.get("data"));
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
@@ -657,7 +657,7 @@ public class ExcelUtil<T>
         headerFont.setBold(true);
         headerFont.setColor(IndexedColors.WHITE.getIndex());
         style.setFont(headerFont);
-        styles.put("header", style);
+        styleMap.put("header", style);
 
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
@@ -666,24 +666,24 @@ public class ExcelUtil<T>
         totalFont.setFontName("Arial");
         totalFont.setFontHeightInPoints((short) 10);
         style.setFont(totalFont);
-        styles.put("total", style);
+        styleMap.put("total", style);
 
         style = wb.createCellStyle();
-        style.cloneStyleFrom(styles.get("data"));
+        style.cloneStyleFrom(styleMap.get("data"));
         style.setAlignment(HorizontalAlignment.LEFT);
-        styles.put("data1", style);
+        styleMap.put("data1", style);
 
         style = wb.createCellStyle();
-        style.cloneStyleFrom(styles.get("data"));
+        style.cloneStyleFrom(styleMap.get("data"));
         style.setAlignment(HorizontalAlignment.CENTER);
-        styles.put("data2", style);
+        styleMap.put("data2", style);
 
         style = wb.createCellStyle();
-        style.cloneStyleFrom(styles.get("data"));
+        style.cloneStyleFrom(styleMap.get("data"));
         style.setAlignment(HorizontalAlignment.RIGHT);
-        styles.put("data3", style);
+        styleMap.put("data3", style);
 
-        return styles;
+        return styleMap;
     }
 
     /**
@@ -709,27 +709,47 @@ public class ExcelUtil<T>
      */
     public void setCellVo(Object value, Excel attr, Cell cell)
     {
-        if (ColumnType.STRING == attr.cellType())
+        switch (attr.cellType())
         {
-            cell.setCellValue(StringUtils.isNull(value) ? attr.defaultValue() : value + attr.suffix());
-        }
-        else if (ColumnType.NUMERIC == attr.cellType())
-        {
-            if (StringUtils.isNotNull(value))
+            case STRING:
+                cell.setCellValue(StringUtils.isNull(value) ? attr.defaultValue() : value + attr.suffix());
+                break;
+            case NUMERIC:
+                if (StringUtils.isNotNull(value))
+                {
+                    String numericValue = Convert.toStr(value);
+                    if (StringUtils.contains(numericValue, "."))
+                    {
+                        Double doubleValue = Convert.toDouble(value);
+                        if (doubleValue != null)
+                        {
+                            cell.setCellValue(doubleValue);
+                        }
+                    }
+                    else
+                    {
+                        Integer intValue = Convert.toInt(value);
+                        if (intValue != null)
+                        {
+                            cell.setCellValue(intValue);
+                        }
+                    }
+                }
+                break;
+            case IMAGE:
             {
-                cell.setCellValue(StringUtils.contains(Convert.toStr(value), ".") ? Convert.toDouble(value) : Convert.toInt(value));
+                ClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, (short) cell.getColumnIndex(), cell.getRow().getRowNum(), (short) (cell.getColumnIndex() + 1), cell.getRow().getRowNum() + 1);
+                String imagePath = Convert.toStr(value);
+                if (StringUtils.isNotEmpty(imagePath))
+                {
+                    byte[] data = ImageUtils.getImage(imagePath);
+                    getDrawingPatriarch(cell.getSheet()).createPicture(anchor,
+                            cell.getSheet().getWorkbook().addPicture(data, getImageType(data)));
+                }
+                break;
             }
-        }
-        else if (ColumnType.IMAGE == attr.cellType())
-        {
-            ClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, (short) cell.getColumnIndex(), cell.getRow().getRowNum(), (short) (cell.getColumnIndex() + 1), cell.getRow().getRowNum() + 1);
-            String imagePath = Convert.toStr(value);
-            if (StringUtils.isNotEmpty(imagePath))
-            {
-                byte[] data = ImageUtils.getImage(imagePath);
-                getDrawingPatriarch(cell.getSheet()).createPicture(anchor,
-                        cell.getSheet().getWorkbook().addPicture(data, getImageType(data)));
-            }
+            default:
+                break;
         }
     }
 
@@ -750,12 +770,12 @@ public class ExcelUtil<T>
      */
     public int getImageType(byte[] value)
     {
-        String type = FileTypeUtils.getFileExtendName(value);
-        if ("JPG".equalsIgnoreCase(type))
+        String extensionType = FileTypeUtils.getFileExtendName(value);
+        if ("JPG".equalsIgnoreCase(extensionType))
         {
             return Workbook.PICTURE_TYPE_JPEG;
         }
-        else if ("PNG".equalsIgnoreCase(type))
+        else if ("PNG".equalsIgnoreCase(extensionType))
         {
             return Workbook.PICTURE_TYPE_PNG;
         }
@@ -767,7 +787,7 @@ public class ExcelUtil<T>
      */
     public void setDataValidation(Excel attr, Row row, int column)
     {
-        if (attr.name().indexOf("注：") >= 0)
+        if (attr.name().contains("注："))
         {
             sheet.setColumnWidth(column, 6000);
         }
@@ -898,7 +918,7 @@ public class ExcelUtil<T>
             dataValidation.setSuppressDropDownArrow(true);
             dataValidation.setShowErrorBox(true);
         }
-        else
+        else if (dataValidation != null)
         {
             dataValidation.setSuppressDropDownArrow(false);
         }
@@ -921,13 +941,13 @@ public class ExcelUtil<T>
         for (String item : convertSource)
         {
             String[] itemArray = item.split("=");
-            if (StringUtils.containsAny(separator, propertyValue))
+            if (propertyValue != null && propertyValue.contains(separator))
             {
                 for (String value : propertyValue.split(separator))
                 {
                     if (itemArray[0].equals(value))
                     {
-                        propertyString.append(itemArray[1] + separator);
+                        propertyString.append(itemArray[1]).append(separator);
                         break;
                     }
                 }
@@ -958,13 +978,13 @@ public class ExcelUtil<T>
         for (String item : convertSource)
         {
             String[] itemArray = item.split("=");
-            if (StringUtils.containsAny(separator, propertyValue))
+            if (propertyValue != null && propertyValue.contains(separator))
             {
                 for (String value : propertyValue.split(separator))
                 {
                     if (itemArray[1].equals(value))
                     {
-                        propertyString.append(itemArray[0] + separator);
+                        propertyString.append(itemArray[0]).append(separator);
                         break;
                     }
                 }
@@ -1056,7 +1076,7 @@ public class ExcelUtil<T>
      */
     public void addStatisticsRow()
     {
-        if (statistics.size() > 0)
+        if (!statistics.isEmpty())
         {
             Row row = sheet.createRow(sheet.getLastRowNum() + 1);
             Set<Integer> keys = statistics.keySet();
@@ -1114,7 +1134,7 @@ public class ExcelUtil<T>
         if (StringUtils.isNotEmpty(excel.targetAttr()))
         {
             String target = excel.targetAttr();
-            if (target.indexOf(".") > -1)
+            if (target.contains("."))
             {
                 String[] targets = target.split("[.]");
                 for (String name : targets)
@@ -1142,8 +1162,8 @@ public class ExcelUtil<T>
     {
         if (StringUtils.isNotNull(o) && StringUtils.isNotEmpty(name))
         {
-            Class<?> clazz = o.getClass();
-            Field field = clazz.getDeclaredField(name);
+            Class<?> objectClass = o.getClass();
+            Field field = objectClass.getDeclaredField(name);
             field.setAccessible(true);
             o = field.get(o);
         }
@@ -1165,7 +1185,7 @@ public class ExcelUtil<T>
      */
     public List<Object[]> getFields()
     {
-        List<Object[]> fields = new ArrayList<Object[]>();
+        List<Object[]> fieldList = new ArrayList<>();
         List<Field> tempFields = new ArrayList<>();
         tempFields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -1178,7 +1198,7 @@ public class ExcelUtil<T>
                 if (attr != null && (attr.type() == Type.ALL || attr.type() == type))
                 {
                     field.setAccessible(true);
-                    fields.add(new Object[] { field, attr });
+                    fieldList.add(new Object[] { field, attr });
                 }
             }
 
@@ -1192,12 +1212,12 @@ public class ExcelUtil<T>
                     if (attr != null && (attr.type() == Type.ALL || attr.type() == type))
                     {
                         field.setAccessible(true);
-                        fields.add(new Object[] { field, attr });
+                        fieldList.add(new Object[] { field, attr });
                     }
                 }
             }
         }
-        return fields;
+        return fieldList;
     }
 
     /**
@@ -1205,13 +1225,13 @@ public class ExcelUtil<T>
      */
     public short getRowHeight()
     {
-        double maxHeight = 0;
+        double rowMaxHeight = 0;
         for (Object[] os : this.fields)
         {
             Excel excel = (Excel) os[1];
-            maxHeight = maxHeight > excel.height() ? maxHeight : excel.height();
+            rowMaxHeight = rowMaxHeight > excel.height() ? rowMaxHeight : excel.height();
         }
-        return (short) (maxHeight * 20);
+        return (short) (rowMaxHeight * 20);
     }
 
     /**
@@ -1261,36 +1281,38 @@ public class ExcelUtil<T>
             Cell cell = row.getCell(column);
             if (StringUtils.isNotNull(cell))
             {
-                if (cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
+                switch (cell.getCellType())
                 {
-                    val = cell.getNumericCellValue();
-                    if (DateUtil.isCellDateFormatted(cell))
-                    {
-                        val = DateUtil.getJavaDate((Double) val); // POI Excel 日期格式转换
-                    }
-                    else
-                    {
-                        if ((Double) val % 1 != 0)
+                    case NUMERIC:
+                    case FORMULA:
+                        val = cell.getNumericCellValue();
+                        if (DateUtil.isCellDateFormatted(cell))
                         {
-                            val = new BigDecimal(val.toString());
+                            val = DateUtil.getJavaDate((Double) val); // POI Excel 日期格式转换
                         }
                         else
                         {
-                            val = new DecimalFormat("0").format(val);
+                            if ((Double) val % 1 != 0)
+                            {
+                                val = new BigDecimal(val.toString());
+                            }
+                            else
+                            {
+                                val = new DecimalFormat("0").format(val);
+                            }
                         }
-                    }
-                }
-                else if (cell.getCellType() == CellType.STRING)
-                {
-                    val = cell.getStringCellValue();
-                }
-                else if (cell.getCellType() == CellType.BOOLEAN)
-                {
-                    val = cell.getBooleanCellValue();
-                }
-                else if (cell.getCellType() == CellType.ERROR)
-                {
-                    val = cell.getErrorCellValue();
+                        break;
+                    case STRING:
+                        val = cell.getStringCellValue();
+                        break;
+                    case BOOLEAN:
+                        val = cell.getBooleanCellValue();
+                        break;
+                    case ERROR:
+                        val = cell.getErrorCellValue();
+                        break;
+                    default:
+                        break;
                 }
 
             }
@@ -1334,16 +1356,15 @@ public class ExcelUtil<T>
      */
     public static Map<String, PictureData> getSheetPictures03(HSSFSheet sheet, HSSFWorkbook workbook)
     {
-        Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();
+        Map<String, PictureData> sheetIndexPicMap = new HashMap<>();
         List<HSSFPictureData> pictures = workbook.getAllPictures();
         if (!pictures.isEmpty())
         {
             for (HSSFShape shape : sheet.getDrawingPatriarch().getChildren())
             {
                 HSSFClientAnchor anchor = (HSSFClientAnchor) shape.getAnchor();
-                if (shape instanceof HSSFPicture)
+                if (shape instanceof HSSFPicture pic)
                 {
-                    HSSFPicture pic = (HSSFPicture) shape;
                     int pictureIndex = pic.getPictureIndex() - 1;
                     HSSFPictureData picData = pictures.get(pictureIndex);
                     String picIndex = String.valueOf(anchor.getRow1()) + "_" + String.valueOf(anchor.getCol1());
@@ -1367,18 +1388,16 @@ public class ExcelUtil<T>
      */
     public static Map<String, PictureData> getSheetPictures07(XSSFSheet sheet, XSSFWorkbook workbook)
     {
-        Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();
+        Map<String, PictureData> sheetIndexPicMap = new HashMap<>();
         for (POIXMLDocumentPart dr : sheet.getRelations())
         {
-            if (dr instanceof XSSFDrawing)
+            if (dr instanceof XSSFDrawing drawing)
             {
-                XSSFDrawing drawing = (XSSFDrawing) dr;
                 List<XSSFShape> shapes = drawing.getShapes();
                 for (XSSFShape shape : shapes)
                 {
-                    if (shape instanceof XSSFPicture)
+                    if (shape instanceof XSSFPicture pic)
                     {
-                        XSSFPicture pic = (XSSFPicture) shape;
                         XSSFClientAnchor anchor = pic.getPreferredSize();
                         CTMarker ctMarker = anchor.getFrom();
                         String picIndex = ctMarker.getRow() + "_" + ctMarker.getCol();
