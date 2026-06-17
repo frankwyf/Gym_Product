@@ -15,9 +15,9 @@ public class LogsController {
     @Autowired
     LogService logService;
     @PostMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, int id){
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Logs> queryWrapper = new LambdaQueryWrapper();
+    public BackMsg<Page<Logs>> page(int page, int pageSize, int id){
+        Page<Logs> pageInfo = new Page<>(page,pageSize);
+        LambdaQueryWrapper<Logs> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Logs::getUid,id);
         queryWrapper.orderByDesc(Logs::getLid);
         logService.page(pageInfo,queryWrapper);
