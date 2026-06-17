@@ -3,7 +3,6 @@ package com.gym.project.gymmaster.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gym.project.gymmaster.common.BackMsg;
 import com.gym.project.gymmaster.entity.Posts;
-import com.gym.project.gymmaster.service.FacilityService;
 import com.gym.project.gymmaster.service.PostsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,18 +19,16 @@ import java.util.ArrayList;
 public class PostsController {
     @Autowired
     PostsService postsService;
-    @Autowired
-    FacilityService facilityService;
     @GetMapping("/init")
-    public BackMsg<ArrayList<Posts>> initPosts() {
+    public BackMsg<List<Posts>> initPosts() {
         // load all the posts from the database, length of the array is not fixed
-        ArrayList<Posts> posts = new ArrayList<>();
+        List<Posts> posts = new ArrayList<>();
         // get all the posts from the database
-        LambdaQueryWrapper<Posts> postQueryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<Posts> postQueryWrapper = new LambdaQueryWrapper<>();
         // return the posts in the order of the postid
         postQueryWrapper.orderByAsc(Posts::getPid);
         // set the data into arraylist type
-        posts = (ArrayList<Posts>) postsService.list(postQueryWrapper);
+        posts = postsService.list(postQueryWrapper);
         log.info("get the slides pictures for the home page");
         return BackMsg.success(posts);
     }

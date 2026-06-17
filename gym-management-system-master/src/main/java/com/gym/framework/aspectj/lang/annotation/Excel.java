@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import com.gym.common.utils.poi.ExcelHandlerAdapter;
 
 /**
@@ -52,9 +52,9 @@ public @interface Excel
     public int scale() default -1;
 
     /**
-     * BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN
+        * BigDecimal 舍入规则 默认:RoundingMode.HALF_EVEN
      */
-    public int roundingMode() default BigDecimal.ROUND_HALF_EVEN;
+    public int roundingMode() default RoundingMode.HALF_EVEN.ordinal();
 
     /**
      * 导出类型（0数字 1字符串）

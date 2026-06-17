@@ -30,3 +30,6 @@ Source_Code/gym-management-system-master/sql/ry-vue.sql
 
 # Mini program local state
 **/project.private.config.json
+
+# Local sandbox copies (not part of canonical source tree)
+Source_Code/
