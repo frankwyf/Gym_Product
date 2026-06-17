@@ -15,22 +15,24 @@ module.exports = {
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
-    "vue/max-attributes-per-line": [2, {
-      "singleline": 10,
-      "multiline": {
-        "max": 1,
-        "allowFirstLine": false
-      }
-    }],
+    "vue/max-attributes-per-line": 0,
     "vue/singleline-html-element-content-newline": "off",
     "vue/multiline-html-element-content-newline":"off",
+    "vue/html-indent": 0,
+    "vue/html-self-closing": 0,
+    "vue/attributes-order": 0,
+    "vue/html-closing-bracket-newline": 0,
+    "vue/order-in-components": 0,
+    "vue/require-prop-types": 0,
+    "vue/require-default-prop": 0,
+    "vue/this-in-template": 0,
+    "vue/no-unused-components": 0,
+    "vue/no-mutating-props": 0,
+    "vue/no-side-effects-in-computed-properties": 0,
     "vue/name-property-casing": ["error", "PascalCase"],
     "vue/no-v-html": "off",
     'accessor-pairs': 2,
-    'arrow-spacing': [2, {
-      'before': true,
-      'after': true
-    }],
+    'arrow-spacing': 0,
     'block-spacing': [2, 'always'],
     'brace-style': [2, '1tbs', {
       'allowSingleLine': true
@@ -38,38 +40,24 @@ module.exports = {
     'camelcase': [0, {
       'properties': 'always'
     }],
-    'comma-dangle': [2, 'never'],
-    'comma-spacing': [2, {
-      'before': false,
-      'after': true
-    }],
+    'comma-dangle': 0,
+    'comma-spacing': 0,
     'comma-style': [2, 'last'],
     'constructor-super': 2,
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
-    'eol-last': 2,
-    'eqeqeq': ["error", "always", {"null": "ignore"}],
+    'eol-last': 0,
+    'eqeqeq': 0,
     'generator-star-spacing': [2, {
       'before': true,
       'after': true
     }],
-    'handle-callback-err': [2, '^(err|error)$'],
-    'indent': [2, 2, {
-      'SwitchCase': 1
-    }],
+    'handle-callback-err': 0,
+    'indent': 0,
     'jsx-quotes': [2, 'prefer-single'],
-    'key-spacing': [2, {
-      'beforeColon': false,
-      'afterColon': true
-    }],
-    'keyword-spacing': [2, {
-      'before': true,
-      'after': true
-    }],
-    'new-cap': [2, {
-      'newIsCap': true,
-      'capIsNew': false
-    }],
+    'key-spacing': 0,
+    'keyword-spacing': 0,
+    'new-cap': 0,
     'new-parens': 2,
     'no-array-constructor': 2,
     'no-caller': 2,
@@ -85,7 +73,7 @@ module.exports = {
     'no-duplicate-case': 2,
     'no-empty-character-class': 2,
     'no-empty-pattern': 2,
-    'no-eval': 2,
+    'no-eval': 0,
     'no-ex-assign': 2,
     'no-extend-native': 2,
     'no-extra-bind': 2,
@@ -100,13 +88,10 @@ module.exports = {
     'no-irregular-whitespace': 2,
     'no-iterator': 2,
     'no-label-var': 2,
-    'no-labels': [2, {
-      'allowLoop': false,
-      'allowSwitch': false
-    }],
+    'no-labels': 0,
     'no-lone-blocks': 2,
     'no-mixed-spaces-and-tabs': 2,
-    'no-multi-spaces': 2,
+    'no-multi-spaces': 0,
     'no-multi-str': 2,
     'no-multiple-empty-lines': [2, {
       'max': 1
@@ -122,17 +107,17 @@ module.exports = {
     'no-octal-escape': 2,
     'no-path-concat': 2,
     'no-proto': 2,
-    'no-redeclare': 2,
+    'no-redeclare': 1,
     'no-regex-spaces': 2,
     'no-return-assign': [2, 'except-parens'],
     'no-self-assign': 2,
     'no-self-compare': 2,
-    'no-sequences': 2,
+    'no-sequences': 0,
     'no-shadow-restricted-names': 2,
     'no-spaced-func': 2,
     'no-sparse-arrays': 2,
     'no-this-before-super': 2,
-    'no-throw-literal': 2,
+    'no-throw-literal': 0,
     'no-trailing-spaces': 2,
     'no-undef': 2,
     'no-undef-init': 2,
@@ -143,10 +128,11 @@ module.exports = {
     }],
     'no-unreachable': 2,
     'no-unsafe-finally': 2,
-    'no-unused-vars': [2, {
+    'no-unused-vars': [1, {
       'vars': 'all',
       'args': 'none'
     }],
+    'no-prototype-builtins': 0,
     'no-useless-call': 2,
     'no-useless-computed-key': 2,
     'no-useless-constructor': 2,
@@ -162,38 +148,31 @@ module.exports = {
         ':': 'before'
       }
     }],
-    'padded-blocks': [2, 'never'],
-    'quotes': [2, 'single', {
-      'avoidEscape': true,
-      'allowTemplateLiterals': true
-    }],
-    'semi': [2, 'never'],
+    'padded-blocks': 0,
+    'quotes': 0,
+    'semi': 0,
     'semi-spacing': [2, {
       'before': false,
       'after': true
     }],
-    'space-before-blocks': [2, 'always'],
+    'space-before-blocks': 0,
     'space-before-function-paren': [2, 'never'],
     'space-in-parens': [2, 'never'],
-    'space-infix-ops': 2,
+    'space-infix-ops': 0,
     'space-unary-ops': [2, {
       'words': true,
       'nonwords': false
     }],
-    'spaced-comment': [2, 'always', {
-      'markers': ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ',']
-    }],
+    'spaced-comment': 0,
     'template-curly-spacing': [2, 'never'],
     'use-isnan': 2,
     'valid-typeof': 2,
     'wrap-iife': [2, 'any'],
     'yield-star-spacing': [2, 'both'],
     'yoda': [2, 'never'],
-    'prefer-const': 2,
+    'prefer-const': 0,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'object-curly-spacing': [2, 'always', {
-      objectsInObjects: false
-    }],
+    'object-curly-spacing': 0,
     'array-bracket-spacing': [2, 'never']
   }
 }
