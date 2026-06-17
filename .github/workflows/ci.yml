@@ -97,7 +97,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '17'
           cache: maven
       - name: Run unit tests
         run: mvn -f gymMaster/pom.xml test
@@ -111,7 +111,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '17'
           cache: maven
       - name: Verify backend
         run: mvn -f gym-management-system-master/pom.xml -DskipTests verify

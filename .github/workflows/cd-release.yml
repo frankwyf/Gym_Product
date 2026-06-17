@@ -47,7 +47,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '17'
           cache: maven
       - name: Package gymMaster
         run: mvn -f gymMaster/pom.xml -DskipTests package
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '17'
           cache: maven
       - name: Package gym-management-system-master
         run: mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.skip=true package
