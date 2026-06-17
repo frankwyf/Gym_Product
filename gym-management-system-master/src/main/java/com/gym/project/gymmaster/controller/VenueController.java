@@ -25,8 +25,7 @@ public class VenueController {
     @Autowired
     ReservationService reservationService;
     @GetMapping("/getById")
-    public BackMsg getById(@RequestBody Venue venue){
-        Date currentDate = new Date(System.currentTimeMillis());
+    public BackMsg<List<VenCap>> getById(@RequestBody Venue venue){
         ArrayList<Date> next7Days = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
@@ -38,7 +37,7 @@ public class VenueController {
             Date current = new Date();
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(current);
-            calendar.add(calendar.DATE, i);
+            calendar.add(Calendar.DATE, i);
             Date date = calendar.getTime();
             java.sql.Date d = new java.sql.Date(date.getTime());
             next7Days.add(d);
@@ -48,7 +47,6 @@ public class VenueController {
         LambdaQueryWrapper<Venue> venueLambdaQueryWrapper = new LambdaQueryWrapper<>();
         venueLambdaQueryWrapper.eq(Venue::getVid,venue.getVid());
         Venue venueThis = venueService.getOne(venueLambdaQueryWrapper);
-        int capacity = venueThis.getCapacity();
         for(Date date:next7Days) {
 
             LambdaQueryWrapper<Reservation> reservationLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -56,11 +54,7 @@ public class VenueController {
                     .eq(Reservation::getFacility, venueThis.getFid())
                     .eq(Reservation::getVenue, venue.getVid())
                     .eq(Reservation::getStatus, "valid");
-            ArrayList<Reservation> reservations = new ArrayList<>();
-            //put all reservations in reservationLambdaQueryWrapper into the arraylist
-            for (Reservation reservation : reservationService.list(reservationLambdaQueryWrapper)) {
-                reservations.add(reservation);
-            }
+            List<Reservation> reservations = reservationService.list(reservationLambdaQueryWrapper);
 //            LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
 //            cap.eq(Venue::getVid,venue.getVid())
 //                    .eq(Venue::getFid, venue.getFid());
@@ -70,11 +64,8 @@ public class VenueController {
             //3. 统计每一个时段的人数
             int [] curCap= new int[8];//
             for(Reservation res: reservations){
-                String [] per1 = null;
-                int [] per = null;
-                //获得this预约的period
-                per1 = res.getPeriod().split(",");
-                per = new int[per1.length];
+                String [] per1 = res.getPeriod().split(",");
+                int [] per = new int[per1.length];
                 for (int i = 0;i<per.length;i++){
                     per[i] = Integer.parseInt(per1[i]);
                 }
@@ -93,16 +84,15 @@ public class VenueController {
     }
 
     @GetMapping("/getAvailableVenues")
-    public BackMsg<List> getAvailableVenues() {
+    public BackMsg<List<VenCap>> getAvailableVenues() {
         // get the current date and make an array with the next 7 days
-        Date currentDate = new Date(System.currentTimeMillis());
         ArrayList<Date> next7Days = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
             Date current = new Date();
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(current);
-            calendar.add(calendar.DATE, i);
+            calendar.add(Calendar.DATE, i);
             Date date = calendar.getTime();
             java.sql.Date d = new java.sql.Date(date.getTime());
             next7Days.add(d);
@@ -127,25 +117,17 @@ public class VenueController {
                         .eq(Reservation::getFacility, venue.getFid())
                         .eq(Reservation::getVenue, venue.getVid())
                         .eq(Reservation::getStatus, "valid");
-                ArrayList<Reservation> reservations = new ArrayList<>();
-                //put all reservations in reservationLambdaQueryWrapper into the arraylist
-                for (Reservation reservation : reservationService.list(reservationLambdaQueryWrapper)) {
-                    reservations.add(reservation);
-                }
+                List<Reservation> reservations = reservationService.list(reservationLambdaQueryWrapper);
                 LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
                 cap.eq(Venue::getVid,venue.getVid())
                         .eq(Venue::getFid, venue.getFid());
                 Venue venue1 = venueService.getOne(cap);
-                int capacity = venue.getCapacity();
 
                 //3. 统计每一个时段的人数
                 int [] curCap= new int[8];//
                 for(Reservation res: reservations){
-                    String [] per1 = null;
-                    int [] per = null;
-                    //获得this预约的period
-                    per1 = res.getPeriod().split(",");
-                    per = new int[per1.length];
+                    String [] per1 = res.getPeriod().split(",");
+                    int [] per = new int[per1.length];
                     for (int i = 0;i<per.length;i++){
                         per[i] = Integer.parseInt(per1[i]);
                     }

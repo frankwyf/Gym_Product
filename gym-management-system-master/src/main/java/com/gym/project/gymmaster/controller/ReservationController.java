@@ -106,11 +106,9 @@ public class ReservationController {
         //3. 统计每一个时段的人数
         int [] curCap= new int[8];
         for(Reservation res: periods){
-            String [] per1 = null;
-            int [] per = null;
             //获得this预约的period
-            per1 = res.getPeriod().split(",");
-            per = new int[per1.length];
+            String [] per1 = res.getPeriod().split(",");
+            int [] per = new int[per1.length];
             for (int i = 0;i<per.length;i++){
                 per[i] = Integer.parseInt(per1[i]);
             }

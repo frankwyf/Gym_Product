@@ -46,6 +46,7 @@ public class CustomerController {
             queryWrapper1.eq(Account::getUid,cus.getUid());
             Account aco = accountService.getOne(queryWrapper1);
             if (aco == null){
+                aco = new Account();
                 aco.setUid(cus.getUid());
                 aco.setActive(true);
                 accountService.save(aco);
@@ -63,10 +64,10 @@ public class CustomerController {
         if (customer1 != null){
             return BackMsg.error("The username is existed!");
         }
-        if (customer1.getProfile() == null){
-            customer1.setProfile(basePath+"picture/default.png");
+        if (customer.getProfile() == null){
+            customer.setProfile(basePath+"picture/default.png");
         }
-        customerService.save(customer1);
+        customerService.save(customer);
         return BackMsg.success("Successfully register!");
     }
 
