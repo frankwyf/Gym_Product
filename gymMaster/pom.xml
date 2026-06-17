@@ -114,7 +114,14 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.23</version>
+            <version>1.2.27</version>
+        </dependency>
+
+        <!-- pin newer javassist to avoid legacy transitive metadata warnings -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.30.2-GA</version>
         </dependency>
 
         <!-- jUnit testing framework-->
