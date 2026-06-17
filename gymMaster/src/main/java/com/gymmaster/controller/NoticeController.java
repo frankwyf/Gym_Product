@@ -46,10 +46,10 @@ public class NoticeController {
         return BackMsg.success("remove the employe successfully");
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Notice>> page(int page, int pageSize, String name){
 
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper();
+        Page<Notice> pageInfo = new Page<>(page,pageSize);
+        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Notice::getTitle,name);
         queryWrapper.orderByDesc(Notice::getNid);
         noticeService.page(pageInfo,queryWrapper);

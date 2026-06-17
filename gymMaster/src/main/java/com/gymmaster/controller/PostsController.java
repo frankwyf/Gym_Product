@@ -1,13 +1,11 @@
 package com.gymmaster.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Comments;
 import com.gymmaster.entity.LoginUser;
 import com.gymmaster.entity.Posts;
 import com.gymmaster.service.CommentService;
-import com.gymmaster.service.FacilityService;
 import com.gymmaster.service.PostsService;
 import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
@@ -33,25 +31,21 @@ public class PostsController {
 
     @Autowired
     CommentService commentService;
-    @Autowired
-    FacilityService facilityService;
+
     @GetMapping("/init")
     public BackMsg<ArrayList<Posts>> initPosts() {
-        // load all the posts from the database, length of the array is not fixed
-        ArrayList<Posts> posts = new ArrayList<>();
         // get all the posts from the database
-        LambdaQueryWrapper<Posts> postQueryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<Posts> postQueryWrapper = new LambdaQueryWrapper<>();
         // return the posts in the order of the post id
         postQueryWrapper.orderByAsc(Posts::getPid);
-        // set the data into arraylist type
-        posts = (ArrayList<Posts>) postsService.list(postQueryWrapper);
+        ArrayList<Posts> posts = new ArrayList<>(postsService.list(postQueryWrapper));
         log.info("get the slides pictures for the home page");
         return BackMsg.success(posts);
     }
 
     // post a comment for a specific post, return a success message for frontend to show
     @GetMapping(value = "/postComment")
-    public BackMsg postComment(HttpServletRequest request) {
+    public BackMsg<String> postComment(HttpServletRequest request) {
         // get current user from redis
         int postID = request.getHeader("PostID") == null ? 0 : Integer.parseInt(request.getHeader("postID"));
         String content = request.getHeader("content");
@@ -62,7 +56,7 @@ public class PostsController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("illegal token in /posts/postComment", e);
             throw  new RuntimeException("illegal token");
         }
         String redisKey = "login"+userid;
@@ -92,7 +86,7 @@ public class PostsController {
 
     // add a new post
     @GetMapping("/add")
-    public BackMsg add(String content, String media, HttpServletRequest request) {
+    public BackMsg<String> add(String content, String media, HttpServletRequest request) {
         // get the current user from redis
         String token = request.getHeader("token");
         String userid;
@@ -100,7 +94,7 @@ public class PostsController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("illegal token in /posts/add", e);
             throw  new RuntimeException("illegal token");
         }
         String redisKey = "login"+userid;

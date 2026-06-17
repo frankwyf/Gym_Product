@@ -8,20 +8,14 @@ import com.gym.framework.web.domain.AjaxResult;
 import com.gym.framework.web.page.TableDataInfo;
 import com.gym.project.gym.domain.GymMember;
 import com.gym.project.gym.service.IGymMemberService;
-import com.gym.project.gym.service.IGymVipService;
-import com.gym.project.system.domain.SysRole;
 import com.gym.project.system.domain.SysUser;
 import com.gym.project.system.service.ISysRoleService;
 import com.gym.project.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.gym.framework.web.domain.AjaxResult.success;
 
@@ -76,7 +70,7 @@ public class GymStudentAssignmentController {
         AjaxResult ajax = success();
         if(gymMember!=null){
             SysUser user = userService.selectUserById(gymMember.getTeacherId());
-            List<SysUser> users = new ArrayList<SysUser>();
+            List<SysUser> users = new ArrayList<>();
             users.add(user);
             ajax.put("teachers", users);
             return ajax;
