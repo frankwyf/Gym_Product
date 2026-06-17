@@ -17,7 +17,7 @@ import java.io.IOException;
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-        BackMsg result = BackMsg.error(HttpStatus.FORBIDDEN.value(),"Do not have permission!");
+        BackMsg<Object> result = BackMsg.error(HttpStatus.FORBIDDEN.value(),"Do not have permission!");
         String json = JSON.toJSONString(result);
         //处理异常
         WebUtils.renderString(httpServletResponse, json);

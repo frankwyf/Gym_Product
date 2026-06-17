@@ -31,23 +31,18 @@ public class CapController {
     CustomerService customerService;
 
     @GetMapping("/getCaptcha")
-    public BackMsg hello(String email) {
+    public BackMsg<String> hello(String email) {
         int x = (int)((Math.random()*9+1)*100000);
-        String regards = "Dear Sir/Madam,Thank you for choosing our service. We are excited to have you on board! " +
-                "As part of our account verification process, we need to confirm your email. To do this, we've sent you " +
-                "an SMS code to your registered phone number. However, if you're unable to receive SMS messages in your " +
-                "email box, please try again.\n" +
-
-                "Please find your SMS code below:\n" +
-
-                String.valueOf(x) +
-                "\n" +
-                "If you have any trouble using the code, please don't hesitate to contact our support team at " +
-                supportEmail + "." +
-
-                "Thank you for choosing our service. We look forward to serving you.\n" +
-
-                "Best regards.\n";
+        String regards = """
+                Dear Sir/Madam,Thank you for choosing our service. We are excited to have you on board! As part of our account verification process, we need to confirm your email. To do this, we've sent you an SMS code to your registered phone number. However, if you're unable to receive SMS messages in your email box, please try again.
+                
+                Please find your SMS code below:
+                
+                %s
+                If you have any trouble using the code, please don't hesitate to contact our support team at %s.
+                Thank you for choosing our service. We look forward to serving you.
+                Best regards.
+                """.formatted(x, supportEmail);
 
         try {
             mailService.sendSimpleMail(mailUsername,
@@ -66,7 +61,7 @@ public class CapController {
 
     // for reset password
     @GetMapping("/getCaptchaReset")
-    public BackMsg reset(String email, String Username) {
+    public BackMsg<String> reset(String email, String Username) {
         // check if the username is valid
         LambdaQueryWrapper<Customer> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Customer::getUsername, Username);
@@ -80,21 +75,16 @@ public class CapController {
         }
 
         int x = (int)((Math.random()*9+1)*100000);
-        String regards = "Dear Sir/Madam,Thank you for choosing our service. We are excited to have you on board! " +
-                "As part of our account verification process, we need to confirm your email. To do this, we've sent you " +
-                "an SMS code to your registered phone number. However, if you're unable to receive SMS messages in your " +
-                "email box, please try again.\n" +
-
-                "Please find your SMS code below:\n" +
-
-                String.valueOf(x) +
-                "\n" +
-                "If you have any trouble using the code, please don't hesitate to contact our support team at " +
-                supportEmail + "." +
-
-                "Thank you for choosing our service. We look forward to serving you.\n" +
-
-                "Best regards.\n";
+        String regards = """
+            Dear Sir/Madam,Thank you for choosing our service. We are excited to have you on board! As part of our account verification process, we need to confirm your email. To do this, we've sent you an SMS code to your registered phone number. However, if you're unable to receive SMS messages in your email box, please try again.
+                
+            Please find your SMS code below:
+                
+            %s
+            If you have any trouble using the code, please don't hesitate to contact our support team at %s.
+            Thank you for choosing our service. We look forward to serving you.
+            Best regards.
+            """.formatted(x, supportEmail);
 
         try {
             mailService.sendSimpleMail(mailUsername,

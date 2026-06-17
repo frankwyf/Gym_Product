@@ -17,7 +17,7 @@ import java.io.IOException;
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        BackMsg result = BackMsg.error(HttpStatus.UNAUTHORIZED.value(),"not logged in, authentication failed!");
+        BackMsg<Object> result = BackMsg.error(HttpStatus.UNAUTHORIZED.value(),"not logged in, authentication failed!");
         String json = JSON.toJSONString(result);
         WebUtils.renderString(response, json);
     }

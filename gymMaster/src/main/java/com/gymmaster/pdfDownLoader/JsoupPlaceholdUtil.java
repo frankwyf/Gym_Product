@@ -45,17 +45,19 @@ public class JsoupPlaceholdUtil {
         for (Map.Entry<String, Object> entry : entrySet) {
             // 获取最后一个对应的element
             Element element = document.getElementsByAttributeValue("id", entry.getKey()).last();
-            if ("tr".equals(element.tagName())) {
-                List<Map<String, Object>> counselList = (List<Map<String, Object>>)entry.getValue();
-                // 设置行，就是把列表数据设置到html的表格行中
-                setRowsText(document, element, counselList);
-
-            } else if("td".equals(element.tagName())){
-                // 对html元素设置文本
-                element.text(entry.getValue().toString());
-            }
-            else{
-
+            switch (element.tagName()) {
+                case "tr":
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> counselList = (List<Map<String, Object>>) entry.getValue();
+                    // 设置行，就是把列表数据设置到html的表格行中
+                    setRowsText(document, element, counselList);
+                    break;
+                case "td":
+                    // 对html元素设置文本
+                    element.text(entry.getValue().toString());
+                    break;
+                default:
+                    break;
             }
 
         }

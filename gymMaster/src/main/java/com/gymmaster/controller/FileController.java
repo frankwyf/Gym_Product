@@ -1,6 +1,5 @@
 package com.gymmaster.controller;
 
-import cn.hutool.extra.servlet.ServletUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Customer;
@@ -9,9 +8,9 @@ import com.gymmaster.service.CustomerService;
 import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +18,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -37,6 +35,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/file")
+@Slf4j
 public class FileController {
     @Value("${gym.path}")
     private String basePath;
@@ -47,11 +46,13 @@ public class FileController {
     @PostMapping("/upload/customer")
     public BackMsg<String> upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
         String orgin = file.getOriginalFilename();
+        if (orgin == null || !orgin.contains(".")) {
+            return BackMsg.error("invalid file name");
+        }
         String fileName = UUID.randomUUID().toString();
         String suffix = orgin.substring(orgin.lastIndexOf("."));
         fileName = fileName+suffix;
-        String name = "";
-        name = basePath + "customerpro/";
+        String name = basePath + "customerpro/";
         File dir = new File(name);
         if(!dir.exists()){
             dir.mkdirs();
@@ -64,7 +65,7 @@ public class FileController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to parse token in upload customer", e);
             throw  new RuntimeException("illegal token");
         }
         String redisKey = "login"+userid;
@@ -82,11 +83,13 @@ public class FileController {
 @PostMapping("/upload/posts")
     public BackMsg<String> uploadposts(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
         String orgin = file.getOriginalFilename();
+        if (orgin == null || !orgin.contains(".")) {
+            return BackMsg.error("invalid file name");
+        }
         String fileName = UUID.randomUUID().toString();
         String suffix = orgin.substring(orgin.lastIndexOf("."));
         fileName = fileName+suffix;
-        String name = "";
-        name = basePath + "posts/";
+        String name = basePath + "posts/";
         File dir = new File(name);
         if(!dir.exists()){
             dir.mkdirs();
@@ -103,32 +106,28 @@ public class FileController {
     public void download(String name, HttpServletResponse response){
 
         try {
-            //get the required file through file input stream
-            String[] f = name.split("\\.");
-            FileInputStream fileInputStream;
-            ResourceLoader resourceLoader = null;
-            //get the file output stream
-            ServletOutputStream outputStream = response.getOutputStream();
-            InputStream inputStream = null;
-            if(f[1].equals("png")) {
+            if (name == null || !name.contains(".")) {
+                return;
+            }
+            String suffix = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+            if ("png".equals(suffix)) {
                 response.setContentType("image/png");
-                fileInputStream = new FileInputStream(new File(basePath + "/static/customerpro/" +name));
             }
-            else  {
+            else {
                 response.setContentType("image/jpg");
-                inputStream = resourceLoader.getResource(basePath + "/static/customerpro/"+name).getInputStream();
             }
-
-            int len = 0;
-            byte[] bytes = new byte[1024];
-            while ((len = inputStream.read(bytes)) != -1){
-                outputStream.write(bytes,0,len);
+            Path filePath = Paths.get(basePath + "customerpro/" + name);
+            try (InputStream inputStream = Files.newInputStream(filePath);
+                 ServletOutputStream outputStream = response.getOutputStream()) {
+                byte[] bytes = new byte[1024];
+                int len;
+                while ((len = inputStream.read(bytes)) != -1){
+                    outputStream.write(bytes,0,len);
+                }
                 outputStream.flush();
             }
-            outputStream.close();
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("Failed to download file {}", name, e);
         }
     }
 

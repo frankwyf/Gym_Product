@@ -2,12 +2,7 @@ package com.gymmaster.controller;
 
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Bill;
-import com.gymmaster.service.AccountService;
 import com.gymmaster.service.BillService;
-import com.gymmaster.service.FacilityService;
-import com.gymmaster.service.ReservationService;
-import com.gymmaster.service.VenueService;
-import com.gymmaster.utils.RedisCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,29 +28,14 @@ class BillControllerUnitTest {
     @Mock
     private BillService billService;
 
-    @Mock
-    private FacilityService facilityService;
-
-    @Mock
-    private VenueService venueService;
-
-    @Mock
-    private RedisCache redisCache;
-
-    @Mock
-    private AccountService accountService;
-
-    @Mock
-    private ReservationService reservationService;
-
     @Test
     void pagePeriod_shouldRejectInvalidTimeRange() {
         Timestamp start = Timestamp.valueOf("2026-06-10 00:00:00");
         Timestamp end = Timestamp.valueOf("2026-06-01 00:00:00");
 
-        BackMsg<Map> result = controller.pagePeriod(start, end);
+        BackMsg<Map<String, BigDecimal>> result = controller.pagePeriod(start, end);
 
-        Assertions.assertEquals(0, result.getCode());
+        Assertions.assertEquals(Integer.valueOf(0), result.getCode());
         Assertions.assertEquals("wrong date entered!", result.getMsg());
     }
 
@@ -81,9 +61,9 @@ class BillControllerUnitTest {
         Timestamp start = Timestamp.valueOf("2026-06-01 00:00:00");
         Timestamp end = Timestamp.valueOf("2026-06-10 00:00:00");
 
-        BackMsg<Map> result = controller.pagePeriod(start, end);
+        BackMsg<Map<String, BigDecimal>> result = controller.pagePeriod(start, end);
 
-        Assertions.assertEquals(1, result.getCode());
+        Assertions.assertEquals(Integer.valueOf(1), result.getCode());
         Map<String, BigDecimal> stats = result.getData();
         Assertions.assertEquals(new BigDecimal("50.00"), stats.get("Pool"));
         Assertions.assertFalse(stats.containsKey("Yoga"));

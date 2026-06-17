@@ -81,12 +81,12 @@ public class CoachController {
         return BackMsg.success("successfully log out");
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(String page, String pageSize, String name){
+    public BackMsg<Page<Coach>> page(String page, String pageSize, String name){
 
         int page1 = Integer.parseInt(page);
         int pageSize1 = Integer.parseInt(pageSize);
-        Page pageInfo = new Page(page1,pageSize1);
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper();
+        Page<Coach> pageInfo = new Page<>(page1,pageSize1);
+        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Coach::getUsername,name);
         queryWrapper.orderByDesc(Coach::getCoaid);
         coachService.page(pageInfo,queryWrapper);

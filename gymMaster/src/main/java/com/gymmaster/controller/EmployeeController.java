@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,12 +52,12 @@ public class EmployeeController {
         return BackMsg.success("new employee added successfully");
     }
     @GetMapping("/page")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Employee>> page(int page, int pageSize, String name){
 
 
 
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper();
+        Page<Employee> pageInfo = new Page<>(page,pageSize);
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Employee::getUsername,name);
         queryWrapper.orderByDesc(Employee::getEid);
         employeeService.page(pageInfo,queryWrapper);

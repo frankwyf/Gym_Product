@@ -9,6 +9,7 @@ import com.gymmaster.service.*;
 import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/bill")
 public class BillController {
@@ -33,7 +33,7 @@ public class BillController {
     //FacilityService
     //按照种类查看流水，按照月份、周查看流水，
     @GetMapping("/page/period")
-    public BackMsg<Map> pagePeriod(Timestamp start, Timestamp endTime) {
+    public BackMsg<Map<String, BigDecimal>> pagePeriod(Timestamp start, Timestamp endTime) {
         if(start == null){
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -54,7 +54,7 @@ public class BillController {
             return BackMsg.error("wrong date entered!");
         }
 
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
         List<Bill> orders = billService.list(queryWrapper);
 
 //        LambdaQueryWrapper<Facility> queryWrapper0 = new LambdaQueryWrapper();
@@ -79,24 +79,24 @@ public class BillController {
         return BackMsg.success(statistic);
     }
     @GetMapping("/page/facility")
-    public BackMsg<Page> page(int page, int pageSize, String name){
+    public BackMsg<Page<Bill>> page(int page, int pageSize, String name){
 
-        Page pageInfo = new Page(page,pageSize);
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper();
+        Page<Bill> pageInfo = new Page<>(page,pageSize);
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name),Bill::getFname,name);
         queryWrapper.orderByDesc(Bill::getBid);
         billService.page(pageInfo,queryWrapper);
         return BackMsg.success(pageInfo);
     }
     @GetMapping("/showall")
-    public BackMsg showall(HttpServletRequest request){
+    public BackMsg<List<Bill>> showall(HttpServletRequest request){
         String token = request.getHeader("token");
         String userid;
         try {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to parse token in showall", e);
             throw  new RuntimeException("illegal token");
         }
         String redisKey = "login"+userid;
@@ -118,11 +118,11 @@ public class BillController {
     ReservationService reservationService;
 
     @PostMapping("/pay")
-    public BackMsg add(@RequestBody Map<String,Object> goodlist, int aid, double total,HttpServletRequest request) throws Exception {
+    public BackMsg<String> add(@RequestBody Map<String,Object> goodlist, int aid, double total,HttpServletRequest request) throws Exception {
         // Get the list of values from the map
         List<Goods> goods = new ArrayList<>();
-        Map<String, Object> goodsList = goodlist;
-        List<Map<String, Object>> goodsMaps = (List<Map<String, Object>>) goodsList.get("goodlist");
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> goodsMaps = (List<Map<String, Object>>) goodlist.get("goodlist");
         for (Map<String, Object> item : goodsMaps) {
             String date = (String) item.get("date");
             String facility = (String) item.get("facility").toString();
@@ -154,14 +154,13 @@ public class BillController {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to parse token in pay", e);
             throw new RuntimeException("illegal token");
         }
         String redisKey = "login" + userid;
 
         // get information from redis
         LoginUser user = redisCache.getCacheObject(redisKey);
-        List<Reservation> reservations = new ArrayList<>();
         for(Goods good: goods){
             Reservation reservation = new Reservation();
             reservation.setRuid(Integer.parseInt(userid));
@@ -203,11 +202,9 @@ public class BillController {
                 //3. statistic the current capacity
                 int[] curCap = new int[8];
                 for (Reservation res : periods) {
-                    String[] per1 = null;
-                    int[] per = null;
                     // get the period of this reservation
-                    per1 = res.getPeriod().split(",");
-                    per = new int[per1.length];
+                    String[] per1 = res.getPeriod().split(",");
+                    int[] per = new int[per1.length];
                     for (int i = 0; i < per.length; i++) {
                         per[i] = Integer.parseInt(per1[i]);
                     }
@@ -249,7 +246,6 @@ public class BillController {
         for(Goods goods1: goods)
         {
             Reservation reservation = goods1.getReservation();
-            String[] per = reservation.getPeriod().split(",");
             LambdaQueryWrapper<Venue> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Venue::getVid, reservation.getVenue());
             LambdaQueryWrapper<Facility> queryWrapper1 = new LambdaQueryWrapper<>();
@@ -262,7 +258,9 @@ public class BillController {
 
 
             Account account = accountService.getOne(queryWrapper2);
-            int pri = venueService.getOne(queryWrapper).getPrice();
+            if (account == null) {
+                return BackMsg.error("account does not exist!");
+            }
 
 
             String iden = user.getCustomer().getMembership();
@@ -305,19 +303,11 @@ public class BillController {
     }
 
     public static double discount(String type){
-        double fee;
-        if (type.equals("copper member")){
-            fee = 0.8;
-        }
-        else if (type.equals("silver member")){
-            fee = 0.6;
-        }
-        else if(type.equals("gold member")){
-            fee = 0.3;
-        }
-        else {
-            fee = 1.0;
-        }
-        return fee;
+        return switch (type) {
+            case "copper member" -> 0.8;
+            case "silver member" -> 0.6;
+            case "gold member" -> 0.3;
+            default -> 1.0;
+        };
     }
 }

@@ -19,7 +19,7 @@ public class BackMsg<T> {
 
     private T data; // data from database
 
-    private Map map = new HashMap(); // data structure to store data
+    private Map<String, Object> map = new HashMap<>(); // data structure to store data
 
     /**
      * success function
@@ -28,20 +28,20 @@ public class BackMsg<T> {
      * @return
      */
     public static <T> BackMsg<T> success(T object) {
-        BackMsg<T> r = new BackMsg<T>();
+        BackMsg<T> r = new BackMsg<>();
         r.data = object;
         r.code = 1; // success
         return r;
     }
 
     public static <T> BackMsg<T> error(String msg) {
-        BackMsg r = new BackMsg();
+        BackMsg<T> r = new BackMsg<>();
         r.msg = msg;
         r.code = 0; // error
         return r;
     }
     public static <T> BackMsg<T> error(Integer code,String msg) {
-        BackMsg r = new BackMsg();
+        BackMsg<T> r = new BackMsg<>();
         r.msg = msg;
         r.code = code; // error
         //r.data = data;
