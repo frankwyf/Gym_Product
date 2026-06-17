@@ -9,13 +9,11 @@ import com.gymmaster.service.CustomerService;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gymmaster.service.GoalService;
-import com.gymmaster.service.ReservationService;
 import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +36,6 @@ public class CustomerController {
     @Autowired
     private GoalService goalService;
 
-    @Autowired
-    ReservationService reservationService;
-
-    @Value("${gym.path}")
-    private String basePath;
-
     public static java.sql.Date  sqlDateAdd(java.sql.Date date){
         //java.sql.Date currentDate = new Date(System.currentTimeMillis());
         Calendar calendar = new GregorianCalendar();
@@ -54,42 +46,32 @@ public class CustomerController {
         return d;
     }
     public static BigDecimal fee(String type){
-        BigDecimal fee;
-        if (type.equals("copper member")){
-            fee = new BigDecimal(10);
-        }
-        else if (type.equals("silver member")){
-            fee = new BigDecimal(20);
-        }
-        else {
-            fee = new BigDecimal(30);
-        }
-        return fee;
+        return switch (type) {
+            case "copper member" -> new BigDecimal(10);
+            case "silver member" -> new BigDecimal(20);
+            default -> new BigDecimal(30);
+        };
     }
-    @GetMapping("/getuid")
-    public BackMsg<Integer> getuid(HttpServletRequest request){
+
+    private int getCurrentUserId(HttpServletRequest request){
         String token = request.getHeader("token");
-        String userid;
         try {
             Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
+            return Integer.parseInt(claims.getSubject());
+        } catch (Exception exception) {
+            log.warn("Failed to parse customer token", exception);
+            throw new RuntimeException("illegal token");
         }
-        return BackMsg.success(Integer.parseInt(userid));
+    }
+
+    @GetMapping("/getuid")
+    public BackMsg<Integer> getuid(HttpServletRequest request){
+        return BackMsg.success(getCurrentUserId(request));
     }
     @PostMapping("/vipMem")
     public BackMsg<String> vipMem(int aid, String type, HttpServletRequest request){
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
-        }
+        int userId = getCurrentUserId(request);
+        String userid = String.valueOf(userId);
         String redisKey = "login"+userid;
         // get information from redis
         LoginUser user = redisCache.getCacheObject(redisKey);
@@ -196,15 +178,7 @@ public class CustomerController {
 
     @GetMapping("/CheckInformation")
     public BackMsg<LoginUser> CheckInformation(HttpServletRequest request){
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
-        }
+        String userid = String.valueOf(getCurrentUserId(request));
         String redisKey = "login"+userid;
 
         // get information from redis
@@ -216,15 +190,7 @@ public class CustomerController {
     @PostMapping("/update")
     public BackMsg<String> update(@RequestBody Customer customer, HttpServletRequest request){
         // get the customer id
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
-        }
+        String userid = String.valueOf(getCurrentUserId(request));
         String redisKey = "login"+userid;
         // get information from redis
         LoginUser user = redisCache.getCacheObject(redisKey);
@@ -255,22 +221,15 @@ public class CustomerController {
     @PostMapping("/updateGoal")
     public BackMsg<String> updateGoal(@RequestBody Goal goal, HttpServletRequest request){
         // get the customer id
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
-        }
+        int userId = getCurrentUserId(request);
+        String userid = String.valueOf(userId);
         String redisKey = "login"+userid;
         // get information from redis
         LoginUser user = redisCache.getCacheObject(redisKey);
 
         // get the goal information by the customer id
         LambdaQueryWrapper<Goal> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Goal::getUid,Integer.parseInt(userid));
+        queryWrapper.eq(Goal::getUid, userId);
 
         goal.setUid(user.getCustomer().getUid());
         goal.setGid(goalService.getOne(queryWrapper).getGid());
@@ -295,15 +254,7 @@ public class CustomerController {
     // get the customer goal information
     @GetMapping("/goal")
     public BackMsg<Goal> getGoal(HttpServletRequest request){
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("illegal token");
-        }
+        String userid = String.valueOf(getCurrentUserId(request));
         String redisKey = "login"+userid;
 
         // get information from redis
