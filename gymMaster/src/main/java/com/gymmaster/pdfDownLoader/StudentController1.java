@@ -9,13 +9,11 @@ import com.gymmaster.mail.aa.SendMailService;
 import com.gymmaster.service.BillService;
 import com.gymmaster.service.CustomerService;
 import com.gymmaster.service.LogService;
-import com.gymmaster.utils.JwtUtil;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.layout.font.FontProvider;
 import com.itextpdf.layout.font.FontSet;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -145,7 +143,7 @@ public class StudentController1 {
     @Autowired
     private SendMailService sendMailService;
     @GetMapping("/export/getAll")
-    public BackMsg sendAll(int id) throws Exception {
+    public BackMsg<String> sendAll(int id) throws Exception {
         LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Bill::getUid,id);
         String m = "";
@@ -158,7 +156,7 @@ public class StudentController1 {
     }
 
     @GetMapping("/export/sendBill")
-    public BackMsg sendBill( String x) throws Exception {
+    public BackMsg<String> sendBill(String x) throws Exception {
 
         String[] bills = x.split(",");
         int[] bil = new int[bills.length];

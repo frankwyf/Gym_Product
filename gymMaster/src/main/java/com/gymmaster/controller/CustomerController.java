@@ -21,11 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 
 @Slf4j
@@ -51,7 +48,7 @@ public class CustomerController {
         //java.sql.Date currentDate = new Date(System.currentTimeMillis());
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        calendar.add(calendar.DATE,30);
+        calendar.add(Calendar.DATE, 30);
         java.util.Date utilDate = (java.util.Date) calendar.getTime();
         java.sql.Date d = new Date(utilDate.getTime());
         return d;
@@ -70,7 +67,7 @@ public class CustomerController {
         return fee;
     }
     @GetMapping("/getuid")
-    public BackMsg getuid(HttpServletRequest request){
+    public BackMsg<Integer> getuid(HttpServletRequest request){
         String token = request.getHeader("token");
         String userid;
         try {
@@ -83,7 +80,7 @@ public class CustomerController {
         return BackMsg.success(Integer.parseInt(userid));
     }
     @PostMapping("/vipMem")
-    public BackMsg vipMem(int aid, String type, HttpServletRequest request){
+    public BackMsg<String> vipMem(int aid, String type, HttpServletRequest request){
         String token = request.getHeader("token");
         String userid;
         try {
@@ -198,7 +195,7 @@ public class CustomerController {
     }
 
     @GetMapping("/CheckInformation")
-    public BackMsg CheckInformation(HttpServletRequest request){
+    public BackMsg<LoginUser> CheckInformation(HttpServletRequest request){
         String token = request.getHeader("token");
         String userid;
         try {
@@ -297,7 +294,7 @@ public class CustomerController {
 
     // get the customer goal information
     @GetMapping("/goal")
-    public BackMsg getGoal(HttpServletRequest request){
+    public BackMsg<Goal> getGoal(HttpServletRequest request){
         String token = request.getHeader("token");
         String userid;
         try {
