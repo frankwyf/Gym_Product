@@ -20,7 +20,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <mybatis.spring.boot.starter.version>2.2.0</mybatis.spring.boot.starter.version>
         <pagehelper.spring.boot.starter.version>1.4.0</pagehelper.spring.boot.starter.version>
@@ -38,6 +39,7 @@
         <jna.version>5.10.0</jna.version>
         <velocity.version>2.3</velocity.version>
         <log4j2.version>2.17.1</log4j2.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencies>
@@ -131,7 +133,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- Apache Commons Lang is a Java library of classes and utilities
@@ -140,6 +142,13 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
+        </dependency>
+
+        <!-- annotation metadata used by transitive dependencies -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
         </dependency>
 
         <!-- 阿里数据库连接池 -->
@@ -288,10 +297,26 @@
 	<build>
 	    <finalName>${project.artifactId}</finalName>
 	    <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
 	        <plugin>
 	            <groupId>org.springframework.boot</groupId>
 	            <artifactId>spring-boot-maven-plugin</artifactId>
 	            <configuration>
+                    <mainClass>com.gym.GymApplication</mainClass>
 	                <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
 	            </configuration>
 	        </plugin>

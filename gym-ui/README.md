@@ -20,6 +20,9 @@ npm install
 npm run dev
 ```
 
+本机当前 Node 24 环境下已验证生产构建可通过；开发启动仍建议先完成依赖安装，再用 `npm run dev`。
+当前仓库里有一批旧页面会在开发启动时触发 ESLint 警告/错误，但不会阻止本地 dev server 挂起。
+
 ### 构建
 
 ```bash

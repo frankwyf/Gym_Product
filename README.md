@@ -15,9 +15,9 @@
 
 ### 当前验证状态
 
-- gym-ui 可构建通过（Node 16 推荐，Node 24 需 OpenSSL 兼容参数）。
-- gymMaster 可在本机启动（端口 8087）。
-- gym-management-system-master 可构建通过，启动时已修复 YAML 配置问题；当前主要运行阻塞来自历史日志路径配置，已改为相对路径。
+- gym-ui 已验证可构建，开发启动命令为 `npm run dev`。
+- gymMaster 已用本机正式环境启动成功（端口 8087）。
+- gym-management-system-master 已验证启动入口可用，但实际启动需要本机 MySQL/Redis 正常运行；当前机器的 3306 未开启，所以它在数据库初始化阶段退出。
 
 ### 本地运行（Windows）
 
@@ -30,17 +30,21 @@
 2. 前端启动
 
 ```powershell
-npm --prefix gym-ui install --legacy-peer-deps --no-audit --no-fund
-$env:NODE_OPTIONS="--openssl-legacy-provider"
-npm --prefix gym-ui run build:prod
+Set-Location gym-ui
+npm install
+npm run dev
 ```
 
 3. 后端构建
 
 ```powershell
-mvn -f gymMaster/pom.xml test
-mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.skip=true package
+Set-Location gymMaster
+mvn spring-boot:run -DskipTests
+Set-Location ..\gym-management-system-master
+mvn spring-boot:run -DskipTests
 ```
+
+如果本机还没有启动 MySQL/Redis，`gym-management-system-master` 会在数据源初始化阶段失败，这是运行依赖，不是编译问题。
 
 4. 一键脚本
 

@@ -13,12 +13,21 @@
     <artifactId>gymMaster</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- annotation metadata used by transitive dependencies -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
         </dependency>
         <!-- these two dependencies are used for generate qr code-->
         <dependency>
@@ -42,7 +51,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <scope>true</scope>
+            <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
 
@@ -76,7 +85,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!--  convert java object to json  -->
@@ -119,13 +128,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!--fastjson依赖-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
         </dependency>
 
         <!--jwt dependency-->
@@ -176,6 +178,21 @@
     <!--  maven plugin  -->
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

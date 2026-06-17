@@ -34,6 +34,8 @@ mvn clean package -DskipTests
 mvn spring-boot:run -DskipTests
 ```
 
+本机正式环境已验证可直接进入 Tomcat 启动阶段，默认端口为 `8087`。
+
 如果你希望继续使用 Maven Wrapper，需要先补齐 `.mvn/wrapper` 目录。
 
 ## 日本語

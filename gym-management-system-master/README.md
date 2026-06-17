@@ -30,6 +30,14 @@
 mvn clean spring-boot:run -DskipTests
 ```
 
+如果需要显式指定入口类，也可以使用：
+
+```bash
+mvn spring-boot:run -DskipTests -Dspring-boot.run.main-class=com.gym.GymApplication
+```
+
+启动前请确保本机 MySQL 与 Redis 已运行，否则应用会在数据源初始化阶段退出。
+
 ### 说明
 
 - 管理前端位于上级目录中的 `../gym-ui`
@@ -68,6 +76,12 @@ This is the Spring Boot admin backend for the gym management system. Generated f
 
 ```bash
 mvn clean spring-boot:run -DskipTests
+```
+
+If you want to pin the entry point explicitly:
+
+```bash
+mvn spring-boot:run -DskipTests -Dspring-boot.run.main-class=com.gym.GymApplication
 ```
 
 
