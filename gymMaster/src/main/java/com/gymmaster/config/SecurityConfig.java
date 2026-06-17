@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // use loginCus to login
                 .antMatchers("/loginCus/**").permitAll()
+                .antMatchers("/health/**").permitAll()
                 .antMatchers("/customer/register").anonymous()
                 .antMatchers("/getCaptcha").anonymous()
                 .antMatchers("/venue/**").permitAll()
@@ -70,8 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
 
-        //添加过滤器
-        http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class);
         //添加过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class);
         //配置异常处理器

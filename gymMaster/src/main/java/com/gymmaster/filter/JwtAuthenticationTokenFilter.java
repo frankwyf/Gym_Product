@@ -4,7 +4,6 @@ import com.gymmaster.entity.LoginUser;
 import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
 import io.jsonwebtoken.Claims;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +25,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     RedisCache redisCache;
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        // get token
-         String token = httpServletRequest.getHeader("token");
+        // Keep backward compatibility with legacy `token` header and support `Authorization: Bearer ...`.
+        String token = resolveToken(httpServletRequest);
         if(token == null || token.length() == 0){
             filterChain.doFilter(httpServletRequest,httpServletResponse);
             return;
@@ -53,5 +52,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         filterChain.doFilter(httpServletRequest,httpServletResponse);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        if (token != null && token.length() > 0) {
+            return token;
+        }
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 }
