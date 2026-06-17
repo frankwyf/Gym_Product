@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,7 @@ public class ReflectUtils
 
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
-    private static Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
 
     /**
      * 调用Getter方法.
@@ -141,9 +142,9 @@ public class ReflectUtils
         {
             return (E) method.invoke(obj, args);
         }
-        catch (Exception e)
+        catch (ReflectiveOperationException | IllegalArgumentException e)
         {
-            String msg = "method: " + method + ", obj: " + obj + ", args: " + args + "";
+            String msg = "method: " + method + ", obj: " + obj + ", args: " + Arrays.toString(args);
             throw convertReflectionExceptionToUnchecked(msg, e);
         }
     }
@@ -214,9 +215,9 @@ public class ReflectUtils
             }
             return (E) method.invoke(obj, args);
         }
-        catch (Exception e)
+        catch (ReflectiveOperationException | IllegalArgumentException e)
         {
-            String msg = "method: " + method + ", obj: " + obj + ", args: " + args + "";
+            String msg = "method: " + method + ", obj: " + obj + ", args: " + Arrays.toString(args);
             throw convertReflectionExceptionToUnchecked(msg, e);
         }
     }
@@ -243,7 +244,6 @@ public class ReflectUtils
             }
             catch (NoSuchFieldException e)
             {
-                continue;
             }
         }
         return null;
@@ -274,7 +274,6 @@ public class ReflectUtils
             }
             catch (NoSuchMethodException e)
             {
-                continue;
             }
         }
         return null;
@@ -402,9 +401,9 @@ public class ReflectUtils
         {
             return new IllegalArgumentException(msg, e);
         }
-        else if (e instanceof InvocationTargetException)
+        else if (e instanceof InvocationTargetException invocationTargetException)
         {
-            return new RuntimeException(msg, ((InvocationTargetException) e).getTargetException());
+            return new RuntimeException(msg, invocationTargetException.getTargetException());
         }
         return new RuntimeException(msg, e);
     }

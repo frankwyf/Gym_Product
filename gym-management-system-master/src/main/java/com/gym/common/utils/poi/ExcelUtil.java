@@ -90,7 +90,7 @@ public class ExcelUtil<T>
     /**
      * Excel sheet最大行数，默认65536
      */
-    public static final int sheetSize = 65536;
+    public static final int SHEET_SIZE = 65536;
 
     /**
      * 工作表名称
@@ -517,7 +517,7 @@ public class ExcelUtil<T>
             writeSheet();
             wb.write(response.getOutputStream());
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             log.error("导出Excel异常{}", e.getMessage());
         }
@@ -543,7 +543,7 @@ public class ExcelUtil<T>
             wb.write(out);
             return AjaxResult.success(filename);
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             log.error("导出Excel异常{}", e.getMessage());
             throw new UtilException("导出Excel失败，请联系网站管理员！");
@@ -561,7 +561,7 @@ public class ExcelUtil<T>
     public void writeSheet()
     {
         // 取出一共有多少个sheet.
-        int sheetNo = Math.max(1, (int) Math.ceil(list.size() * 1.0 / sheetSize));
+        int sheetNo = Math.max(1, (int) Math.ceil(list.size() * 1.0 / SHEET_SIZE));
         for (int index = 0; index < sheetNo; index++)
         {
             createSheet(sheetNo, index);
@@ -591,8 +591,8 @@ public class ExcelUtil<T>
      */
     public void fillExcelData(int index, Row row)
     {
-        int startNo = index * sheetSize;
-        int endNo = Math.min(startNo + sheetSize, list.size());
+        int startNo = index * SHEET_SIZE;
+        int endNo = Math.min(startNo + SHEET_SIZE, list.size());
         for (int i = startNo; i < endNo; i++)
         {
             row = sheet.createRow(i + 1 + rownum - startNo);
@@ -711,10 +711,12 @@ public class ExcelUtil<T>
     {
         switch (attr.cellType())
         {
-            case STRING:
+            case STRING ->
+            {
                 cell.setCellValue(StringUtils.isNull(value) ? attr.defaultValue() : value + attr.suffix());
-                break;
-            case NUMERIC:
+            }
+            case NUMERIC ->
+            {
                 if (StringUtils.isNotNull(value))
                 {
                     String numericValue = Convert.toStr(value);
@@ -735,8 +737,8 @@ public class ExcelUtil<T>
                         }
                     }
                 }
-                break;
-            case IMAGE:
+            }
+            case IMAGE ->
             {
                 ClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, (short) cell.getColumnIndex(), cell.getRow().getRowNum(), (short) (cell.getColumnIndex() + 1), cell.getRow().getRowNum() + 1);
                 String imagePath = Convert.toStr(value);
@@ -746,10 +748,9 @@ public class ExcelUtil<T>
                     getDrawingPatriarch(cell.getSheet()).createPicture(anchor,
                             cell.getSheet().getWorkbook().addPicture(data, getImageType(data)));
                 }
-                break;
             }
-            default:
-                break;
+            default -> {
+            }
         }
     }
 
@@ -1041,7 +1042,7 @@ public class ExcelUtil<T>
             Method formatMethod = excel.handler().getMethod("format", new Class[] { Object.class, String[].class });
             value = formatMethod.invoke(instance, value, excel.args());
         }
-        catch (Exception e)
+        catch (ReflectiveOperationException e)
         {
             log.error("不能格式化数据 " + excel.handler(), e.getMessage());
         }
@@ -1283,8 +1284,8 @@ public class ExcelUtil<T>
             {
                 switch (cell.getCellType())
                 {
-                    case NUMERIC:
-                    case FORMULA:
+                    case NUMERIC, FORMULA ->
+                    {
                         val = cell.getNumericCellValue();
                         if (DateUtil.isCellDateFormatted(cell))
                         {
@@ -1301,18 +1302,21 @@ public class ExcelUtil<T>
                                 val = new DecimalFormat("0").format(val);
                             }
                         }
-                        break;
-                    case STRING:
+                    }
+                    case STRING ->
+                    {
                         val = cell.getStringCellValue();
-                        break;
-                    case BOOLEAN:
+                    }
+                    case BOOLEAN ->
+                    {
                         val = cell.getBooleanCellValue();
-                        break;
-                    case ERROR:
+                    }
+                    case ERROR ->
+                    {
                         val = cell.getErrorCellValue();
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
 
             }

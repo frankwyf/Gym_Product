@@ -31,7 +31,7 @@ public class LoginController {
     @Autowired
     RedisCache redisCache;
     @PostMapping("/login")
-    public BackMsg login(@RequestBody Customer customer){
+    public BackMsg<Map<String, String>> login(@RequestBody Customer customer){
         // get authenticationManager
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(customer.getUsername(), customer.getPassword());
 
@@ -54,7 +54,7 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public BackMsg logout(){
+    public BackMsg<String> logout(){
         //获取对应userid
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
@@ -83,7 +83,7 @@ public class LoginController {
 
     // reset password for the customer by username
     @GetMapping("/resetPassword")
-    public BackMsg resetPassword(String name, String newPassword){
+    public BackMsg<String> resetPassword(String name, String newPassword){
         // get the customer by username
         LambdaQueryWrapper<Customer> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Customer::getUsername, name);
