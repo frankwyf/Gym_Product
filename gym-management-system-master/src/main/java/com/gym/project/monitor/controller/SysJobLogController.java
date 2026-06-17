@@ -52,7 +52,7 @@ public class SysJobLogController extends BaseController
     public void export(HttpServletResponse response, SysJobLog sysJobLog)
     {
         List<SysJobLog> list = jobLogService.selectJobLogList(sysJobLog);
-        ExcelUtil<SysJobLog> util = new ExcelUtil<SysJobLog>(SysJobLog.class);
+        ExcelUtil<SysJobLog> util = new ExcelUtil<>(SysJobLog.class);
         util.exportExcel(response, list, "调度日志");
     }
     

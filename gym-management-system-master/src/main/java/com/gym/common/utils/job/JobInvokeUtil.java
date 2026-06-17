@@ -51,7 +51,7 @@ public class JobInvokeUtil
             throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException
     {
-        if (StringUtils.isNotNull(methodParams) && methodParams.size() > 0)
+        if (StringUtils.isNotNull(methodParams) && !methodParams.isEmpty())
         {
             Method method = bean.getClass().getDeclaredMethod(methodName, getMethodParamsType(methodParams));
             method.invoke(bean, getMethodParamsValue(methodParams));
@@ -113,9 +113,9 @@ public class JobInvokeUtil
         }
         String[] methodParams = methodStr.split(",(?=([^\"']*[\"'][^\"']*[\"'])*[^\"']*$)");
         List<Object[]> classs = new LinkedList<>();
-        for (int i = 0; i < methodParams.length; i++)
+        for (String methodParam : methodParams)
         {
-            String str = StringUtils.trimToEmpty(methodParams[i]);
+            String str = StringUtils.trimToEmpty(methodParam);
             // String字符串类型，以'或"开头
             if (StringUtils.startsWithAny(str, "'", "\""))
             {

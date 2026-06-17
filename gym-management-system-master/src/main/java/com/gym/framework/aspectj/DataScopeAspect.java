@@ -88,38 +88,32 @@ public class DataScopeAspect
         for (SysRole role : user.getRoles())
         {
             String dataScope = role.getDataScope();
-            if (DATA_SCOPE_ALL.equals(dataScope))
+            switch (dataScope)
             {
-                sqlString = new StringBuilder();
-                break;
-            }
-            else if (DATA_SCOPE_CUSTOM.equals(dataScope))
-            {
-                sqlString.append(StringUtils.format(
+                case DATA_SCOPE_ALL -> sqlString = new StringBuilder();
+                case DATA_SCOPE_CUSTOM -> sqlString.append(StringUtils.format(
                         " OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} ) ", deptAlias,
                         role.getRoleId()));
-            }
-            else if (DATA_SCOPE_DEPT.equals(dataScope))
-            {
-                sqlString.append(StringUtils.format(" OR {}.dept_id = {} ", deptAlias, user.getDeptId()));
-            }
-            else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
-            {
-                sqlString.append(StringUtils.format(
+                case DATA_SCOPE_DEPT -> sqlString.append(StringUtils.format(" OR {}.dept_id = {} ", deptAlias, user.getDeptId()));
+                case DATA_SCOPE_DEPT_AND_CHILD -> sqlString.append(StringUtils.format(
                         " OR {}.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
                         deptAlias, user.getDeptId(), user.getDeptId()));
+                case DATA_SCOPE_SELF -> {
+                    if (StringUtils.isNotBlank(userAlias))
+                    {
+                        sqlString.append(StringUtils.format(" OR {}.user_id = {} ", userAlias, user.getUserId()));
+                    }
+                    else
+                    {
+                        // 数据权限为仅本人且没有userAlias别名不查询任何数据
+                        sqlString.append(" OR 1=0 ");
+                    }
+                }
+                default -> {}
             }
-            else if (DATA_SCOPE_SELF.equals(dataScope))
+            if (DATA_SCOPE_ALL.equals(dataScope))
             {
-                if (StringUtils.isNotBlank(userAlias))
-                {
-                    sqlString.append(StringUtils.format(" OR {}.user_id = {} ", userAlias, user.getUserId()));
-                }
-                else
-                {
-                    // 数据权限为仅本人且没有userAlias别名不查询任何数据
-                    sqlString.append(" OR 1=0 ");
-                }
+                break;
             }
         }
 

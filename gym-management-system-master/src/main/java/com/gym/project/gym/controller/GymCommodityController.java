@@ -56,7 +56,7 @@ public class GymCommodityController extends BaseController
     public void export(HttpServletResponse response, GymCommodity gymCommodity)
     {
         List<GymCommodity> list = gymCommodityService.selectGymCommodityList(gymCommodity);
-        ExcelUtil<GymCommodity> util = new ExcelUtil<GymCommodity>(GymCommodity.class);
+        ExcelUtil<GymCommodity> util = new ExcelUtil<>(GymCommodity.class);
         util.exportExcel(response, list, "商品数据");
     }
 

@@ -22,7 +22,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gym.project.gymmaster.common.BackMsg;
 import com.gym.project.gymmaster.entity.Bill;
 import com.gym.project.gymmaster.service.BillService;
-import com.gym.project.gymmaster.service.FacilityService;
 
 @RestController
 @RequestMapping("/bill")
@@ -30,8 +29,6 @@ public class BillController {
     /* implement the following interface */
     @Autowired
     BillService billService;
-    @Autowired
-    FacilityService facilityService;
     //FacilityService
     //按照种类查看流水，按照月份、周查看流水，
     @GetMapping("/page/period")

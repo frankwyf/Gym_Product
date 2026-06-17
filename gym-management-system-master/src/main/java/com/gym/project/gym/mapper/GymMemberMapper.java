@@ -3,7 +3,6 @@ package com.gym.project.gym.mapper;
 import java.util.List;
 import com.gym.project.gym.domain.GymMember;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * 会员管理Mapper接口

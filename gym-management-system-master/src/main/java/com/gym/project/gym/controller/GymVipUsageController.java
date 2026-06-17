@@ -55,7 +55,7 @@ public class GymVipUsageController extends BaseController
     public void export(HttpServletResponse response, GymVipUsage gymVipUsage)
     {
         List<GymVipUsage> list = gymVipUsageService.selectGymVipUsageList(gymVipUsage);
-        ExcelUtil<GymVipUsage> util = new ExcelUtil<GymVipUsage>(GymVipUsage.class);
+        ExcelUtil<GymVipUsage> util = new ExcelUtil<>(GymVipUsage.class);
         util.exportExcel(response, list, "会员卡使用记录数据");
     }
 

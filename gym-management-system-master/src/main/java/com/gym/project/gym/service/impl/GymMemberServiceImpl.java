@@ -81,7 +81,7 @@ public class GymMemberServiceImpl implements IGymMemberService
         SysUserRole userRole =  new SysUserRole();
         userRole.setUserId(sysUser.getUserId());
         userRole.setRoleId(103L);
-        List<SysUserRole> userRoleList =  new ArrayList<SysUserRole>();
+        List<SysUserRole> userRoleList =  new ArrayList<>();
         userRoleList.add(userRole);
         sysUserRoleMapper.batchUserRole(userRoleList);
         //报错会员信息
@@ -150,6 +150,7 @@ public class GymMemberServiceImpl implements IGymMemberService
         return gymMemberMapper.selectGymMemberByUserId(userId);
     }
 
+    @Override
     public Long getStudentNumber(Long teacherId){
         return gymMemberMapper.getStudentNumber(teacherId);
     }

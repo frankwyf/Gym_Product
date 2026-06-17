@@ -70,7 +70,7 @@ public class GymMemberController extends BaseController
     public void export(HttpServletResponse response, GymMember gymMember)
     {
         List<GymMember> list = gymMemberService.selectGymMemberList(gymMember);
-        ExcelUtil<GymMember> util = new ExcelUtil<GymMember>(GymMember.class);
+        ExcelUtil<GymMember> util = new ExcelUtil<>(GymMember.class);
         util.exportExcel(response, list, "会员管理数据");
     }
 
@@ -136,7 +136,6 @@ public class GymMemberController extends BaseController
     public AjaxResult applyCard(@PathVariable("memberId") Long memberId,@PathVariable("time") Integer time){
         GymVip gymVip = new GymVip();
         SysConfig value = sysConfigService.selectConfigById(6L);
-        Long no = Long.parseLong(value.getConfigValue());
         String vipNo = "NO.";
         for(int i =0;i<6-value.getConfigValue().length();i++){
             vipNo+="0";
@@ -154,7 +153,7 @@ public class GymMemberController extends BaseController
         member.setVipId(gymVip.getVipId());
         gymMemberService.updateGymMember(member);
         //更新配置信息
-        value.setConfigValue(String.valueOf(no+1));
+        value.setConfigValue(String.valueOf(Long.parseLong(value.getConfigValue())+1));
         sysConfigService.resetConfigCache();
         return toAjax(sysConfigService.updateConfig(value));
     }

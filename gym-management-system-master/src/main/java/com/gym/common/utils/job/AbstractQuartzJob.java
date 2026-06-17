@@ -28,7 +28,7 @@ public abstract class AbstractQuartzJob implements Job
     /**
      * 线程本地变量
      */
-    private static ThreadLocal<Date> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Date> threadLocal = new ThreadLocal<>();
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException
@@ -38,10 +38,7 @@ public abstract class AbstractQuartzJob implements Job
         try
         {
             before(context, sysJob);
-            if (sysJob != null)
-            {
-                doExecute(context, sysJob);
-            }
+            doExecute(context, sysJob);
             after(context, sysJob, null);
         }
         catch (Exception e)

@@ -55,7 +55,7 @@ public class GymVipController extends BaseController
     public void export(HttpServletResponse response, GymVip gymVip)
     {
         List<GymVip> list = gymVipService.selectGymVipList(gymVip);
-        ExcelUtil<GymVip> util = new ExcelUtil<GymVip>(GymVip.class);
+        ExcelUtil<GymVip> util = new ExcelUtil<>(GymVip.class);
         util.exportExcel(response, list, "会员卡管理数据");
     }
 
@@ -130,7 +130,7 @@ public class GymVipController extends BaseController
     public AjaxResult remove(@PathVariable Long[] vipIds)
     {
         List<GymVipUsage> list = gymVipUsageService.selectGymVipUsageByVipId(vipIds[0]);
-        if(list.size()>0) return AjaxResult.error("会员卡已被使用不允许删除");
+        if(!list.isEmpty()) return AjaxResult.error("会员卡已被使用不允许删除");
         return toAjax(gymVipService.deleteGymVipByVipIds(vipIds));
     }
 }
