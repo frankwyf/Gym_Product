@@ -192,11 +192,6 @@ public class CustomerController {
 }
 
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 
 @Slf4j
 @RestController

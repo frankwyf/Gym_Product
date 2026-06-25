@@ -4,119 +4,88 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Coach;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.CoachService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
 @RequestMapping("/coach")
+@RequiredArgsConstructor
 public class CoachController {
-    @Autowired
-    CoachService coachService;
+    private final CoachService coachService;
     @Value("${gym.path}")
     private String basePath;
 
     @PostMapping("/register")
-    public BackMsg<String> register(@RequestBody Coach coach){
-        // get all data from the coach table in the database
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-
-        // get username from the database
-        queryWrapper.eq(Coach::getUsername,coach.getUsername());
-
-        // get one entry from the database
-        Coach coach1 = coachService.getOne(queryWrapper);
-
-        if (coach1 != null){
-            return BackMsg.error("Coach name already exists");
+    public BackMsg<String> register(@Valid @RequestBody Coach coach) {
+        LambdaQueryWrapper<Coach> qw = new LambdaQueryWrapper<Coach>()
+                .eq(Coach::getUsername, coach.getUsername());
+        if (coachService.getOne(qw) != null) {
+            throw new BusinessException("Coach username already exists.");
         }
-        if (coach.getProfile() == null){
-            coach.setProfile(basePath+ "static/picture/default.png");
+        if (coach.getProfile() == null) {
+            coach.setProfile("default.png");
         }
+        // Hash the password before saving
+        coach.setPassword(new BCryptPasswordEncoder().encode(coach.getPassword()));
         coachService.save(coach);
-        return BackMsg.success("registered successfully");
-    }
-    @GetMapping("/login")
-    public BackMsg<Coach> login(HttpServletRequest request, @RequestBody Coach coach){
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-
-        queryWrapper.eq(Coach::getUsername,coach.getUsername());
-        // get one entry from the database
-        Coach coach1 = coachService.getOne(queryWrapper);
-        if(coach1 == null){
-            return BackMsg.error("Login Failed, Wrong username or password");
-        }
-        if(!coach1.getPassword().equals(coach.getPassword())){
-            return BackMsg.error("Login Failed, Wrong username or password");
-        }
-
-        request.getSession().setAttribute("coach",coach.getCoaid());
-
-        return BackMsg.success(coach);
+        return BackMsg.success("Registered successfully.");
     }
 
     @PostMapping("/add")
-    public BackMsg<String> add(@RequestBody Coach coach){
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Coach::getUsername,coach.getUsername());
-        if(coachService.getOne(queryWrapper)!=null){
-            return BackMsg.error("username already existed!");
+    public BackMsg<String> add(@Valid @RequestBody Coach coach) {
+        LambdaQueryWrapper<Coach> qw = new LambdaQueryWrapper<Coach>()
+                .eq(Coach::getUsername, coach.getUsername());
+        if (coachService.getOne(qw) != null) {
+            throw new BusinessException("Username already exists.");
         }
-        if (coach.getProfile() == null){
-            coach.setProfile(basePath+ "static/picture/default.png");
+        if (coach.getProfile() == null) {
+            coach.setProfile("default.png");
         }
+        coach.setPassword(new BCryptPasswordEncoder().encode(coach.getPassword()));
         coachService.save(coach);
-        return BackMsg.success("new coach added successfully");
+        return BackMsg.success("New coach added successfully.");
     }
-    @PostMapping("/logout")
-    public BackMsg<String> logout(HttpServletRequest request){
-        //clear the session to indicate logout
-        request.getSession().removeAttribute("coach");
-        return BackMsg.success("successfully log out");
-    }
-    @GetMapping("/page")
-    public BackMsg<Page<Coach>> page(String page, String pageSize, String name){
 
-        int page1 = Integer.parseInt(page);
-        int pageSize1 = Integer.parseInt(pageSize);
-        Page<Coach> pageInfo = new Page<>(page1,pageSize1);
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotEmpty(name),Coach::getUsername,name);
-        queryWrapper.orderByDesc(Coach::getCoaid);
-        coachService.page(pageInfo,queryWrapper);
+    @GetMapping("/page")
+    public BackMsg<Page<Coach>> page(int page, int pageSize, String name) {
+        Page<Coach> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Coach> qw = new LambdaQueryWrapper<Coach>()
+                .like(StringUtils.isNotEmpty(name), Coach::getUsername, name)
+                .orderByDesc(Coach::getCoaid);
+        coachService.page(pageInfo, qw);
         return BackMsg.success(pageInfo);
     }
 
-    // used to truly update the data in the database
     @PutMapping("/update")
-    public BackMsg<String> update(@RequestBody Coach coach){
+    public BackMsg<String> update(@RequestBody Coach coach) {
+        LambdaQueryWrapper<Coach> qw = new LambdaQueryWrapper<Coach>()
+                .eq(Coach::getCoaid, coach.getCoaid());
+        coachService.update(coach, qw);
+        return BackMsg.success("Updated successfully.");
+    }
 
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Coach::getCoaid,coach.getCoaid());
-        coachService.update(coach,queryWrapper);
-        return BackMsg.success("updated successfully!");
-    }
-    // used to return information of a certain coach
     @GetMapping("/info")
-    public BackMsg<Coach> getbyId(int coachid){
-        // get the coach information by the coach id
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Coach::getCoaid,coachid);
-        Coach coach1 = coachService.getOne(queryWrapper);
-        return BackMsg.success(coach1);
+    public BackMsg<Coach> getById(int coachid) {
+        Coach coach = coachService.getById(coachid);
+        if (coach == null) throw new BusinessException("Coach not found.");
+        return BackMsg.success(coach);
     }
+
     @DeleteMapping
-    public BackMsg<String> delet(@RequestBody Coach coach){
-        LambdaQueryWrapper<Coach> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Coach::getCoaid,coach.getCoaid());
-        coachService.remove(queryWrapper);
-        return BackMsg.success("remove the coach successfully");
+    public BackMsg<String> delete(@RequestBody Coach coach) {
+        LambdaQueryWrapper<Coach> qw = new LambdaQueryWrapper<Coach>()
+                .eq(Coach::getCoaid, coach.getCoaid());
+        coachService.remove(qw);
+        return BackMsg.success("Coach removed successfully.");
     }
 }
 

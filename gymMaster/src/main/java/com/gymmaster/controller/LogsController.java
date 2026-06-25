@@ -6,14 +6,16 @@ import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Logs;
 import com.gymmaster.service.LogService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @RequestMapping("/logs")
+@RequiredArgsConstructor
 public class LogsController {
-    @Autowired
-    LogService logService;
+    private final LogService logService;
     @PostMapping("/page")
     public BackMsg<Page<Logs>> page(int page, int pageSize, int id){
         Page<Logs> pageInfo = new Page<>(page,pageSize);
