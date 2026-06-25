@@ -1,37 +1,52 @@
-package com.gymmaster.controller;
+﻿package com.gymmaster.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gymmaster.common.BackMsg;
+import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.Customer;
 import com.gymmaster.entity.Reservation;
 import com.gymmaster.entity.Venue;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.qr.QrCodeUtils;
 import com.gymmaster.service.CustomerService;
 import com.gymmaster.service.ReservationService;
 import com.gymmaster.service.VenueService;
-import com.gymmaster.utils.JwtUtil;
-import com.gymmaster.utils.RedisCache;
-import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * Reservation management — customer reservation lifecycle and admin overrides.
+ *
+ * <p>JWT user extraction is centralised via {@link CurrentUserResolver};
+ * capacity calculation is delegated to {@link com.gymmaster.service.impl.VenueServiceImpl}.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/reservation")
+@RequiredArgsConstructor
 public class ReservationController {
-    @Autowired
-    ReservationService reservationService;
-    @Autowired
-    CustomerService customerService;
-    @Autowired
-    VenueService venueService;
+
+    private final ReservationService reservationService;
+    private final CustomerService customerService;
+    private final VenueService venueService;
+    private final CurrentUserResolver currentUserResolver;
+
+    @Value("${qr.logo.path:src/main/resources/static/logo/logo.png}")
+    private String qrLogoPath;
+
+    @Value("${qr.reservation.dir:src/main/resources/static/reservationQR/}")
+    private String qrReservationDir;
+
+    // ─── Admin queries ────────────────────────────────────────────────────────
+
     @GetMapping("/page/username")
     public BackMsg<Page<Reservation>> pageUsername(int page, int pageSize, String name) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
@@ -39,8 +54,7 @@ public class ReservationController {
                 .like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
         Customer customer = customerService.getOne(cqw);
         if (customer == null) {
-            // No matching customer — return empty page rather than NPE.
-            return BackMsg.success(pageInfo);
+            return BackMsg.success(pageInfo);   // no match → empty page
         }
         LambdaQueryWrapper<Reservation> rqw = new LambdaQueryWrapper<Reservation>()
                 .eq(Reservation::getRuid, customer.getUid())
@@ -48,269 +62,182 @@ public class ReservationController {
         reservationService.page(pageInfo, rqw);
         return BackMsg.success(pageInfo);
     }
+
     @GetMapping("/page/date")
     public BackMsg<Page<Reservation>> pageDate(int page, int pageSize, Date date) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.like(Reservation::getRdate, date);
-            queryWrapper.orderByDesc(Reservation::getRuid);
-            reservationService.page(pageInfo, queryWrapper);
+        LambdaQueryWrapper<Reservation> qw = new LambdaQueryWrapper<Reservation>()
+                .like(Reservation::getRdate, date)
+                .orderByDesc(Reservation::getRdate);   // was Ruid — wrong sort key
+        reservationService.page(pageInfo, qw);
         return BackMsg.success(pageInfo);
     }
+
     @GetMapping("/page/id")
     public BackMsg<Page<Reservation>> pageId(int page, int pageSize, int id) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-
-            queryWrapper.eq(Reservation::getRuid,id);
-
-            reservationService.page(pageInfo,queryWrapper);
-            return BackMsg.success(pageInfo);
-    }
-
-    @GetMapping("/page")
-    public BackMsg<Page<Reservation>> page(int page, int pageSize){
-        Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Reservation> queryWrapper0 = new LambdaQueryWrapper<>();
-        queryWrapper0.orderByAsc(Reservation::getRid);
-        reservationService.page(pageInfo,queryWrapper0);
+        reservationService.page(pageInfo,
+                new LambdaQueryWrapper<Reservation>().eq(Reservation::getRuid, id));
         return BackMsg.success(pageInfo);
     }
 
+    @GetMapping("/page")
+    public BackMsg<Page<Reservation>> page(int page, int pageSize) {
+        Page<Reservation> pageInfo = new Page<>(page, pageSize);
+        reservationService.page(pageInfo,
+                new LambdaQueryWrapper<Reservation>().orderByAsc(Reservation::getRid));
+        return BackMsg.success(pageInfo);
+    }
+
+    // ─── Admin: block/unblock a time slot ────────────────────────────────────
+
     @PutMapping("/ban")
-    public BackMsg<String> ban(@RequestBody Reservation reservation, int x ){
-        if(x==0) {
-            LambdaQueryWrapper<Reservation> exist = new LambdaQueryWrapper<>();
-            exist.eq(Reservation::getRdate, reservation.getRdate())
-                    .eq(Reservation::getFacility, reservation.getFacility())
-                    .eq(Reservation::getVenue, reservation.getVenue())
-                    .eq(Reservation::getStatus, "valid");
-            List<Reservation> periods = reservationService.list(exist);
-
-            LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
-            cap.eq(Venue::getVid, reservation.getVenue())
-                    .eq(Venue::getFid, reservation.getFacility());
-            Venue venue = venueService.getOne(cap);
-            int capacity = venue.getCapacity();
-
-            int[] curCap = new int[8];
-            for (Reservation res : periods) {
-                String[] per1 = res.getPeriod().split(",");
-                int[] per = new int[per1.length];
-                for (int i = 0; i < per.length; i++) {
-                    per[i] = Integer.parseInt(per1[i]);
-                }
-                for (int eachPeriod : per) {
-                    curCap[eachPeriod - 1] += res.getAmount();
-                }
+    public BackMsg<String> ban(@RequestBody Reservation reservation, int x) {
+        if (x == 0) {
+            // Block: compute remaining capacity for this slot and create a
+            // blocking reservation (ruid=0) that consumes it all.
+            Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>()
+                    .eq(Venue::getVid, reservation.getVenue())
+                    .eq(Venue::getFid, reservation.getFacility()));
+            if (venue == null) {
+                throw new BusinessException("Venue not found.");
             }
-            reservation.setAmount(capacity - curCap[Integer.parseInt(reservation.getPeriod())]);
+            int[] remaining = venueService.remainingCapacity(venue, reservation.getRdate());
+            int periodIdx;
+            try {
+                periodIdx = Integer.parseInt(reservation.getPeriod());
+            } catch (NumberFormatException e) {
+                throw new BusinessException("Invalid period: " + reservation.getPeriod());
+            }
+            if (periodIdx < 1 || periodIdx > remaining.length) {
+                throw new BusinessException("Period out of range: " + periodIdx);
+            }
+            reservation.setAmount(remaining[periodIdx - 1]);
             reservation.setRuid(0);
             reservationService.save(reservation);
-            return BackMsg.success("success");
-        }
-        else {
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Reservation::getRuid,0)
-                    .eq(Reservation::getPeriod,reservation.getPeriod())
-                    .eq(Reservation::getVenue,reservation.getVenue())
-                    .eq(Reservation::getFacility,reservation.getFacility())
-                    .eq(Reservation::getRdate,reservation.getRdate());
-            Reservation reservation1 = reservationService.getOne(queryWrapper);
-            reservation1.setStatus("unable");
-            reservationService.update(reservation1,queryWrapper);
+        } else {
+            // Unblock: mark the blocking reservation as 'unable'
+            LambdaQueryWrapper<Reservation> qw = new LambdaQueryWrapper<Reservation>()
+                    .eq(Reservation::getRuid, 0)
+                    .eq(Reservation::getPeriod, reservation.getPeriod())
+                    .eq(Reservation::getVenue, reservation.getVenue())
+                    .eq(Reservation::getFacility, reservation.getFacility())
+                    .eq(Reservation::getRdate, reservation.getRdate());
+            Reservation blocking = reservationService.getOne(qw);
+            if (blocking == null) {
+                throw new BusinessException("No blocking reservation found to unblock.");
+            }
+            blocking.setStatus("unable");
+            reservationService.update(blocking, qw);
         }
         return BackMsg.success("success");
     }
 
+    // ─── Look-ups ─────────────────────────────────────────────────────────────
+
     @GetMapping("/findId")
-    public BackMsg<Reservation> find(int id){
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Reservation::getRid,id);
-        Reservation reservation = reservationService.getOne(queryWrapper);
-        return BackMsg.success(reservation);
+    public BackMsg<Reservation> findById(int id) {
+        return BackMsg.success(reservationService.getOne(
+                new LambdaQueryWrapper<Reservation>().eq(Reservation::getRid, id)));
     }
+
     @GetMapping("/findVid")
-    public BackMsg<List<Reservation>> findvid(int id){
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Reservation::getVenue,id);
-        return BackMsg.success(reservationService.list(queryWrapper));
+    public BackMsg<List<Reservation>> findByVenueId(int id) {
+        return BackMsg.success(reservationService.list(
+                new LambdaQueryWrapper<Reservation>().eq(Reservation::getVenue, id)));
     }
+
     @GetMapping("/findvname")
-    public BackMsg<List<Reservation>> find(String name1){
-        LambdaQueryWrapper<Venue> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Venue::getVname,name1);
-        Venue venue = venueService.getOne(queryWrapper);
-        LambdaQueryWrapper<Reservation> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.eq(Reservation::getVenue, venue.getVid());
-        return BackMsg.success(reservationService.list(queryWrapper1));
+    public BackMsg<List<Reservation>> findByVenueName(String name1) {
+        Venue venue = venueService.getOne(
+                new LambdaQueryWrapper<Venue>().eq(Venue::getVname, name1));
+        if (venue == null) {
+            throw new BusinessException("Venue not found: " + name1);
+        }
+        return BackMsg.success(reservationService.list(
+                new LambdaQueryWrapper<Reservation>().eq(Reservation::getVenue, venue.getVid())));
     }
+
+    // ─── Customer: create reservation ────────────────────────────────────────
+
     @PostMapping("/add")
-    public BackMsg<String> add(@RequestBody Reservation reservation, HttpServletRequest request) throws Exception {
-        LambdaQueryWrapper<Reservation> exist = new LambdaQueryWrapper<>();
-        exist.eq(Reservation::getRdate,reservation.getRdate())
-                .eq(Reservation::getFacility,reservation.getFacility())
-                .eq(Reservation::getVenue,reservation.getVenue())
-                .eq(Reservation::getStatus,"valid");
-        List<Reservation> periods = reservationService.list(exist);
+    public BackMsg<String> add(@RequestBody Reservation reservation, HttpServletRequest request)
+            throws Exception {
+        int userId = currentUserResolver.getUserId(request);
 
-        //2. 获取该vid下的capacity
-        LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
-        cap.eq(Venue::getVid,reservation.getVenue())
-                .eq(Venue::getFid, reservation.getFacility());
-        Venue venue = venueService.getOne(cap);
-        int capacity = venue.getCapacity();
+        Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>()
+                .eq(Venue::getVid, reservation.getVenue())
+                .eq(Venue::getFid, reservation.getFacility()));
+        if (venue == null) {
+            throw new BusinessException("Venue not found.");
+        }
 
-        int [] curCap= new int[8];
-        for(Reservation res: periods){
-            String [] per1 = res.getPeriod().split(",");
-            int [] per = new int[per1.length];
-            for (int i = 0;i<per.length;i++){
-                per[i] = Integer.parseInt(per1[i]);
-            }
-            for (int eachPeriod: per){
-               curCap[eachPeriod-1] +=res.getAmount();
-            }
-        }
-        String [] thisR = reservation.getPeriod().split(",");
-        int [] thisRP = new int[thisR.length];
-        for (int i = 0;i<thisR.length;i++){
-            thisRP[i] = Integer.parseInt(thisR[i]);
-        }
-        for (int thisPeriod: thisRP){
-            if (thisPeriod>8 || thisPeriod<0){
-                return BackMsg.error("wrong period!");
-            }
-            if (curCap[thisPeriod-1]+reservation.getAmount()>capacity){
-                String er = thisPeriod + "has left less than " + reservation.getAmount() +
-                        " capacity. Thus, reservation for all periods haven't been reserved successfully!";
-                return BackMsg.error(er);
-            }
-        }
-        String token = request.getHeader("token");
-        // analyse token
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("illegal token in /reservation/add", e);
-            throw  new RuntimeException("illegal token");
-        }
-        int id = Integer.parseInt(userid);
+        int[] remaining = venueService.remainingCapacity(venue, reservation.getRdate());
+        validatePeriods(reservation, remaining);
+
         reservation.setStatus("unpaid");
-        reservation.setRuid(id);
+        reservation.setRuid(userId);
         reservationService.save(reservation);
 
-
-        String logoPath = "src/main/resources/static/logo/logo.png";
-        String destPath = "src/main/resources/static/reservationQR/"+reservation.getRid()+".jpg";
-        QrCodeUtils.encode(reservation.toString(),logoPath,destPath,true);
-
+        String destPath = qrReservationDir + reservation.getRid() + ".jpg";
+        QrCodeUtils.encode(reservation.toString(), qrLogoPath, destPath, true);
 
         return BackMsg.success("reservation added successfully!");
     }
-    @Autowired
-    RedisCache redisCache;
-    @GetMapping("/getUnpaid")
-    public BackMsg<List<Reservation>> getUnpaid(HttpServletRequest request){
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("illegal token in /reservation/getUnpaid", e);
-            throw  new RuntimeException("illegal token");
-        }
-        String redisKey = "login"+userid;
-        // keep redis touch to preserve login-state behavior
-        redisCache.getCacheObject(redisKey);
-        int uid = Integer.parseInt(userid);
-        queryWrapper.eq(Reservation::getRuid, uid)
-                .eq(Reservation::getStatus,"unpaid");
 
-        return BackMsg.success(reservationService.list(queryWrapper));
+    // ─── Customer: list their own reservations ────────────────────────────────
+
+    @GetMapping("/getUnpaid")
+    public BackMsg<List<Reservation>> getUnpaid(HttpServletRequest request) {
+        int uid = currentUserResolver.getUserId(request);
+        return BackMsg.success(reservationService.list(
+                new LambdaQueryWrapper<Reservation>()
+                        .eq(Reservation::getRuid, uid)
+                        .eq(Reservation::getStatus, "unpaid")));
     }
+
     @GetMapping("/getPaid")
-    public BackMsg<List<Reservation>> getPaid(HttpServletRequest request){
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("illegal token in /reservation/getPaid", e);
-            throw  new RuntimeException("illegal token");
-        }
-        int uid = Integer.parseInt(userid);
-        queryWrapper.eq(Reservation::getRuid, uid)
-                .eq(Reservation::getStatus,"valid");
-        return BackMsg.success(reservationService.list(queryWrapper));
+    public BackMsg<List<Reservation>> getPaid(HttpServletRequest request) {
+        int uid = currentUserResolver.getUserId(request);
+        return BackMsg.success(reservationService.list(
+                new LambdaQueryWrapper<Reservation>()
+                        .eq(Reservation::getRuid, uid)
+                        .eq(Reservation::getStatus, "valid")));
     }
+
+    // ─── General update ──────────────────────────────────────────────────────
 
     @PutMapping("/update")
-    public BackMsg<String> edit(@RequestBody Reservation reservation){
-        LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Reservation::getRid,reservation.getRid());
-        reservationService.update(reservation,queryWrapper);
+    public BackMsg<String> edit(@RequestBody Reservation reservation) {
+        reservationService.update(reservation,
+                new LambdaQueryWrapper<Reservation>().eq(Reservation::getRid, reservation.getRid()));
         return BackMsg.success("updated successfully!");
     }
 
-    @PostMapping("/add/management")
-    public BackMsg<String> addManagement(@RequestBody Reservation reservation) throws Exception {
-        LambdaQueryWrapper<Reservation> exist = new LambdaQueryWrapper<>();
-        exist.eq(Reservation::getRdate,reservation.getRdate())
-                .eq(Reservation::getFacility,reservation.getFacility())
-                .eq(Reservation::getVenue,reservation.getVenue())
-                .eq(Reservation::getStatus,"valid");
-        List<Reservation> periods = reservationService.list(exist);
+    // ─── Private helpers ─────────────────────────────────────────────────────
 
-        LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
-        cap.eq(Venue::getVid,reservation.getVenue())
-                .eq(Venue::getFid, reservation.getFacility());
-        Venue venue = venueService.getOne(cap);
-        int capacity = venue.getCapacity();
-
-        int [] curCap= new int[8];
-        for(Reservation res: periods){
-            String [] per1 = res.getPeriod().split(",");
-            int [] per = new int[per1.length];
-            for (int i = 0;i<per.length;i++){
-                per[i] = Integer.parseInt(per1[i]);
+    /**
+     * Validates all requested periods against the available capacity array.
+     *
+     * @param reservation target reservation (period + amount must be set)
+     * @param remaining   per-period remaining capacity (index = period - 1)
+     * @throws BusinessException on invalid period or insufficient capacity
+     */
+    private static void validatePeriods(Reservation reservation, int[] remaining) {
+        for (String part : reservation.getPeriod().split(",")) {
+            int period;
+            try {
+                period = Integer.parseInt(part.trim());
+            } catch (NumberFormatException e) {
+                throw new BusinessException("Invalid period value: " + part);
             }
-            for (int eachPeriod: per){
-                curCap[eachPeriod-1] +=res.getAmount();
+            if (period < 1 || period > remaining.length) {
+                throw new BusinessException("Period out of range: " + period);
             }
-        }
-        String [] thisR = reservation.getPeriod().split(",");
-        int [] thisRP = new int[thisR.length];
-        for (int i = 0;i<thisR.length;i++){
-            thisRP[i] = Integer.parseInt(thisR[i]);
-        }
-        for (int thisPeriod: thisRP){
-            if (thisPeriod>8 || thisPeriod<0){
-                return BackMsg.error("wrong period!");
-            }
-            if (curCap[thisPeriod-1]+reservation.getAmount()>capacity){
-                String er = thisPeriod + "has left less than " + reservation.getAmount() +
-                        " capacity. Thus, reservation for all periods haven't been reserved successfully!";
-                return BackMsg.error(er);
+            if (remaining[period - 1] < reservation.getAmount()) {
+                throw new BusinessException("Period " + period + " has less than "
+                        + reservation.getAmount() + " remaining capacity.");
             }
         }
-
-        reservation.setStatus("unpaid");
-
-        reservationService.save(reservation);
-
-
-        String logoPath = "src/main/resources/static/logo/logo.png";
-        String destPath = "src/main/resources/static/reservationQR/"+reservation.getRid()+".jpg";
-        QrCodeUtils.encode(reservation.toString(),logoPath,destPath,true);
-
-
-        return BackMsg.success("reservation added successfully!");
     }
 }

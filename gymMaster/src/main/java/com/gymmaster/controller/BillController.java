@@ -1,313 +1,265 @@
-package com.gymmaster.controller;
+﻿package com.gymmaster.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gymmaster.common.BackMsg;
+import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.*;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.qr.QrCodeUtils;
 import com.gymmaster.service.*;
-import com.gymmaster.utils.JwtUtil;
-import com.gymmaster.utils.RedisCache;
-import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/bill")
+@RequiredArgsConstructor
 public class BillController {
-    /* implement the following interface */
-    @Autowired
-    BillService billService;
-    @Autowired
-    FacilityService facilityService;
-    //FacilityService
-    //按照种类查看流水，按照月份、周查看流水，
+
+    private final BillService billService;
+    private final FacilityService facilityService;
+    private final VenueService venueService;
+    private final AccountService accountService;
+    private final ReservationService reservationService;
+    private final CurrentUserResolver currentUserResolver;
+
+    @Value("${qr.logo.path:src/main/resources/static/logo/logo.png}")
+    private String qrLogoPath;
+
+    @Value("${qr.reservation.dir:src/main/resources/static/reservationQR/reservation/}")
+    private String qrReservationDir;
+
+    /**
+     * Revenue statistics grouped by facility name within the given time range.
+     * If no start/end provided, defaults to 2002-06-27 → now.
+     */
     @GetMapping("/page/period")
     public BackMsg<Map<String, BigDecimal>> pagePeriod(Timestamp start, Timestamp endTime) {
-        if(start == null){
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+        if (start == null) {
             Calendar c = Calendar.getInstance();
-            c.set(2002,Calendar.JUNE,27);
-            java.util.Date date = c.getTime();
-            Date d = new Date(date.getTime());
-
-            String time= df.format(d);
-
-            start = Timestamp.valueOf(time);
+            c.set(2002, Calendar.JUNE, 27);
+            start = new Timestamp(c.getTimeInMillis());
         }
-        if (endTime == null){
-            //若无此时间则设置默认为当前时间
+        if (endTime == null) {
             endTime = new Timestamp(System.currentTimeMillis());
         }
-        if(start.after(endTime)){
+        if (start.after(endTime)) {
             return BackMsg.error("wrong date entered!");
         }
 
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
-        List<Bill> orders = billService.list(queryWrapper);
-
-//        LambdaQueryWrapper<Facility> queryWrapper0 = new LambdaQueryWrapper();
-//        List<Facility> variety = facilityService.list(queryWrapper0);
-
+        List<Bill> orders = billService.list(null);
         Timestamp finalStart = start;
-        orders.removeIf(bill -> bill.getBdate().before(finalStart)); //获取了所有时间的
-        Timestamp finalEndTime = endTime;
-        orders.removeIf(bill -> bill.getBdate().after(finalEndTime));
+        Timestamp finalEnd = endTime;
+        orders.removeIf(bill -> bill.getBdate().before(finalStart) || bill.getBdate().after(finalEnd));
 
         Map<String, BigDecimal> statistic = new HashMap<>();
-        for( Bill bill: orders ){
-            if (!statistic.containsKey(bill.getFname())){
-                statistic.put(bill.getFname(),bill.getFigure());
-            }
-            else{
-                statistic.put(bill.getFname(), bill.getFigure().add(statistic.get(bill.getFname())));
-            }
+        for (Bill bill : orders) {
+            statistic.merge(bill.getFname(), bill.getFigure(), BigDecimal::add);
         }
-
-
         return BackMsg.success(statistic);
     }
-    @GetMapping("/page/facility")
-    public BackMsg<Page<Bill>> page(int page, int pageSize, String name){
 
-        Page<Bill> pageInfo = new Page<>(page,pageSize);
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotEmpty(name),Bill::getFname,name);
-        queryWrapper.orderByDesc(Bill::getBid);
-        billService.page(pageInfo,queryWrapper);
+    @GetMapping("/page/facility")
+    public BackMsg<Page<Bill>> page(int page, int pageSize, String name) {
+        Page<Bill> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<Bill>()
+                .like(StringUtils.isNotEmpty(name), Bill::getFname, name)
+                .orderByDesc(Bill::getBid);
+        billService.page(pageInfo, queryWrapper);
         return BackMsg.success(pageInfo);
     }
+
+    /** Show all bills for the authenticated customer. */
     @GetMapping("/showall")
-    public BackMsg<List<Bill>> showall(HttpServletRequest request){
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("Failed to parse token in showall", e);
-            throw  new RuntimeException("illegal token");
-        }
-        String redisKey = "login"+userid;
-        // get information from redis
-        LoginUser user = redisCache.getCacheObject(redisKey);
-        Customer customer = user.getCustomer();
-        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Bill::getUid,customer.getUid());
-        queryWrapper.orderByDesc(Bill::getBid);
+    public BackMsg<List<Bill>> showall(HttpServletRequest request) {
+        Customer customer = currentUserResolver.getLoginUser(request).getCustomer();
+        LambdaQueryWrapper<Bill> queryWrapper = new LambdaQueryWrapper<Bill>()
+                .eq(Bill::getUid, customer.getUid())
+                .orderByDesc(Bill::getBid);
         return BackMsg.success(billService.list(queryWrapper));
     }
-    @Autowired
-    VenueService venueService;
-    @Autowired
-    RedisCache redisCache;
-    @Autowired
-    AccountService accountService;
-    @Autowired
-    ReservationService reservationService;
 
+    /**
+     * Payment endpoint: validates capacity, creates reservations + bills, and deducts account balance.
+     *
+     * @param goodlist parsed cart items
+     * @param aid      account ID to charge
+     * @param total    expected total (informational; actual total is recomputed server-side)
+     */
     @PostMapping("/pay")
-    public BackMsg<String> add(@RequestBody Map<String,Object> goodlist, int aid, double total,HttpServletRequest request) throws Exception {
-        // Get the list of values from the map
-        List<Goods> goods = new ArrayList<>();
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> goodsMaps = (List<Map<String, Object>>) goodlist.get("goodlist");
-        for (Map<String, Object> item : goodsMaps) {
-            String date = (String) item.get("date");
-            String facility = (String) item.get("facility").toString();
-            String venue = (String) item.get("venue").toString();
-            String period = (String) item.get("period").toString();
-            String amount = (String) item.get("amount").toString();
-            String type = (String) item.get("type");
-            String pic = (String) item.get("pic");
-            String name = (String) item.get("name");
-            String price = (String) item.get("price").toString();
-            boolean active = (boolean) item.get("active");
-            Goods good = new Goods();
-            good.setPeriod(period);
-            good.setFacility(Integer.parseInt(facility));
-            good.setVenue(Integer.parseInt(venue));
-            good.setAmount(Integer.parseInt(amount));
-            good.setPrice(Integer.parseInt(price));
-            good.setActive(active);
-            good.setDate(date);
-            good.setPic(pic);
-            good.setName(name);
-            good.setType(type);
-            goods.add(good);
-        }
+    public BackMsg<String> pay(
+            @RequestBody Map<String, Object> goodlist,
+            int aid,
+            double total,
+            HttpServletRequest request) throws ParseException {
 
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("Failed to parse token in pay", e);
-            throw new RuntimeException("illegal token");
-        }
-        String redisKey = "login" + userid;
+        Customer customer = currentUserResolver.getLoginUser(request).getCustomer();
+        int userId = customer.getUid();
 
-        // get information from redis
-        LoginUser user = redisCache.getCacheObject(redisKey);
-        for(Goods good: goods){
-            Reservation reservation = new Reservation();
-            reservation.setRuid(Integer.parseInt(userid));
-            reservation.setAmount(good.getAmount());
-            reservation.setPeriod(good.getPeriod());
-            reservation.setFacility(good.getFacility());
-            reservation.setVenue(good.getVenue());
-            reservation.setStatus("unpaid");
+        List<Goods> goods = parseGoods(goodlist);
 
-            String dd;
-            if (good.getDate().length()>5){
-                dd = good.getDate().substring(0,10);
-            }
-            else {
-                dd = "2023-"+good.getDate();
-            }
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date date = sdf.parse(dd);
-            Date d = new Date(date.getTime());
-            reservation.setRdate(d);
-            reservation.setPayment("account");
+        // ── Phase 1: validate capacity + create reservations ─────────────────
+        for (Goods good : goods) {
+            Reservation reservation = buildReservation(good, userId);
 
-            LambdaQueryWrapper<Reservation> exist = new LambdaQueryWrapper<>();
-            exist.eq(Reservation::getRdate,reservation.getRdate())
-                    .eq(Reservation::getFacility,reservation.getFacility())
-                    .eq(Reservation::getVenue,reservation.getVenue())
-                    .eq(Reservation::getStatus,"valid");
-            List<Reservation> periods = reservationService.list(exist);
-
-            //2. get capacity under this venue
-            if(!good.getPeriod().equals("0"))
-            {
-                LambdaQueryWrapper<Venue> cap = new LambdaQueryWrapper<>();
-                cap.eq(Venue::getVid, reservation.getVenue())
-                        .eq(Venue::getFid, reservation.getFacility());
-                Venue venue = venueService.getOne(cap);
-                int capacity = venue.getCapacity();
-
-                //3. statistic the current capacity
-                int[] curCap = new int[8];
-                for (Reservation res : periods) {
-                    // get the period of this reservation
-                    String[] per1 = res.getPeriod().split(",");
-                    int[] per = new int[per1.length];
-                    for (int i = 0; i < per.length; i++) {
-                        per[i] = Integer.parseInt(per1[i]);
-                    }
-                    // update the current capacity
-                    for (int eachPeriod : per) {
-                        curCap[eachPeriod - 1] += res.getAmount();
-                    }
+            if (!good.getPeriod().equals("0")) {
+                Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>()
+                        .eq(Venue::getVid, reservation.getVenue())
+                        .eq(Venue::getFid, reservation.getFacility()));
+                if (venue == null) {
+                    throw new BusinessException("Venue not found for reservation.");
                 }
-                // judge whether the capacity is enough
-                String[] thisR = reservation.getPeriod().split(",");
-                int[] thisRP = new int[thisR.length];
-                for (int i = 0; i < thisR.length; i++) {
-                    thisRP[i] = Integer.parseInt(thisR[i]);
-                }
-                for (int thisPeriod : thisRP) {
-                    if (thisPeriod > 8 || thisPeriod < 0) {
-                        return BackMsg.error("wrong period!");
-                    }
-                    if (curCap[thisPeriod - 1] + reservation.getAmount() > capacity) {
-                        String er = thisPeriod + "has left less than " + reservation.getAmount() +
-                                " capacity. Thus, reservation for all periods haven't been reserved successfully!";
-                        return BackMsg.error(er);
-                    }
-                }
+                int[] remaining = venueService.remainingCapacity(venue, reservation.getRdate());
+                validatePeriodCapacity(reservation, remaining);
             }
 
-            int id = Integer.parseInt(userid);
-            reservation.setStatus("unpaid");
-            reservation.setRuid(id);
             reservationService.save(reservation);
-
-
-            String logoPath = "src/main/resources/static/logo/logo.png";
-            String destPath = "src/main/resources/static/reservationQR/reservation/"+reservation.getRid()+".jpg";
-            QrCodeUtils.encode(reservation.toString(),logoPath,destPath,true);
+            String destPath = qrReservationDir + reservation.getRid() + ".jpg";
+            QrCodeUtils.encode(reservation.toString(), qrLogoPath, destPath, true);
             good.setReservation(reservation);
         }
 
-        for(Goods goods1: goods)
-        {
-            Reservation reservation = goods1.getReservation();
-            LambdaQueryWrapper<Venue> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Venue::getVid, reservation.getVenue());
-            LambdaQueryWrapper<Facility> queryWrapper1 = new LambdaQueryWrapper<>();
-            queryWrapper1.eq(Facility::getFid, reservation.getFacility());
-            LambdaQueryWrapper<Account> queryWrapper2 = new LambdaQueryWrapper<>();
-            queryWrapper2.eq(Account::getAid, aid);
+        // ── Phase 2: charge account + create bills ───────────────────────────
+        Account account = accountService.getOne(
+                new LambdaQueryWrapper<Account>().eq(Account::getAid, aid));
+        if (account == null) {
+            throw new BusinessException("Account does not exist.");
+        }
 
-            LambdaQueryWrapper<Reservation> queryWrapper3 = new LambdaQueryWrapper<>();
-            queryWrapper3.eq(Reservation::getRid, reservation.getRid());
+        String membership = customer.getMembership();
+        double discountRate = discountRate(membership);
 
-
-            Account account = accountService.getOne(queryWrapper2);
-            if (account == null) {
-                return BackMsg.error("account does not exist!");
-            }
-
-
-            String iden = user.getCustomer().getMembership();
-            double discount = discount(iden);
-            BigDecimal tot = new BigDecimal(goods1.getPrice()*discount*goods1.getAmount());
+        for (Goods good : goods) {
+            Reservation reservation = good.getReservation();
+            BigDecimal tot = BigDecimal.valueOf(good.getPrice())
+                    .multiply(BigDecimal.valueOf(discountRate))
+                    .multiply(BigDecimal.valueOf(good.getAmount()));
             BigDecimal leave = account.getBalance().subtract(tot);
-
-            if (leave.compareTo(new BigDecimal(0)) < 0) {
-                return BackMsg.error("account balance not enough!");
+            if (leave.compareTo(BigDecimal.ZERO) < 0) {
+                throw new BusinessException("Account balance not enough.");
             }
+            account.setBalance(leave);
+
+            Venue venue = venueService.getById(reservation.getVenue());
+            com.gymmaster.entity.Facility facility =
+                    facilityService.getById(reservation.getFacility());
+
             Bill bill = new Bill();
-            bill.setFigure(new BigDecimal(goods1.getPrice()));
-            bill.setUid(Integer.parseInt(userid));
-
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            Calendar c = Calendar.getInstance();
-
-            java.util.Date date = c.getTime();
-            Date d = new Date(date.getTime());
-
-            String time = df.format(d);
-
-            Timestamp ts = Timestamp.valueOf(time);
-
-            bill.setBdate(ts);
-            bill.setVname(venueService.getOne(queryWrapper).getVname());
-            bill.setFname(facilityService.getOne(queryWrapper1).getFname());
+            bill.setFigure(BigDecimal.valueOf(good.getPrice()));
+            bill.setUid(userId);
+            bill.setBdate(new Timestamp(System.currentTimeMillis()));
+            bill.setVname(venue != null ? venue.getVname() : "");
+            bill.setFname(facility != null ? facility.getFname() : "");
             bill.setBrid(reservation.getRid());
             bill.setOperator("system");
-
             billService.save(bill);
-            account.setBalance(leave);
-            accountService.update(account, queryWrapper2);
+
             reservation.setStatus("valid");
-            reservation.setRuid(Integer.parseInt(userid));
-            reservationService.update(reservation, queryWrapper3);
+            reservation.setRuid(userId);
+            reservationService.update(reservation,
+                    new LambdaQueryWrapper<Reservation>().eq(Reservation::getRid, reservation.getRid()));
         }
+        accountService.update(account,
+                new LambdaQueryWrapper<Account>().eq(Account::getAid, aid));
+
         return BackMsg.success("success");
     }
 
-    public static double discount(String type){
-        return switch (type) {
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** Parse the raw {@code goodlist} request body into typed {@link Goods} objects. */
+    @SuppressWarnings("unchecked")
+    private static List<Goods> parseGoods(Map<String, Object> goodlist) {
+        List<Map<String, Object>> goodsMaps =
+                (List<Map<String, Object>>) goodlist.get("goodlist");
+        List<Goods> result = new ArrayList<>();
+        for (Map<String, Object> item : goodsMaps) {
+            Goods good = new Goods();
+            good.setPeriod(item.get("period").toString());
+            good.setFacility(Integer.parseInt(item.get("facility").toString()));
+            good.setVenue(Integer.parseInt(item.get("venue").toString()));
+            good.setAmount(Integer.parseInt(item.get("amount").toString()));
+            good.setPrice(Integer.parseInt(item.get("price").toString()));
+            good.setActive((boolean) item.get("active"));
+            good.setDate((String) item.get("date"));
+            good.setPic((String) item.get("pic"));
+            good.setName((String) item.get("name"));
+            good.setType((String) item.get("type"));
+            result.add(good);
+        }
+        return result;
+    }
+
+    /** Build a {@link Reservation} with status {@code unpaid} from a cart item. */
+    private static Reservation buildReservation(Goods good, int userId) throws ParseException {
+        Reservation res = new Reservation();
+        res.setRuid(userId);
+        res.setAmount(good.getAmount());
+        res.setPeriod(good.getPeriod());
+        res.setFacility(good.getFacility());
+        res.setVenue(good.getVenue());
+        res.setStatus("unpaid");
+        res.setPayment("account");
+
+        String rawDate = good.getDate();
+        String normalized = rawDate.length() > 5 ? rawDate.substring(0, 10) : "2023-" + rawDate;
+        java.util.Date parsed = new SimpleDateFormat("yyyy-MM-dd").parse(normalized);
+        res.setRdate(new Date(parsed.getTime()));
+        return res;
+    }
+
+    /**
+     * Validates that the requested periods have enough remaining capacity.
+     *
+     * @param reservation reservation containing the requested periods + amount
+     * @param remaining   remaining capacity per period (index = period - 1)
+     * @throws BusinessException if any period is out of range or over capacity
+     */
+    private static void validatePeriodCapacity(Reservation reservation, int[] remaining) {
+        String[] parts = reservation.getPeriod().split(",");
+        for (String part : parts) {
+            int period;
+            try {
+                period = Integer.parseInt(part.trim());
+            } catch (NumberFormatException e) {
+                throw new BusinessException("Invalid period value: " + part);
+            }
+            if (period < 1 || period > remaining.length) {
+                throw new BusinessException("Period out of range: " + period);
+            }
+            if (remaining[period - 1] < reservation.getAmount()) {
+                throw new BusinessException("Period " + period + " has less than "
+                        + reservation.getAmount() + " remaining capacity.");
+            }
+        }
+    }
+
+    /**
+     * Maps membership type to a discount rate.
+     * Moved to a static method so the {@code /pay} endpoint can reuse it without
+     * creating a separate bean; business rules live in one place.
+     */
+    static double discountRate(String membershipType) {
+        if (membershipType == null) return 1.0;
+        return switch (membershipType) {
             case "copper member" -> 0.8;
             case "silver member" -> 0.6;
-            case "gold member" -> 0.3;
-            default -> 1.0;
+            case "gold member"   -> 0.3;
+            default              -> 1.0;
         };
     }
 }
