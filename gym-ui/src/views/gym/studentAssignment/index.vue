@@ -15,10 +15,10 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="謇区惻蜿ｷ遐・ prop="phonenumber">
+          <el-form-item label="謇区惻蜿ｷ遐・" prop="phonenumber">
             <el-input
               v-model="queryParams.phonenumber"
-              placeholder="隸ｷ霎灘・謇区惻蜿ｷ遐・
+              placeholder="隸ｷ霎灘・謇区惻蜿ｷ遐・"
               clearable
               size="small"
               style="width: 240px"
@@ -33,16 +33,16 @@
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="遘∵蕗郛門捷" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
-          <el-table-column label="遘∵蕗逕ｨ謌ｷ蜷・ align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
+          <el-table-column label="遘∵蕗逕ｨ謌ｷ蜷・" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column label="遘∵蕗蟋灘錐" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="謇区惻蜿ｷ遐・ align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
+          <el-table-column label="謇区惻蜿ｷ遐・" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
           <el-table-column label="蛻帛ｻｺ譌ｶ髣ｴ" align="center" prop="createTime" v-if="columns[6].visible">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="謫堺ｽ・
+            label="謫堺ｽ・"
             align="center"
             width="160"
             class-name="small-padding fixed-width"
@@ -99,7 +99,7 @@ export default {
       userList: null,
       // 蠑ｹ蜃ｺ螻よ・｢・
       title: "",
-      // 驛ｨ髣ｨ譬鷹蛾｡ｹ
+      // 驛ｨ髣ｨ譬鷹蛾｡ｹ
       deptOptions: undefined,
       // 譏ｯ蜷ｦ譏ｾ遉ｺ蠑ｹ蜃ｺ螻・
       open: false,
@@ -109,7 +109,7 @@ export default {
       initPassword: undefined,
       // 譌･譛溯激蝗ｴ
       dateRange: [],
-      // 蟯嶺ｽ埼蛾｡ｹ
+      // 蟯嶺ｽ埼蛾｡ｹ
       postOptions: [],
       // 隗定牡騾蛾｡ｹ
       roleOptions: [],
@@ -131,7 +131,7 @@ export default {
         updateSupport: 0,
         // 隶ｾ鄂ｮ荳贋ｼ逧・ｯｷ豎ょ､ｴ驛ｨ
         headers: { Authorization: "Bearer " + getToken() },
-        // 荳贋ｼ逧・慍蝮
+        // 荳贋ｼ逧・慍蝮
         url: process.env.VUE_APP_BASE_API + "/system/user/importData"
       },
       // 譟･隸｢蜿よ焚
@@ -149,8 +149,8 @@ export default {
         { key: 1, label: `逕ｨ謌ｷ蜷咲ｧｰ`, visible: true },
         { key: 2, label: `逕ｨ謌ｷ譏ｵ遘ｰ`, visible: true },
         { key: 3, label: `驛ｨ髣ｨ`, visible: true },
-        { key: 4, label: `謇区惻蜿ｷ遐～, visible: true },
-        { key: 5, label: `迥ｶ諤～, visible: true },
+        { key: 4, label: `謇区惻蜿ｷ遐`, visible: true },
+        { key: 5, label: `迥ｶ諤`, visible: true },
         { key: 6, label: `蛻帛ｻｺ譌ｶ髣ｴ`, visible: true }
       ],
       // 陦ｨ蜊墓｡鬪・
@@ -169,14 +169,14 @@ export default {
         email: [
           {
             type: "email",
-            message: "'隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮",
+            message: "'隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮",
             trigger: ["blur", "change"]
           }
         ],
         phonenumber: [
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "隸ｷ霎灘・豁｣遑ｮ逧・焔譛ｺ蜿ｷ遐・,
+            message: "隸ｷ霎灘・豁｣遑ｮ逧・焔譛ｺ蜿ｷ遐・",
             trigger: "blur"
           }
         ]
@@ -184,7 +184,7 @@ export default {
     };
   },
   watch: {
-    // 譬ｹ謐ｮ蜷咲ｧｰ遲幃蛾Κ髣ｨ譬・
+    // 譬ｹ謐ｮ蜷咲ｧｰ遲幃蛾Κ髣ｨ譬・
     deptName(val) {
       this.$refs.tree.filter(val);
     }
@@ -213,7 +213,7 @@ export default {
         this.deptOptions = response.data;
       });
     },
-    // 遲幃芽鰍轤ｹ
+    // 遲幃芽鰍轤ｹ
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
@@ -226,7 +226,7 @@ export default {
     // 逕ｨ謌ｷ迥ｶ諤∽ｿｮ謾ｹ
     handleStatusChange(row) {
       let text = row.status === "0" ? "Able" : "Unable";
-      this.$modal.confirm('遑ｮ隶､隕・' + text + '""' + row.userName + '"逕ｨ謌ｷ蜷暦ｼ・).then(function() {
+      this.$modal.confirm('遑ｮ隶､隕・' + text + '""' + row.userName + '"逕ｨ謌ｷ蜷暦ｼ・').then(function() {
         return changeUserStatus(row.userId, row.status);
       }).then(() => {
         this.$modal.msgSuccess(text + "謌仙粥");
@@ -268,7 +268,7 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
+    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.userId);
       this.single = selection.length != 1;
@@ -292,7 +292,7 @@ export default {
             });
           } else {
             addUser(this.form).then(response => {
-              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・);
+              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・");
               this.open = false;
               this.getList();
             });
@@ -303,7 +303,7 @@ export default {
     /** 蛻髯､謖蛾聴謫堺ｽ・*/
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､逕ｨ謌ｷ郛門捷荳ｺ"' + userIds + '"逧・焚謐ｮ鬘ｹ・・).then(function() {
+      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､逕ｨ謌ｷ郛門捷荳ｺ"' + userIds + '"逧・焚謐ｮ鬘ｹ・・').then(function() {
         return delUser(userIds);
       }).then(() => {
         this.getList();

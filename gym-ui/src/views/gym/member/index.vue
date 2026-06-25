@@ -10,10 +10,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="莨壼遭蟷ｴ鮴・ prop="memberAge">
+      <el-form-item label="莨壼遭蟷ｴ鮴・" prop="memberAge">
         <el-input
           v-model="queryParams.memberAge"
-          placeholder="隸ｷ霎灘・莨壼遭蟷ｴ鮴・
+          placeholder="隸ｷ霎灘・莨壼遭蟷ｴ鮴・"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -100,7 +100,7 @@
     <el-table v-loading="loading" :data="memberList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="莨壼遭蟋灘錐" align="center" prop="memberName" />
-      <el-table-column label="莨壼遭蟷ｴ鮴・ align="center" prop="memberAge" />
+      <el-table-column label="莨壼遭蟷ｴ鮴・" align="center" prop="memberAge" />
       <el-table-column label="莨壼遭諤ｧ蛻ｫ" align="center" prop="memberSex">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex" />
@@ -113,7 +113,7 @@
           <span>{{ parseTime(scope.row.memberBirthday, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="謫堺ｽ・ align="center" class-name="small-padding fixed-width">
+      <el-table-column label="謫堺ｽ・" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -135,7 +135,7 @@
             icon="el-icon-document-checked"
             v-if="scope.row.vipId==null"
             @click="openApplyCard(scope.row)"
-          >莨壼遭蠑蜊｡
+          >莨壼遭蠑蜊｡
           </el-button>
         </template>
       </el-table-column>
@@ -185,8 +185,8 @@
         <el-button @click="cancel">蜿・豸・/el-button>
       </div>
     </el-dialog>
-    <el-dialog title="隸ｷ騾画叫蠑蜊｡譌ｶ髣ｴ" :visible.sync="apply" width="500px" append-to-body>
-      <el-input-number v-model="applyTime" :min="1" :max="100" label="謠剰ｿｰ譁・ｭ・ /> ・域怦・・
+    <el-dialog title="隸ｷ騾画叫蠑蜊｡譌ｶ髣ｴ" :visible.sync="apply" width="500px" append-to-body>
+      <el-input-number v-model="applyTime" :min="1" :max="100" label="謠剰ｿｰ譁・ｭ・" /> ・域怦・・
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleApplyCard">遑ｮ 螳・/el-button>
         <el-button @click="cancel">蜿・豸・/el-button>
@@ -247,11 +247,11 @@ export default {
         ],
         memberPhone:[
           {required: true, message: "莨壼遭逕ｵ隸昜ｸ崎・荳ｺ遨ｺ", trigger: "blur" },
-          { min: 11, max: 11, message: '隸ｷ霎灘・豁｣遑ｮ逧・鳩隸・, trigger: ['blur', 'change'] }
+          { min: 11, max: 11, message: '隸ｷ霎灘・豁｣遑ｮ逧・鳩隸・', trigger: ['blur', 'change'] }
         ],
         memberEmail:[
-          { required: true, message: '隸ｷ霎灘・驍ｮ邂ｱ蝨ｰ蝮', trigger: 'blur' },
-          { type: 'email', message: '隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮', trigger: ['blur', 'change'] }
+          { required: true, message: '隸ｷ霎灘・驍ｮ邂ｱ蝨ｰ蝮', trigger: 'blur' },
+          { type: 'email', message: '隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮', trigger: ['blur', 'change'] }
         ]
       }
     };
@@ -301,7 +301,7 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
+    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.memberId)
       this.single = selection.length!==1
@@ -311,7 +311,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "豺ｻ蜉莨壼遭邂｡逅・;
+      this.title = "豺ｻ蜉莨壼遭邂｡逅・";
     },
     /** 菫ｮ謾ｹ謖蛾聴謫堺ｽ・*/
     handleUpdate(row) {
@@ -320,7 +320,7 @@ export default {
       getMember(memberId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "菫ｮ謾ｹ莨壼遭邂｡逅・;
+        this.title = "菫ｮ謾ｹ莨壼遭邂｡逅・";
       });
     },
     openApplyCard(row){
@@ -349,7 +349,7 @@ export default {
             });
           } else {
             addMember(this.form).then(response => {
-              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・);
+              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・");
               this.open = false;
               this.getList();
             });
@@ -360,7 +360,7 @@ export default {
     /** 蛻髯､謖蛾聴謫堺ｽ・*/
     handleDelete(row) {
       const memberIds = row.memberId || this.ids;
-      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､莨壼遭邂｡逅・ｼ門捷荳ｺ"' + memberIds + '"逧・焚謐ｮ鬘ｹ・・).then(function() {
+      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､莨壼遭邂｡逅・ｼ門捷荳ｺ"' + memberIds + '"逧・焚謐ｮ鬘ｹ・・').then(function() {
         return delMember(memberIds);
       }).then(() => {
         this.getList();

@@ -28,12 +28,12 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="莨壼遭蜊｡譛画譜譌･譛・ prop="effective">
+      <el-form-item label="莨壼遭蜊｡譛画譜譌･譛・" prop="effective">
         <el-date-picker clearable size="small"
           v-model="queryParams.effective"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="騾画叫莨壼遭蜊｡譛画譜譌･譛・>
+          placeholder="騾画叫莨壼遭蜊｡譛画譜譌･譛・">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -61,18 +61,18 @@
       <el-table-column label="扈大ｮ壻ｼ壼遭蟋灘錐" align="center" prop="memberName" />
       <el-table-column label="扈大ｮ壻ｼ壼遭謇区惻蜿ｷ" align="center" prop="memberPhone" />
       <el-table-column label="莨壼遭蜊｡蜿ｷ" align="center" prop="vipNo" />
-      <el-table-column label="莨壼遭蜊｡譛画譜譌･譛・ align="center" prop="effective" width="180">
+      <el-table-column label="莨壼遭蜊｡譛画譜譌･譛・" align="center" prop="effective" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.effective, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="莨壼遭蜊｡迥ｶ諤・ align="center" width="180">
+      <el-table-column label="莨壼遭蜊｡迥ｶ諤・" align="center" width="180">
         <template slot-scope="scope">
           <el-tag v-if="checkTime(scope.row)" type="success">譛画譜</el-tag>
           <el-tag v-else type="danger">霑・悄</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="謫堺ｽ・ align="center" class-name="small-padding fixed-width">
+      <el-table-column label="謫堺ｽ・" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -123,7 +123,7 @@
         <el-form-item v-if="!checkFormTime(form.effective)" label="扈ｭ雍ｹ譌ｶ髣ｴ" prop="effective">
           <el-input-number v-model="form.renewal" :min="1" :max="100" />
         </el-form-item>
-        <el-form-item v-else label="蛻ｰ譛滓律譛・ prop="effective">
+        <el-form-item v-else label="蛻ｰ譛滓律譛・" prop="effective">
           <el-date-picker clearable size="small"
                           v-model="changeTime"
                           type="date"
@@ -214,7 +214,7 @@ export default {
       };
       this.resetForm("form");
     },
-    //譽譟･莨壼遭蜊｡譏ｯ蜷ｦ霑・悄
+    //譽譟･莨壼遭蜊｡譏ｯ蜷ｦ霑・悄
     checkTime(row){
       var effective  = row.effective.replace("-", "/"); //譖ｿ謐｢蟄礼ｬｦ・悟序謌先・㊥譬ｼ蠑・
       var today =  new Date();
@@ -239,7 +239,7 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
+    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.vipId)
       this.single = selection.length!==1
@@ -249,7 +249,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "豺ｻ蜉莨壼遭蜊｡邂｡逅・;
+      this.title = "豺ｻ蜉莨壼遭蜊｡邂｡逅・";
     },
     /** 扈ｭ雍ｹ謖蛾聴 **/
     handleRenewal(row){
@@ -269,7 +269,7 @@ export default {
       getVip(vipId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "菫ｮ謾ｹ莨壼遭蜊｡邂｡逅・;
+        this.title = "菫ｮ謾ｹ莨壼遭蜊｡邂｡逅・";
       });
     },
     handleSignIn(row){
@@ -291,7 +291,7 @@ export default {
             });
           } else {
             addVip(this.form).then(response => {
-              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・);
+              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・");
               this.open = false;
               this.getList();
             });
@@ -302,7 +302,7 @@ export default {
     /** 蛻髯､謖蛾聴謫堺ｽ・*/
     handleDelete(row) {
       const vipIds = row.vipId || this.ids;
-      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､莨壼遭蜊｡邂｡逅・ｼ門捷荳ｺ"' + vipIds + '"逧・焚謐ｮ鬘ｹ・・).then(function() {
+      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､莨壼遭蜊｡邂｡逅・ｼ門捷荳ｺ"' + vipIds + '"逧・焚謐ｮ鬘ｹ・・').then(function() {
         return delVip(vipIds);
       }).then(() => {
         this.getList();

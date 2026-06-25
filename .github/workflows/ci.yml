@@ -120,8 +120,8 @@ jobs:
           java-version: '17'
           cache: maven
       - name: Run unit tests
-        run: mvn -f gym-management-system-master/pom.xml test
+        run: mvn -f gym-management-system-master/pom.xml test -e -B
       - name: Verify backend
-        run: mvn -f gym-management-system-master/pom.xml -DskipTests verify
+        run: mvn -f gym-management-system-master/pom.xml -DskipTests verify -B
       - name: Package backend
         run: mvn -f gym-management-system-master/pom.xml -DskipTests -Dspring-boot.repackage.skip=true package

@@ -63,6 +63,8 @@ service.interceptors.request.use(config => {
 }, error => {
     console.warn('Request interceptor error:', error)
     return Promise.reject(error)
+  }
+)
 // 响应拦截器
 service.interceptors.response.use(res => {
     // 未设置状态码则默认成功状态

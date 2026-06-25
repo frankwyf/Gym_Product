@@ -1,8 +1,9 @@
 package com.gymmaster.controller;
 
-import com.gymmaster.common.BackMsg;
+import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.Reservation;
 import com.gymmaster.entity.Venue;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.CustomerService;
 import com.gymmaster.service.ReservationService;
 import com.gymmaster.service.VenueService;
@@ -15,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -37,10 +36,13 @@ class ReservationControllerUnitTest {
     private VenueService venueService;
 
     @Mock
+    private CurrentUserResolver currentUserResolver;
+
+    @Mock
     private HttpServletRequest request;
 
     @Test
-    void add_shouldRejectPeriodOutOfRange() throws Exception {
+    void add_shouldRejectPeriodOutOfRange() {
         Reservation incoming = new Reservation();
         incoming.setRdate(Date.valueOf("2026-06-08"));
         incoming.setFacility(1);
@@ -51,21 +53,17 @@ class ReservationControllerUnitTest {
         Venue venue = new Venue();
         venue.setCapacity(10);
 
-        when(reservationService.list(any())).thenReturn(Collections.emptyList());
         when(venueService.getOne(any())).thenReturn(venue);
+        // 8 periods, all fully available — period 9 exceeds the array length
+        when(venueService.remainingCapacity(any(), any()))
+                .thenReturn(new int[]{10, 10, 10, 10, 10, 10, 10, 10});
 
-        BackMsg<String> result = controller.add(incoming, request);
-
-        Assertions.assertEquals(0, result.getCode());
-        Assertions.assertEquals("wrong period!", result.getMsg());
+        Assertions.assertThrows(BusinessException.class,
+                () -> controller.add(incoming, request));
     }
 
     @Test
-    void add_shouldRejectWhenCapacityIsNotEnough() throws Exception {
-        Reservation existing = new Reservation();
-        existing.setPeriod("1");
-        existing.setAmount(2);
-
+    void add_shouldRejectWhenCapacityIsNotEnough() {
         Reservation incoming = new Reservation();
         incoming.setRdate(Date.valueOf("2026-06-08"));
         incoming.setFacility(2);
@@ -76,12 +74,13 @@ class ReservationControllerUnitTest {
         Venue venue = new Venue();
         venue.setCapacity(3);
 
-        when(reservationService.list(any())).thenReturn(Arrays.asList(existing));
         when(venueService.getOne(any())).thenReturn(venue);
+        // period 1 has only 1 remaining spot; 2 are requested → capacity error
+        when(venueService.remainingCapacity(any(), any()))
+                .thenReturn(new int[]{1, 10, 10, 10, 10, 10, 10, 10});
 
-        BackMsg<String> result = controller.add(incoming, request);
-
-        Assertions.assertEquals(0, result.getCode());
-        Assertions.assertTrue(result.getMsg().contains("capacity"));
+        BusinessException ex = Assertions.assertThrows(BusinessException.class,
+                () -> controller.add(incoming, request));
+        Assertions.assertTrue(ex.getMessage().contains("capacity"));
     }
 }
