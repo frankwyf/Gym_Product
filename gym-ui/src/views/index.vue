@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
@@ -34,7 +34,7 @@ export default {
   name: "Index",
   data() {
     return {
-      // 版本号
+      // 迚域悽蜿ｷ
       version: "1.0.0",
     };
   },
@@ -65,10 +65,8 @@ export default {
       ];
 
       getCharts().then((response) => {
-        console.log(response.c);
-        // console.log(response.d);
         var myChart = echarts.init(document.getElementById("t2"));
-        // 绘制图表
+        // 扈伜宛蝗ｾ陦ｨ
         myChart.setOption({
           title: {
             text: this.$tr('dashboard.lessonAnalysis'),
@@ -97,10 +95,8 @@ export default {
         });
       });
       getStudentNumber().then((response) => {
-        // console.log(response.a);
-        // console.log(response.b);
         var myChart = echarts.init(document.getElementById("t1"));
-        // 绘制图表
+        // 扈伜宛蝗ｾ陦ｨ
         myChart.setOption({
           title: {
             text: this.$tr('dashboard.studentAnalysis'),

@@ -1,24 +1,24 @@
-
+﻿
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--用户数据-->
+      <!--逕ｨ謌ｷ謨ｰ謐ｮ-->
       <el-col :span="24" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-          <el-form-item label="私教名称" prop="nickName">
+          <el-form-item label="遘∵蕗蜷咲ｧｰ" prop="nickName">
             <el-input
               v-model="queryParams.nickName"
-              placeholder="请输入私教名称"
+              placeholder="隸ｷ霎灘・遘∵蕗蜷咲ｧｰ"
               clearable
               size="small"
               style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="手机号码" prop="phonenumber">
+          <el-form-item label="謇区惻蜿ｷ遐・ prop="phonenumber">
             <el-input
               v-model="queryParams.phonenumber"
-              placeholder="请输入手机号码"
+              placeholder="隸ｷ霎灘・謇区惻蜿ｷ遐・
               clearable
               size="small"
               style="width: 240px"
@@ -26,23 +26,23 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">謳懃ｴ｢</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">驥咲ｽｮ</el-button>
           </el-form-item>
         </el-form>
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="私教编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
-          <el-table-column label="私教用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="私教姓名" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
-          <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible">
+          <el-table-column label="遘∵蕗郛門捷" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
+          <el-table-column label="遘∵蕗逕ｨ謌ｷ蜷・ align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
+          <el-table-column label="遘∵蕗蟋灘錐" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
+          <el-table-column label="謇区惻蜿ｷ遐・ align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
+          <el-table-column label="蛻帛ｻｺ譌ｶ髣ｴ" align="center" prop="createTime" v-if="columns[6].visible">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            label="謫堺ｽ・
             align="center"
             width="160"
             class-name="small-padding fixed-width"
@@ -53,7 +53,7 @@
                 type="text"
                 icon="el-icon-edit"
                 @click="handleManageStudent(scope.row)"
-              >分配</el-button>
+              >蛻・・</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -83,58 +83,58 @@ export default {
   components: { Treeselect },
   data() {
     return {
-      // 遮罩层
+      // 驕ｮ鄂ｩ螻・
       loading: true,
-      // 选中数组
+      // 騾我ｸｭ謨ｰ扈・
       ids: [],
-      // 非单个禁用
+      // 髱槫黒荳ｪ遖∫畑
       single: true,
-      // 非多个禁用
+      // 髱槫､壻ｸｪ遖∫畑
       multiple: true,
-      // 显示搜索条件
+      // 譏ｾ遉ｺ謳懃ｴ｢譚｡莉ｶ
       showSearch: true,
-      // 总条数
+      // 諤ｻ譚｡謨ｰ
       total: 0,
-      // 用户表格数据
+      // 逕ｨ謌ｷ陦ｨ譬ｼ謨ｰ謐ｮ
       userList: null,
-      // 弹出层标题
+      // 蠑ｹ蜃ｺ螻よ・｢・
       title: "",
-      // 部门树选项
+      // 驛ｨ髣ｨ譬鷹蛾｡ｹ
       deptOptions: undefined,
-      // 是否显示弹出层
+      // 譏ｯ蜷ｦ譏ｾ遉ｺ蠑ｹ蜃ｺ螻・
       open: false,
-      // 部门名称
+      // 驛ｨ髣ｨ蜷咲ｧｰ
       deptName: undefined,
-      // 默认密码
+      // 鮟倩ｮ､蟇・・
       initPassword: undefined,
-      // 日期范围
+      // 譌･譛溯激蝗ｴ
       dateRange: [],
-      // 岗位选项
+      // 蟯嶺ｽ埼蛾｡ｹ
       postOptions: [],
-      // 角色选项
+      // 隗定牡騾蛾｡ｹ
       roleOptions: [],
-      // 表单参数
+      // 陦ｨ蜊募盾謨ｰ
       form: {},
       defaultProps: {
         children: "children",
         label: "label"
       },
-      // 用户导入参数
+      // 逕ｨ謌ｷ蟇ｼ蜈･蜿よ焚
       upload: {
-        // 是否显示弹出层（用户导入）
+        // 譏ｯ蜷ｦ譏ｾ遉ｺ蠑ｹ蜃ｺ螻ゑｼ育畑謌ｷ蟇ｼ蜈･・・
         open: false,
-        // 弹出层标题（用户导入）
+        // 蠑ｹ蜃ｺ螻よ・｢假ｼ育畑謌ｷ蟇ｼ蜈･・・
         title: "",
-        // 是否禁用上传
+        // 譏ｯ蜷ｦ遖∫畑荳贋ｼ
         isUploading: false,
-        // 是否更新已经存在的用户数据
+        // 譏ｯ蜷ｦ譖ｴ譁ｰ蟾ｲ扈丞ｭ伜惠逧・畑謌ｷ謨ｰ謐ｮ
         updateSupport: 0,
-        // 设置上传的请求头部
+        // 隶ｾ鄂ｮ荳贋ｼ逧・ｯｷ豎ょ､ｴ驛ｨ
         headers: { Authorization: "Bearer " + getToken() },
-        // 上传的地址
+        // 荳贋ｼ逧・慍蝮
         url: process.env.VUE_APP_BASE_API + "/system/user/importData"
       },
-      // 查询参数
+      // 譟･隸｢蜿よ焚
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -143,40 +143,40 @@ export default {
         status: undefined,
         deptId: undefined
       },
-      // 列信息
+      // 蛻嶺ｿ｡諱ｯ
       columns: [
-        { key: 0, label: `用户编号`, visible: true },
-        { key: 1, label: `用户名称`, visible: true },
-        { key: 2, label: `用户昵称`, visible: true },
-        { key: 3, label: `部门`, visible: true },
-        { key: 4, label: `手机号码`, visible: true },
-        { key: 5, label: `状态`, visible: true },
-        { key: 6, label: `创建时间`, visible: true }
+        { key: 0, label: `逕ｨ謌ｷ郛門捷`, visible: true },
+        { key: 1, label: `逕ｨ謌ｷ蜷咲ｧｰ`, visible: true },
+        { key: 2, label: `逕ｨ謌ｷ譏ｵ遘ｰ`, visible: true },
+        { key: 3, label: `驛ｨ髣ｨ`, visible: true },
+        { key: 4, label: `謇区惻蜿ｷ遐～, visible: true },
+        { key: 5, label: `迥ｶ諤～, visible: true },
+        { key: 6, label: `蛻帛ｻｺ譌ｶ髣ｴ`, visible: true }
       ],
-      // 表单校验
+      // 陦ｨ蜊墓｡鬪・
       rules: {
         userName: [
-          { required: true, message: "用户名称不能为空", trigger: "blur" },
-          { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' }
+          { required: true, message: "逕ｨ謌ｷ蜷咲ｧｰ荳崎・荳ｺ遨ｺ", trigger: "blur" },
+          { min: 2, max: 20, message: '逕ｨ謌ｷ蜷咲ｧｰ髟ｿ蠎ｦ蠢・｡ｻ莉倶ｺ・2 蜥・20 荵矩龍', trigger: 'blur' }
         ],
         nickName: [
-          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+          { required: true, message: "逕ｨ謌ｷ譏ｵ遘ｰ荳崎・荳ｺ遨ｺ", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "用户密码不能为空", trigger: "blur" },
-          { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' }
+          { required: true, message: "逕ｨ謌ｷ蟇・∽ｸ崎・荳ｺ遨ｺ", trigger: "blur" },
+          { min: 5, max: 20, message: '逕ｨ謌ｷ蟇・・柄蠎ｦ蠢・｡ｻ莉倶ｺ・5 蜥・20 荵矩龍', trigger: 'blur' }
         ],
         email: [
           {
             type: "email",
-            message: "'请输入正确的邮箱地址",
+            message: "'隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮",
             trigger: ["blur", "change"]
           }
         ],
         phonenumber: [
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "请输入正确的手机号码",
+            message: "隸ｷ霎灘・豁｣遑ｮ逧・焔譛ｺ蜿ｷ遐・,
             trigger: "blur"
           }
         ]
@@ -184,7 +184,7 @@ export default {
     };
   },
   watch: {
-    // 根据名称筛选部门树
+    // 譬ｹ謐ｮ蜷咲ｧｰ遲幃蛾Κ髣ｨ譬・
     deptName(val) {
       this.$refs.tree.filter(val);
     }
@@ -197,7 +197,7 @@ export default {
     });
   },
   methods: {
-    /** 查询用户列表 */
+    /** 譟･隸｢逕ｨ謌ｷ蛻苓｡ｨ */
     getList() {
       this.loading = true;
       listTeacher(this.queryParams).then(response => {
@@ -207,39 +207,39 @@ export default {
         }
       );
     },
-    /** 查询部门下拉树结构 */
+    /** 譟･隸｢驛ｨ髣ｨ荳区級譬醍ｻ捺桷 */
     getTreeselect() {
       treeselect().then(response => {
         this.deptOptions = response.data;
       });
     },
-    // 筛选节点
+    // 遲幃芽鰍轤ｹ
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    // 节点单击事件
+    // 闃らせ蜊募・莠倶ｻｶ
     handleNodeClick(data) {
       this.queryParams.deptId = data.id;
       this.handleQuery();
     },
-    // 用户状态修改
+    // 逕ｨ謌ｷ迥ｶ諤∽ｿｮ謾ｹ
     handleStatusChange(row) {
       let text = row.status === "0" ? "Able" : "Unable";
-      this.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗？').then(function() {
+      this.$modal.confirm('遑ｮ隶､隕・' + text + '""' + row.userName + '"逕ｨ謌ｷ蜷暦ｼ・).then(function() {
         return changeUserStatus(row.userId, row.status);
       }).then(() => {
-        this.$modal.msgSuccess(text + "成功");
+        this.$modal.msgSuccess(text + "謌仙粥");
       }).catch(function() {
         row.status = row.status === "0" ? "1" : "0";
       });
     },
-    // 取消按钮
+    // 蜿匁ｶ域潔髓ｮ
     cancel() {
       this.open = false;
       this.reset();
     },
-    // 表单重置
+    // 陦ｨ蜊暮㍾鄂ｮ
     reset() {
       this.form = {
         userId: undefined,
@@ -257,43 +257,42 @@ export default {
       };
       this.resetForm("form");
     },
-    /** 搜索按钮操作 */
+    /** 謳懃ｴ｢謖蛾聴謫堺ｽ・*/
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
     },
-    /** 重置按钮操作 */
+    /** 驥咲ｽｮ謖蛾聴謫堺ｽ・*/
     resetQuery() {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
+    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.userId);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
 
-    /** 分配学生 */
+    /** 蛻・・蟄ｦ逕・*/
     handleManageStudent: function(row) {
-      console.log(row);
       const userId = row.userId;
       this.$router.push("/operation/assignment/student/" + userId);
     },
-    /** 提交按钮 */
+    /** 謠蝉ｺ､謖蛾聴 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.userId != undefined) {
             updateUser(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
+              this.$modal.msgSuccess("菫ｮ謾ｹ謌仙粥");
               this.open = false;
               this.getList();
             });
           } else {
             addUser(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
+              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・);
               this.open = false;
               this.getList();
             });
@@ -301,45 +300,45 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
+    /** 蛻髯､謖蛾聴謫堺ｽ・*/
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项？').then(function() {
+      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､逕ｨ謌ｷ郛門捷荳ｺ"' + userIds + '"逧・焚謐ｮ鬘ｹ・・).then(function() {
         return delUser(userIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("删除成功");
+        this.$modal.msgSuccess("蛻髯､謌仙粥");
       }).catch(() => {});
     },
-    /** 导出按钮操作 */
+    /** 蟇ｼ蜃ｺ謖蛾聴謫堺ｽ・*/
     handleExport() {
       this.download('system/user/export', {
         ...this.queryParams
       }, `user_${new Date().getTime()}.xlsx`)
     },
-    /** 导入按钮操作 */
+    /** 蟇ｼ蜈･謖蛾聴謫堺ｽ・*/
     handleImport() {
-      this.upload.title = "用户导入";
+      this.upload.title = "逕ｨ謌ｷ蟇ｼ蜈･";
       this.upload.open = true;
     },
-    /** 下载模板操作 */
+    /** 荳玖ｽｽ讓｡譚ｿ謫堺ｽ・*/
     importTemplate() {
       this.download('system/user/importTemplate', {
       }, `user_template_${new Date().getTime()}.xlsx`)
     },
-    // 文件上传中处理
+    // 譁・ｻｶ荳贋ｼ荳ｭ螟・炊
     handleFileUploadProgress(event, file, fileList) {
       this.upload.isUploading = true;
     },
-    // 文件上传成功处理
+    // 譁・ｻｶ荳贋ｼ謌仙粥螟・炊
     handleFileSuccess(response, file, fileList) {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "蟇ｼ蜈･扈捺棡", { dangerouslyUseHTMLString: true });
       this.getList();
     },
-    // 提交上传文件
+    // 謠蝉ｺ､荳贋ｼ譁・ｻｶ
     submitFileForm() {
       this.$refs.upload.submit();
     }

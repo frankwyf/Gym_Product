@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import logoImg from '@/assets/logo/QQ图片20230424225408.jpg'
+import logoImg from '@/assets/logo/logo.png'
 import variables from '@/assets/styles/variables.scss'
 
 export default {
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: this.$tr('branding.title'),
+      title: 'GymMaster',
       logo: logoImg
     }
   }

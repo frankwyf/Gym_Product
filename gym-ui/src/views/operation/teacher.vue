@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
@@ -18,10 +18,8 @@ export default {
   methods: {
     initCharts() {
       getStudentNumber().then(response => {
-        console.log(response.a);
-        console.log(response.b);
         var myChart = echarts.init(document.getElementById("t1"))
-        // 绘制图表
+        // 扈伜宛蝗ｾ陦ｨ
         myChart.setOption({
           title: {
             text: this.$tr('operation.studentAnalysis'),

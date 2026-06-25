@@ -235,7 +235,6 @@ export default {
   },
   methods: {
     trail() {
-      console.log(this.addForm.period);
     },
     getPeriodTimes(periodStr) {
       const periodArr = periodStr.split(',').map(Number);
@@ -266,7 +265,6 @@ export default {
       };
       axios.put(`${GYM_API}/reservation/update`,editReservation)
         .then(response => {
-          console.log(response.data);
         })
         .catch(error => {
           console.error(error);
@@ -293,7 +291,6 @@ export default {
         if (valid) {
           const selectedPeriodIndices = this.addForm.period.map(period => this.periods.indexOf(period)+1);
           const selectedPeriodsString = selectedPeriodIndices.join(',');
-          // console.log(selectedPeriodsString+'this');
           const year = this.addForm.rdate.getFullYear();
           const month = ("0" + (this.addForm.rdate.getMonth() + 1)).slice(-2);
           const day = ("0" + this.addForm.rdate.getDate()).slice(-2);
@@ -308,10 +305,8 @@ export default {
             payment: this.addForm.payment,
             status: this.addForm.status,
           };
-          console.log(editAddReservation);
           axios.post(`${GYM_API}/reservation/add/management`,editAddReservation)
             .then(response => {
-              console.log(response.data);
             })
             .catch(error => {
               console.error(error);
@@ -320,7 +315,6 @@ export default {
           this.fetchInvalidData();
           this.fetchFullData();
           this.dataChange();
-          console.log(this.reservations);
           this.closeAddDialog();
         } else {
           return false;
@@ -329,7 +323,6 @@ export default {
     },
     handleRid(event){
       this.loading = true;
-      // console.log(this.queryParams.vid);
       const ridValue = this.queryParams.rid;
       axios.get(`${GYM_API}/reservation/findId`, { params: { id: ridValue } })
         .then((response) => {
@@ -348,7 +341,6 @@ export default {
       const vidValue = this.queryParams.vid;
       axios.get(`${GYM_API}/reservation/findVid`, { params: { id: vidValue } })
         .then((response) => {
-          console.log(response.data.data);
           // this.reservations = [];
           // this.reservations.push(response.data.data);
           this.reservations = response.data.data;
@@ -399,7 +391,6 @@ export default {
           };
           axios.put(`${GYM_API}/reservation/update`,editReservation)
             .then(response => {
-              console.log(response.data);
             })
             .catch(error => {
               console.error(error);
@@ -408,7 +399,6 @@ export default {
           this.fetchInvalidData();
           this.fetchFullData();
           this.dataChange();
-          console.log(this.reservations);
           this.closeDialog();
         } else {
           return false;
@@ -421,7 +411,6 @@ export default {
       } else {
         this.reservations = this.invalidReservations;
       }
-      console.log(1);
     },
     addReservation() {
       this.dialogTitle = 'Add Reservation';
@@ -438,31 +427,25 @@ export default {
       axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.validReservations = response.data.data.records.filter(record => record.status === 'valid');
-          // console.log(this.validReservations);
           this.dataChange();
         })
         .catch(error => {
-          console.log(error);
         });
     },
     fetchInvalidData() {
       axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.invalidReservations = response.data.data.records.filter(record => record.status === 'unpaid');
-          // console.log(this.invalidReservations);
         })
         .catch(error => {
-          console.log(error);
         });
     },
     fetchFullData() {
       axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.fullReservations = response.data.data.records;
-          // console.log(this.fullReservations);
         })
         .catch(error => {
-          console.log(error);
         });
     },
     handleDateChange() {
@@ -499,7 +482,6 @@ export default {
     this.fetchInvalidData();
     this.fetchFullData();
     this.fetchValidData();
-    console.log(this.validReservations);
   },
 }
 </script>

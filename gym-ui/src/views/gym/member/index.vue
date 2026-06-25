@@ -1,53 +1,53 @@
-<template>
+﻿<template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="120px">
-      <el-form-item label="会员姓名" prop="memberName">
+      <el-form-item label="莨壼遭蟋灘錐" prop="memberName">
         <el-input
           v-model="queryParams.memberName"
-          placeholder="请输入会员姓名"
+          placeholder="隸ｷ霎灘・莨壼遭蟋灘錐"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="会员年龄" prop="memberAge">
+      <el-form-item label="莨壼遭蟷ｴ鮴・ prop="memberAge">
         <el-input
           v-model="queryParams.memberAge"
-          placeholder="请输入会员年龄"
+          placeholder="隸ｷ霎灘・莨壼遭蟷ｴ鮴・
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="会员手机号" prop="memberPhone">
+      <el-form-item label="莨壼遭謇区惻蜿ｷ" prop="memberPhone">
         <el-input
           v-model="queryParams.memberPhone"
-          placeholder="请输入会员手机号"
+          placeholder="隸ｷ霎灘・莨壼遭謇区惻蜿ｷ"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="会员邮箱" prop="memberEmail">
+      <el-form-item label="莨壼遭驍ｮ邂ｱ" prop="memberEmail">
         <el-input
           v-model="queryParams.memberEmail"
-          placeholder="请输入会员邮箱"
+          placeholder="隸ｷ霎灘・莨壼遭驍ｮ邂ｱ"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="会员生日" prop="memberBirthday">
+      <el-form-item label="莨壼遭逕滓律" prop="memberBirthday">
         <el-date-picker clearable size="small"
           v-model="queryParams.memberBirthday"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="选择会员生日">
+          placeholder="騾画叫莨壼遭逕滓律">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">謳懃ｴ｢</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">驥咲ｽｮ</el-button>
       </el-form-item>
     </el-form>
 
@@ -60,7 +60,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['gym:member:add']"
-        >新增</el-button>
+        >譁ｰ蠅・/el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -71,7 +71,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['gym:member:edit']"
-        >修改</el-button>
+        >菫ｮ謾ｹ</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -82,7 +82,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['gym:member:remove']"
-        >删除</el-button>
+        >蛻髯､</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -92,28 +92,28 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['gym:member:export']"
-        >导出</el-button>
+        >蟇ｼ蜃ｺ</el-button>
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="memberList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="会员姓名" align="center" prop="memberName" />
-      <el-table-column label="会员年龄" align="center" prop="memberAge" />
-      <el-table-column label="会员性别" align="center" prop="memberSex">
+      <el-table-column label="莨壼遭蟋灘錐" align="center" prop="memberName" />
+      <el-table-column label="莨壼遭蟷ｴ鮴・ align="center" prop="memberAge" />
+      <el-table-column label="莨壼遭諤ｧ蛻ｫ" align="center" prop="memberSex">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex" />
         </template>
       </el-table-column>
-      <el-table-column label="会员手机号" align="center" prop="memberPhone" />
-      <el-table-column label="会员邮箱" align="center" prop="memberEmail" />
-      <el-table-column label="会员生日" align="center" prop="memberBirthday" width="180">
+      <el-table-column label="莨壼遭謇区惻蜿ｷ" align="center" prop="memberPhone" />
+      <el-table-column label="莨壼遭驍ｮ邂ｱ" align="center" prop="memberEmail" />
+      <el-table-column label="莨壼遭逕滓律" align="center" prop="memberBirthday" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.memberBirthday, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="謫堺ｽ・ align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -121,21 +121,21 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['gym:member:edit']"
-          >修改</el-button>
+          >菫ｮ謾ｹ</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['gym:member:remove']"
-          >删除</el-button>
+          >蛻髯､</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-document-checked"
             v-if="scope.row.vipId==null"
             @click="openApplyCard(scope.row)"
-          >会员开卡
+          >莨壼遭蠑蜊｡
           </el-button>
         </template>
       </el-table-column>
@@ -149,14 +149,14 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改会员管理对话框 -->
+    <!-- 豺ｻ蜉謌紋ｿｮ謾ｹ莨壼遭邂｡逅・ｯｹ隸晄｡・-->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="会员姓名" prop="memberName">
-          <el-input v-model="form.memberName" placeholder="请输入会员姓名" />
+        <el-form-item label="莨壼遭蟋灘錐" prop="memberName">
+          <el-input v-model="form.memberName" placeholder="隸ｷ霎灘・莨壼遭蟋灘錐" />
         </el-form-item>
-        <el-form-item label="会员性别">
-          <el-select v-model="form.memberSex" placeholder="请选择">
+        <el-form-item label="莨壼遭諤ｧ蛻ｫ">
+          <el-select v-model="form.memberSex" placeholder="隸ｷ騾画叫">
             <el-option
               v-for="dict in dict.type.sys_user_sex"
               :key="dict.value"
@@ -165,31 +165,31 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="会员手机号" prop="memberPhone">
-          <el-input v-model="form.memberPhone" placeholder="请输入会员手机号" />
+        <el-form-item label="莨壼遭謇区惻蜿ｷ" prop="memberPhone">
+          <el-input v-model="form.memberPhone" placeholder="隸ｷ霎灘・莨壼遭謇区惻蜿ｷ" />
         </el-form-item>
-        <el-form-item label="会员邮箱" prop="memberEmail">
-          <el-input v-model="form.memberEmail" placeholder="请输入会员邮箱" />
+        <el-form-item label="莨壼遭驍ｮ邂ｱ" prop="memberEmail">
+          <el-input v-model="form.memberEmail" placeholder="隸ｷ霎灘・莨壼遭驍ｮ邂ｱ" />
         </el-form-item>
-        <el-form-item label="会员生日" prop="memberBirthday">
+        <el-form-item label="莨壼遭逕滓律" prop="memberBirthday">
           <el-date-picker clearable size="small"
             v-model="form.memberBirthday"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="选择会员生日">
+            placeholder="騾画叫莨壼遭逕滓律">
           </el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submitForm">遑ｮ 螳・/el-button>
+        <el-button @click="cancel">蜿・豸・/el-button>
       </div>
     </el-dialog>
-    <el-dialog title="请选择开卡时间" :visible.sync="apply" width="500px" append-to-body>
-      <el-input-number v-model="applyTime" :min="1" :max="100" label="描述文字" /> （月）
+    <el-dialog title="隸ｷ騾画叫蠑蜊｡譌ｶ髣ｴ" :visible.sync="apply" width="500px" append-to-body>
+      <el-input-number v-model="applyTime" :min="1" :max="100" label="謠剰ｿｰ譁・ｭ・ /> ・域怦・・
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleApplyCard">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="handleApplyCard">遑ｮ 螳・/el-button>
+        <el-button @click="cancel">蜿・豸・/el-button>
       </div>
     </el-dialog>
   </div>
@@ -203,28 +203,28 @@ export default {
   dicts: ['sys_user_sex'],
   data() {
     return {
-      // 遮罩层
+      // 驕ｮ鄂ｩ螻・
       loading: true,
-      // 选中数组
+      // 騾我ｸｭ謨ｰ扈・
       ids: [],
-      // 非单个禁用
+      // 髱槫黒荳ｪ遖∫畑
       single: true,
-      // 非多个禁用
+      // 髱槫､壻ｸｪ遖∫畑
       multiple: true,
-      // 显示搜索条件
+      // 譏ｾ遉ｺ謳懃ｴ｢譚｡莉ｶ
       showSearch: true,
-      // 总条数
+      // 諤ｻ譚｡謨ｰ
       total: 0,
-      // 会员管理表格数据
+      // 莨壼遭邂｡逅・｡ｨ譬ｼ謨ｰ謐ｮ
       memberList: [],
-      // 弹出层标题
+      // 蠑ｹ蜃ｺ螻よ・｢・
       title: "",
-      // 是否显示弹出层
+      // 譏ｯ蜷ｦ譏ｾ遉ｺ蠑ｹ蜃ｺ螻・
       open: false,
       apply:false,
       applyRow:{},
       applyTime:12,
-      // 查询参数
+      // 譟･隸｢蜿よ焚
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -238,20 +238,20 @@ export default {
         teacherId: null,
         userId: null
       },
-      // 表单参数
+      // 陦ｨ蜊募盾謨ｰ
       form: {},
-      // 表单校验
+      // 陦ｨ蜊墓｡鬪・
       rules: {
         memberName: [
-          { required: true, message: "会员姓名不能为空", trigger: "blur" }
+          { required: true, message: "莨壼遭蟋灘錐荳崎・荳ｺ遨ｺ", trigger: "blur" }
         ],
         memberPhone:[
-          {required: true, message: "会员电话不能为空", trigger: "blur" },
-          { min: 11, max: 11, message: '请输入正确的电话', trigger: ['blur', 'change'] }
+          {required: true, message: "莨壼遭逕ｵ隸昜ｸ崎・荳ｺ遨ｺ", trigger: "blur" },
+          { min: 11, max: 11, message: '隸ｷ霎灘・豁｣遑ｮ逧・鳩隸・, trigger: ['blur', 'change'] }
         ],
         memberEmail:[
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          { required: true, message: '隸ｷ霎灘・驍ｮ邂ｱ蝨ｰ蝮', trigger: 'blur' },
+          { type: 'email', message: '隸ｷ霎灘・豁｣遑ｮ逧・ぐ邂ｱ蝨ｰ蝮', trigger: ['blur', 'change'] }
         ]
       }
     };
@@ -260,23 +260,22 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询会员管理列表 */
+    /** 譟･隸｢莨壼遭邂｡逅・・陦ｨ */
     getList() {
       this.loading = true;
       //var datas = [[${@dict.getType('sys_user_sex')}]];
-      console.log();
       listMember(this.queryParams).then(response => {
         this.memberList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
     },
-    // 取消按钮
+    // 蜿匁ｶ域潔髓ｮ
     cancel() {
       this.open = false;
       this.reset();
     },
-    // 表单重置
+    // 陦ｨ蜊暮㍾鄂ｮ
     reset() {
       this.form = {
         memberId: null,
@@ -292,36 +291,36 @@ export default {
       };
       this.resetForm("form");
     },
-    /** 搜索按钮操作 */
+    /** 謳懃ｴ｢謖蛾聴謫堺ｽ・*/
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
     },
-    /** 重置按钮操作 */
+    /** 驥咲ｽｮ謖蛾聴謫堺ｽ・*/
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
+    // 螟夐画｡・我ｸｭ謨ｰ謐ｮ
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.memberId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
+    /** 譁ｰ蠅樊潔髓ｮ謫堺ｽ・*/
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加会员管理";
+      this.title = "豺ｻ蜉莨壼遭邂｡逅・;
     },
-    /** 修改按钮操作 */
+    /** 菫ｮ謾ｹ謖蛾聴謫堺ｽ・*/
     handleUpdate(row) {
       this.reset();
       const memberId = row.memberId || this.ids
       getMember(memberId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改会员管理";
+        this.title = "菫ｮ謾ｹ莨壼遭邂｡逅・;
       });
     },
     openApplyCard(row){
@@ -338,19 +337,19 @@ export default {
       this.apply = false;
 
     },
-    /** 提交按钮 */
+    /** 謠蝉ｺ､謖蛾聴 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.memberId != null) {
             updateMember(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
+              this.$modal.msgSuccess("菫ｮ謾ｹ謌仙粥");
               this.open = false;
               this.getList();
             });
           } else {
             addMember(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
+              this.$modal.msgSuccess("譁ｰ蠅樊・蜉・);
               this.open = false;
               this.getList();
             });
@@ -358,17 +357,17 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
+    /** 蛻髯､謖蛾聴謫堺ｽ・*/
     handleDelete(row) {
       const memberIds = row.memberId || this.ids;
-      this.$modal.confirm('是否确认删除会员管理编号为"' + memberIds + '"的数据项？').then(function() {
+      this.$modal.confirm('譏ｯ蜷ｦ遑ｮ隶､蛻髯､莨壼遭邂｡逅・ｼ門捷荳ｺ"' + memberIds + '"逧・焚謐ｮ鬘ｹ・・).then(function() {
         return delMember(memberIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("删除成功");
+        this.$modal.msgSuccess("蛻髯､謌仙粥");
       }).catch(() => {});
     },
-    /** 导出按钮操作 */
+    /** 蟇ｼ蜃ｺ謖蛾聴謫堺ｽ・*/
     handleExport() {
       this.download('gym/member/export', {
         ...this.queryParams

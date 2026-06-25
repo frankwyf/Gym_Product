@@ -234,15 +234,12 @@ export default {
       this.dialogTitle = 'Edit Course';
       this.form = { ...row };
       this.dialogEditVisible = true;
-      console.log(this.form);
     },
     fetchData() {
       axios.get(`${GYM_API}/until/allCourses`)
         .then((response) => {
-          console.log(response.data.data);
           this.courses = response.data.data;
           this.activeCourses = this.courses;
-          // console.log(typeof (this.courses[0].time));
         })
         .catch((error) => {
           console.error(error);
@@ -252,7 +249,6 @@ export default {
       this.activeCourses = [];
       axios.get(`${GYM_API}/until/Course/coaid`, { params: { coAid: this.queryParams.coachId } })
         .then((response) => {
-          console.log(response.data.data);
           this.activeCourses=response.data.data;
         })
         .catch((error) => {
@@ -266,7 +262,6 @@ export default {
       this.activeCourses = [];
       axios.get(`${GYM_API}/until/Course/Type`, { params: { courseType: this.queryParams.courseType } })
         .then((response) => {
-          console.log(response.data.data);
           this.activeCourses=response.data.data;
         })
         .catch((error) => {
@@ -280,7 +275,6 @@ export default {
       this.unwantedCourse = { ...row };
       axios.delete(`${GYM_API}/until/Course/Delete/${this.unwantedCourse.couid}`)
         .then(response => {
-          console.log(this.courses);
           this.courses = this.courses.filter(course => course.couid !=this.unwantedCourse.couid);
           location.reload();
         })
@@ -292,7 +286,6 @@ export default {
       this.activeCourses = [];
       axios.get(`${GYM_API}/until/Course/VenueCourse`, { params: { courseVenue: this.queryParams.courseVenue } })
         .then((response) => {
-          console.log(response.data.data);
           this.activeCourses=response.data.data;
         })
         .catch((error) => {
@@ -306,7 +299,6 @@ export default {
       this.activeCourses = [];
       axios.get(`${GYM_API}/until/Course/Price`, { params: { max: this.queryParams.maxPrice,min: this.queryParams.minPrice } })
         .then((response) => {
-          console.log(response.data.data);
           this.activeCourses=response.data.data;
         })
         .catch((error) => {
@@ -335,7 +327,6 @@ export default {
     renderChart() {
       // Calculate the count of each course type
       const typeCounts = {};
-      console.log(this.courses);
       this.courses.forEach(course => {
         if (typeCounts[course.type]) {
           typeCounts[course.type]++;
@@ -405,7 +396,6 @@ export default {
       return `${year}-${month}-${day}`;
     },
     showFigure(){
-      console.log(1);
       this.dialogChartVisible=true;
       this.dialogTitle='course data visualization';
       if (this.chart) {
@@ -440,7 +430,6 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           // Handle form submission
-          // console.log(this.form);
           const index = this.courses.findIndex(c => c.couid === this.form.couid);
           // 更新该 venue 对象皁E��性值
           this.courses[index].price = this.form.price;
@@ -451,7 +440,6 @@ export default {
           // 使用Axios封E��地对象发送到后端服务器
           axios.put(`${GYM_API}/until/updateCourse`, editCourse)
             .then(response => {
-              console.log(response.data);
             })
             .catch(error => {
               console.error(error);
@@ -482,12 +470,10 @@ export default {
           //   }
           // } )
           //   .then(response => {
-          //     console.log(response.data);
           //   })
           //   .catch(error => {
           //     console.error(error);
           //   });
-          console.log(this.addForm);
           const addCourse = {
             capability: this.addForm.capability,
             coaid: this.addForm.coaid,
@@ -504,7 +490,6 @@ export default {
           this.dialogVisible = false;
           this.addForm.couid = this.addForm.couid + 1;
         } else {
-          console.log("this is not valid");
           return false;
         }
       });

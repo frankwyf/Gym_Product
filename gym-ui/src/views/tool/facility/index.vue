@@ -167,8 +167,6 @@ export default {
           }
           this.venues = venues;
           this.activeVenues = activeVenues;
-          console.log(this.venues);
-          // console.log(this.activeVenues);
         })
         .catch((error) => {
           console.error(error);
@@ -181,11 +179,9 @@ export default {
     },
     handleVid(event){
       this.loading = true;
-      // console.log(this.queryParams.vid);
       const vidValue = this.queryParams.vid;
       axios.get(`${GYM_API}/venue/getById`, { params: { vid: vidValue } })
         .then((response) => {
-          // console.log(response.data.data);
           const activeVenues = [];
           const today = new Date();
           today.setDate(today.getDate() + 1);
@@ -201,16 +197,12 @@ export default {
               const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
               const activeVenue = { ...item.venue };
               activeVenue.date = formattedDate;
-              console.log(date);
-              console.log(formattedDate);
-              console.log(activeVenue.date);
               activeVenue.capacity = item.cap.map(cap => cap !== 0);
               activeVenues.push(activeVenue);
             }
           }
 
           this.activeVenues = activeVenues;
-          // console.log(this.activeVenues);
         })
         .catch((error) => {
           console.error(error);
@@ -222,12 +214,10 @@ export default {
     },
     handleFid(event){
       this.loading = true;
-      console.log(this.queryParams.fid);
       const vidValue = this.queryParams.fid;
       axios.get(`${GYM_API}/venue/getFid`, { params: { fids: vidValue } })
         .then((response) => {
           const activeVenues = [];
-          console.log(response.data.data);
           const today = new Date();
           today.setDate(today.getDate() + 1);
           const anotherday = new Date();
@@ -247,15 +237,11 @@ export default {
               const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
               const activeVenue = { ...item.venue };
               activeVenue.date = formattedDate;
-              console.log(date);
-              console.log(formattedDate);
-              console.log(activeVenue.date);
               activeVenue.capacity = item.cap.map(cap => cap !== 0);
               activeVenues.push(activeVenue);
             }
           }
           this.activeVenues = activeVenues;
-          // console.log(this.activeVenues);
         })
         .catch((error) => {
           console.error(error);
@@ -267,9 +253,7 @@ export default {
     },
     handleVname(event){
       this.loading = true;
-      // console.log(this.queryParams.vid);
       const vnameValue = this.queryParams.vname;
-      console.log(vnameValue);
       axios.get(`${GYM_API}/venue/getByName`, { params: { vid: vnameValue } })
         .then((response) => {
           const activeVenues = [];
@@ -292,16 +276,12 @@ export default {
               const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
               const activeVenue = { ...item.venue };
               activeVenue.date = formattedDate;
-              // console.log(date);
-              // console.log(formattedDate);
-              // console.log(activeVenue.date);
               activeVenue.capacity = item.cap.map(cap => cap !== 0);
               activeVenues.push(activeVenue);
             }
           }
 
           this.activeVenues = activeVenues;
-          // console.log(this.activeVenues);
         })
         .catch((error) => {
           console.error(error);
@@ -312,14 +292,11 @@ export default {
       }
     },
     handleDate(){
-      // console.log(this.queryParams.date);
       const year = this.queryParams.date.getFullYear();
       const month = this.queryParams.date.getMonth() + 1;
       const day = this.queryParams.date.getDate();
       const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-      console.log(formattedDate); // 输�E�E�E023-05-09
       this.loading = true;
-      // console.log(this.queryParams.vid);
       axios.get(`${GYM_API}/venue/getDate`, { params: { Date: formattedDate } })
         .then((response) => {
           const activeVenues = [];
@@ -334,7 +311,6 @@ export default {
             //   activeVenues.push(activeVenue);
             // });
             if (Object.prototype.hasOwnProperty.call(response.data.data, date)) {
-              console.log(date);
               const item = response.data.data[date];
               // anotherday.setDate(today.getDate() + Number(date));
               // const year = anotherday.getFullYear();
@@ -343,16 +319,12 @@ export default {
               // const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
               const activeVenue = { ...item.venue };
               activeVenue.date = formattedDate;
-              // console.log(date);
-              // console.log(formattedDate);
-              // console.log(activeVenue.date);
               activeVenue.capacity = item.cap.map(cap => cap !== 0);
               activeVenues.push(activeVenue);
             }
           }
 
           this.activeVenues = activeVenues;
-          console.log(this.activeVenues);
         })
         .catch((error) => {
           console.error(error);
@@ -360,8 +332,6 @@ export default {
       this.loading=false;
     },
     resetQuery(){
-      // console.log(this.activeVenues);
-      // console.log(this.venues.capacity);
       this.activeVenues = this.venues.map(venue => ({
         ...venue,
         capacity: venue.capacity.map(cap => cap !== 0)
@@ -370,13 +340,11 @@ export default {
       this.queryParams.vname = undefined;
       this.queryParams.date = undefined;
       this.queryParams.fid = undefined;
-      // console.log(this.activeVenues);
     },
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
           // Handle form submission
-          // console.log(this.form);
           const index = this.venues.findIndex(v => v.vid === this.form.vid);
           // 更新该 venue 对象皁E��性值
           this.venues[index].price = this.form.price;
@@ -396,7 +364,6 @@ export default {
           // 使用Axios封E��地对象发送到后端服务器
           axios.put(`${GYM_API}/venue/edit`, editVenue)
             .then(response => {
-              console.log(response.data);
             })
             .catch(error => {
               console.error(error);

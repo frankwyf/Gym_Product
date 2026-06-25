@@ -61,10 +61,8 @@ service.interceptors.request.use(config => {
   }
   return config
 }, error => {
-    console.log(error)
-    Promise.reject(error)
-})
-
+    console.warn('Request interceptor error:', error)
+    return Promise.reject(error)
 // 响应拦截器
 service.interceptors.response.use(res => {
     // 未设置状态码则默认成功状态
@@ -110,9 +108,8 @@ service.interceptors.response.use(res => {
     } else {
       return res.data
     }
-  },
-  error => {
-    console.log('err' + error)
+  }, error => {
+    console.warn('Request error:', error)
     let { message } = error;
     if (message == "Network Error") {
       message = "The back-end interface is improperly connected. Procedure";
