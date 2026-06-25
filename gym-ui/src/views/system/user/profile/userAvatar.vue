@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="user-info-head" @click="editCropper()"><img v-bind:src="options.img" :title="$tr('avatar.uploadHint')" class="img-circle img-lg" /></div>
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened"  @close="closeDialog">
+    <div class="user-info-head" @click="editCropper()"><img :src="options.img" :title="$tr('avatar.uploadHint')" class="img-circle img-lg" /></div>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened" @close="closeDialog">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
           <vue-cropper
             ref="cropper"
             :img="options.img"
             :info="true"
-            :autoCrop="options.autoCrop"
-            :autoCropWidth="options.autoCropWidth"
-            :autoCropHeight="options.autoCropHeight"
-            :fixedBox="options.fixedBox"
+            :auto-crop="options.autoCrop"
+            :auto-crop-width="options.autoCropWidth"
+            :auto-crop-height="options.autoCropHeight"
+            :fixed-box="options.fixedBox"
             @realTime="realTime"
             v-if="visible"
           />

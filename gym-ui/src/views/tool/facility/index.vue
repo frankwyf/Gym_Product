@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="app-container">
     <div class="search-container">
       <strong>vid: </strong>
@@ -103,7 +103,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+const GYM_API = process.env.VUE_APP_GYMMASTER_API || ''
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 export default {
@@ -120,7 +121,7 @@ export default {
         disabledDate: (time) => {
           const today = new Date();
           const nextWeek = new Date();
-          nextWeek.setDate(today.getDate() + 7); // 获取今天的日期并加上7天
+          nextWeek.setDate(today.getDate() + 7); // 获取今天皁E��期并加丁E天
           return time.getTime() < today.getTime() || time.getTime() > nextWeek.getTime(); // 设置禁用日期范围
         }
       },
@@ -146,7 +147,7 @@ export default {
   },
   methods: {
     fetchData() {
-      axios.get('http://localhost:8087/venue/getAvailableVenues')
+      axios.get(`${GYM_API}/venue/getAvailableVenues`)
         .then((response) => {
           const venues = [];
           const activeVenues = [];
@@ -159,7 +160,7 @@ export default {
                 venues.push(venue);
                 activeVenues.push({
                   ...venue,
-                  capacity: item.cap.map(cap => cap !== 0) // 将容量值转换为布尔值
+                  capacity: item.cap.map(cap => cap !== 0) // 封E��量值转换为币E��值
                 });
               });
             }
@@ -182,7 +183,7 @@ export default {
       this.loading = true;
       // console.log(this.queryParams.vid);
       const vidValue = this.queryParams.vid;
-      axios.get('http://localhost:8087/venue/getById', { params: { vid: vidValue } })
+      axios.get(`${GYM_API}/venue/getById`, { params: { vid: vidValue } })
         .then((response) => {
           // console.log(response.data.data);
           const activeVenues = [];
@@ -223,7 +224,7 @@ export default {
       this.loading = true;
       console.log(this.queryParams.fid);
       const vidValue = this.queryParams.fid;
-      axios.get('http://localhost:8087/venue/getFid', { params: { fids: vidValue } })
+      axios.get(`${GYM_API}/venue/getFid`, { params: { fids: vidValue } })
         .then((response) => {
           const activeVenues = [];
           console.log(response.data.data);
@@ -269,7 +270,7 @@ export default {
       // console.log(this.queryParams.vid);
       const vnameValue = this.queryParams.vname;
       console.log(vnameValue);
-      axios.get('http://localhost:8087/venue/getByName', { params: { vid: vnameValue } })
+      axios.get(`${GYM_API}/venue/getByName`, { params: { vid: vnameValue } })
         .then((response) => {
           const activeVenues = [];
           const today = new Date();
@@ -299,7 +300,6 @@ export default {
             }
           }
 
-
           this.activeVenues = activeVenues;
           // console.log(this.activeVenues);
         })
@@ -317,10 +317,10 @@ export default {
       const month = this.queryParams.date.getMonth() + 1;
       const day = this.queryParams.date.getDate();
       const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-      console.log(formattedDate); // 输出：2023-05-09
+      console.log(formattedDate); // 输�E�E�E023-05-09
       this.loading = true;
       // console.log(this.queryParams.vid);
-      axios.get('http://localhost:8087/venue/getDate', { params: { Date: formattedDate } })
+      axios.get(`${GYM_API}/venue/getDate`, { params: { Date: formattedDate } })
         .then((response) => {
           const activeVenues = [];
           // const today = new Date();
@@ -378,7 +378,7 @@ export default {
           // Handle form submission
           // console.log(this.form);
           const index = this.venues.findIndex(v => v.vid === this.form.vid);
-          // 更新该 venue 对象的属性值
+          // 更新该 venue 对象皁E��性值
           this.venues[index].price = this.form.price;
           this.venues[index].description = this.form.description;
           this.activeVenues[index].price = this.form.price;
@@ -393,8 +393,8 @@ export default {
             status: this.venues[index].status,
             capacity: this.venues[index].capacity[0]
           };
-          // 使用Axios将场地对象发送到后端服务器
-          axios.put('http://localhost:8087/venue/edit', editVenue)
+          // 使用Axios封E��地对象发送到后端服务器
+          axios.put(`${GYM_API}/venue/edit`, editVenue)
             .then(response => {
               console.log(response.data);
             })

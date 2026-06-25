@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="search-container" style="margin-left: 20px">
       <strong>coach: </strong><el-input
@@ -27,7 +27,7 @@
     />
       <strong>price: </strong>
       <el-input-number v-model="queryParams.minPrice" placeholder="min" size="small" style="width: 100px" @change="handleCoursePrice()"></el-input-number>
-      <el-input-number v-model="queryParams.maxPrice" placeholder="max" size="small" style="width: 100px; margin-left: 10px"  @change="handleCoursePrice()"></el-input-number>
+      <el-input-number v-model="queryParams.maxPrice" placeholder="max" size="small" style="width: 100px; margin-left: 10px" @change="handleCoursePrice()"></el-input-number>
     </div>
     <div class="button-container" style="margin-bottom: 10px;margin-left: 20px">
       <el-button icon="el-icon-plus" size="mini" type="primary" @click="handleAdd">add</el-button>
@@ -139,7 +139,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+const GYM_API = process.env.VUE_APP_GYMMASTER_API || ''
 import * as echarts from 'echarts';
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
@@ -236,7 +237,7 @@ export default {
       console.log(this.form);
     },
     fetchData() {
-      axios.get('http://localhost:8087/until/allCourses')
+      axios.get(`${GYM_API}/until/allCourses`)
         .then((response) => {
           console.log(response.data.data);
           this.courses = response.data.data;
@@ -249,7 +250,7 @@ export default {
     },
     handleCoachId(event){
       this.activeCourses = [];
-      axios.get('http://localhost:8087/until/Course/coaid', { params: { coAid: this.queryParams.coachId } })
+      axios.get(`${GYM_API}/until/Course/coaid`, { params: { coAid: this.queryParams.coachId } })
         .then((response) => {
           console.log(response.data.data);
           this.activeCourses=response.data.data;
@@ -263,7 +264,7 @@ export default {
     },
     handleCourseType(event){
       this.activeCourses = [];
-      axios.get('http://localhost:8087/until/Course/Type', { params: { courseType: this.queryParams.courseType } })
+      axios.get(`${GYM_API}/until/Course/Type`, { params: { courseType: this.queryParams.courseType } })
         .then((response) => {
           console.log(response.data.data);
           this.activeCourses=response.data.data;
@@ -277,7 +278,7 @@ export default {
     },
     handleDelete(row){
       this.unwantedCourse = { ...row };
-      axios.delete(`http://localhost:8087/until/Course/Delete/${this.unwantedCourse.couid}`)
+      axios.delete(`${GYM_API}/until/Course/Delete/${this.unwantedCourse.couid}`)
         .then(response => {
           console.log(this.courses);
           this.courses = this.courses.filter(course => course.couid !=this.unwantedCourse.couid);
@@ -289,7 +290,7 @@ export default {
     },
     handleCourseVenue(event){
       this.activeCourses = [];
-      axios.get('http://localhost:8087/until/Course/VenueCourse', { params: { courseVenue: this.queryParams.courseVenue } })
+      axios.get(`${GYM_API}/until/Course/VenueCourse`, { params: { courseVenue: this.queryParams.courseVenue } })
         .then((response) => {
           console.log(response.data.data);
           this.activeCourses=response.data.data;
@@ -303,7 +304,7 @@ export default {
     },
     handleCoursePrice(){
       this.activeCourses = [];
-      axios.get('http://localhost:8087/until/Course/Price', { params: { max: this.queryParams.maxPrice,min: this.queryParams.minPrice } })
+      axios.get(`${GYM_API}/until/Course/Price`, { params: { max: this.queryParams.maxPrice,min: this.queryParams.minPrice } })
         .then((response) => {
           console.log(response.data.data);
           this.activeCourses=response.data.data;
@@ -382,7 +383,7 @@ export default {
             itemStyle: {
               color: '#0077be',
             },
-            // 设置柱状图边框样式
+            // 设置柱状图边桁E��弁E
             emphasis: {
               itemStyle: {
                 borderColor: '#0077be',
@@ -441,14 +442,14 @@ export default {
           // Handle form submission
           // console.log(this.form);
           const index = this.courses.findIndex(c => c.couid === this.form.couid);
-          // 更新该 venue 对象的属性值
+          // 更新该 venue 对象皁E��性值
           this.courses[index].price = this.form.price;
           this.courses[index].description = this.form.description;
           this.courses[index].type = this.form.type;
           this.courses[index].capability = this.form.capability;
           const editCourse = this.courses[index];
-          // 使用Axios将场地对象发送到后端服务器
-          axios.put('http://localhost:8087/until/updateCourse', editCourse)
+          // 使用Axios封E��地对象发送到后端服务器
+          axios.put(`${GYM_API}/until/updateCourse`, editCourse)
             .then(response => {
               console.log(response.data);
             })
@@ -463,7 +464,7 @@ export default {
     },
     // handleDateChange(date) {
     //   if (date instanceof Date) {
-    //     // 如果传入的是日期对象，将其转换为字符串
+    //     // 如果传入皁E��日期对象�E�封E�E转换为字符串
     //     this.addForm.time = date.toISOString()
     //   } else {
     //     // 否则，直接赋值
@@ -474,8 +475,8 @@ export default {
       this.$refs.addForm.validate(valid => {
         if (valid) {
           // Handle form submission
-          // 使用Axios将场地对象发送到后端服务器
-          // axios.get('http://localhost:8087/until/addCourse', this.addForm, {
+          // 使用Axios封E��地对象发送到后端服务器
+          // axios.get(${GYM_API}/until/addCourse', this.addForm, {
           //   headers: {
           //     'Content-Type': 'application/json'
           //   }

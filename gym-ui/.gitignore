@@ -18,8 +18,10 @@ selenium-debug.log
 *.njsproj
 *.sln
 *.local
-.env
-.env.*
+# Local env overrides — never commit these (they may contain real secrets)
+.env.local
+.env.*.local
+# Allow .env.development, .env.production, .env.example (placeholder values only)
 
 package-lock.json
 yarn.lock

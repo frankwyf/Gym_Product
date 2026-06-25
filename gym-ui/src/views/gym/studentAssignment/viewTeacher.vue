@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { getStudent,getStudentNoTeacher,updateTeacher,deleteTeache,getTeacher} from "@/api/gym/studentAssignment";
+import { getStudent,getStudentNoTeacher,updateTeacher,deleteTeacher,getTeacher} from "@/api/gym/studentAssignment";
 
 export default {
   name: "AuthRole",

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="search-container" style="margin-left:20px">
       <strong>rid: </strong>
@@ -146,7 +146,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+const GYM_API = process.env.VUE_APP_GYMMASTER_API || ''
 import { StreamBarcodeReader } from "vue-barcode-reader";
 export default {
   name: "ReservationDeal",
@@ -263,7 +264,7 @@ export default {
         period: this.reservations[index].period,
         rid: this.reservations[index].rid,
       };
-      axios.put('http://localhost:8087/reservation/update',editReservation)
+      axios.put(`${GYM_API}/reservation/update`,editReservation)
         .then(response => {
           console.log(response.data);
         })
@@ -308,7 +309,7 @@ export default {
             status: this.addForm.status,
           };
           console.log(editAddReservation);
-          axios.post('http://localhost:8087/reservation/add/management',editAddReservation)
+          axios.post(`${GYM_API}/reservation/add/management`,editAddReservation)
             .then(response => {
               console.log(response.data);
             })
@@ -330,7 +331,7 @@ export default {
       this.loading = true;
       // console.log(this.queryParams.vid);
       const ridValue = this.queryParams.rid;
-      axios.get('http://localhost:8087/reservation/findId', { params: { id: ridValue } })
+      axios.get(`${GYM_API}/reservation/findId`, { params: { id: ridValue } })
         .then((response) => {
           this.reservations = [];
           this.reservations.push(response.data.data);
@@ -345,7 +346,7 @@ export default {
     handleVid(event){
       this.loading = true;
       const vidValue = this.queryParams.vid;
-      axios.get('http://localhost:8087/reservation/findVid', { params: { id: vidValue } })
+      axios.get(`${GYM_API}/reservation/findVid`, { params: { id: vidValue } })
         .then((response) => {
           console.log(response.data.data);
           // this.reservations = [];
@@ -362,7 +363,7 @@ export default {
     // handleVname(event){
     //   this.loading = true;
     //   const vnameValue = this.queryParams.vname;
-    //   axios.get('http://localhost:8087/reservation/findvname', { params: { name1: vnameValue } })
+    //   axios.get(`${GYM_API}/reservation/findvname`, { params: { name1: vnameValue } })
     //     .then((response) => {
     //       this.reservations = [];
     //       this.reservations.push(response.data.data);
@@ -396,7 +397,7 @@ export default {
             period: this.reservations[index].period,
             rid: this.reservations[index].rid,
           };
-          axios.put('http://localhost:8087/reservation/update',editReservation)
+          axios.put(`${GYM_API}/reservation/update`,editReservation)
             .then(response => {
               console.log(response.data);
             })
@@ -417,8 +418,7 @@ export default {
     dataChange(){
       if (this.validTable) {
         this.reservations = this.validReservations;
-      }
-      else {
+      } else {
         this.reservations = this.invalidReservations;
       }
       console.log(1);
@@ -435,7 +435,7 @@ export default {
       this.addDialogVisible = false;
     },
     fetchValidData() {
-      axios.get('http://localhost:8087/reservation/page?page=1&pageSize=10')
+      axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.validReservations = response.data.data.records.filter(record => record.status === 'valid');
           // console.log(this.validReservations);
@@ -446,7 +446,7 @@ export default {
         });
     },
     fetchInvalidData() {
-      axios.get('http://localhost:8087/reservation/page?page=1&pageSize=10')
+      axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.invalidReservations = response.data.data.records.filter(record => record.status === 'unpaid');
           // console.log(this.invalidReservations);
@@ -456,7 +456,7 @@ export default {
         });
     },
     fetchFullData() {
-      axios.get('http://localhost:8087/reservation/page?page=1&pageSize=10')
+      axios.get(`${GYM_API}/reservation/page?page=1&pageSize=10`)
         .then(response => {
           this.fullReservations = response.data.data.records;
           // console.log(this.fullReservations);
@@ -466,23 +466,22 @@ export default {
         });
     },
     handleDateChange() {
-      // 获取当前选择的日期
+      // 获取当前选择皁E��朁E
       const selectedDate = new Date(this.form.rdate);
 
-      // 将日期对象转换为“yyyy-MM-dd”格式的字符串
+      // 封E��期对象转换为“yyyy-MM-dd”格式的字符串
       const formattedDate = selectedDate.getFullYear() + '-' +
         ('0' + (selectedDate.getMonth() + 1)).slice(-2) + '-' +
         ('0' + selectedDate.getDate()).slice(-2);
 
-      // 将格式化后的日期设置回表单对象
+      // 封E��式化后的日期设置回表单对象
       this.form.rdate = formattedDate;
     },
     editTable(){
       this.validTable = !this.validTable;
       if (this.validTable) {
         this.reservations = this.validReservations;
-      }
-      else {
+      } else {
         this.reservations = this.invalidReservations;
       }
     },
@@ -491,8 +490,7 @@ export default {
       this.queryParams.rid = undefined;
       if (this.validTable) {
         this.reservations = this.validReservations;
-      }
-      else {
+      } else {
         this.reservations = this.invalidReservations;
       }
     },

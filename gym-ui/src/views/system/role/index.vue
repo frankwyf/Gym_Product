@@ -98,7 +98,7 @@
           v-hasPermi="['system:role:export']"
         >{{ $tr('role.download') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
@@ -185,7 +185,7 @@
               v-for="dict in dict.type.sys_normal_disable"
               :key="dict.value"
               :label="dict.value"
-            >{{dict.label}}</el-radio>
+            >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$tr('role.menu')">
@@ -506,9 +506,9 @@ export default {
     // 树权限（父子联动）
     handleCheckedTreeConnect(value, type) {
       if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true: false;
+        this.form.menuCheckStrictly = !!value;
       } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true: false;
+        this.form.deptCheckStrictly = !!value;
       }
     },
     /** 新增按钮操作 */

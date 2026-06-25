@@ -88,7 +88,7 @@
           @click="handleClose"
         >{{ $tr('common.close') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
@@ -96,15 +96,15 @@
       <el-table-column :label="$tr('dictData.code')" align="center" prop="dictCode" />
       <el-table-column :label="$tr('dictData.label')" align="center" prop="dictLabel">
         <template slot-scope="scope">
-          <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{scope.row.dictLabel}}</span>
-          <el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{scope.row.dictLabel}}</el-tag>
+          <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{ scope.row.dictLabel }}</span>
+          <el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{ scope.row.dictLabel }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$tr('dictData.value')" align="center" prop="dictValue" />
       <el-table-column :label="$tr('dictData.sort')" align="center" prop="dictSort" />
       <el-table-column :label="$tr('dictData.status')" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('dict.remark')" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -175,7 +175,7 @@
               v-for="dict in dict.type.sys_normal_disable"
               :key="dict.value"
               :label="dict.value"
-            >{{dict.label}}</el-radio>
+            >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$tr('dict.remark')" prop="remark">

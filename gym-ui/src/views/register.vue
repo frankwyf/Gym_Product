@@ -40,7 +40,7 @@
           <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
         </el-input>
         <div class="register-code">
-          <img :src="codeUrl" @click="getCode" class="register-code-img"/>
+          <img :src="codeUrl" @click="getCode" class="register-code-img" />
         </div>
       </el-form-item>
       <el-form-item style="width:100%;">

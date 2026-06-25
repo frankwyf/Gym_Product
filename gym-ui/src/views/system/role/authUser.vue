@@ -58,7 +58,7 @@
           @click="handleClose"
         >{{ $tr('common.close') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
@@ -69,7 +69,7 @@
       <el-table-column :label="$tr('authUser.phone')" prop="phonenumber" :show-overflow-tooltip="true" />
       <el-table-column :label="$tr('authUser.status')" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('authUser.createTime')" align="center" prop="createTime" width="180">
@@ -97,7 +97,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <select-user ref="select" :roleId="queryParams.roleId" @ok="handleQuery" />
+    <select-user ref="select" :role-id="queryParams.roleId" @ok="handleQuery" />
   </div>
 </template>
 

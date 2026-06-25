@@ -89,7 +89,7 @@
           v-hasPermi="['monitor:job:query']"
         >Log</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="jobList" @selection-change="handleSelectionChange">
@@ -98,7 +98,7 @@
       <el-table-column label="Taskname" align="center" prop="jobName" :show-overflow-tooltip="true" />
       <el-table-column label="Group" align="center" prop="jobGroup">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup"/>
+          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
       <el-table-column label="Target string" align="center" prop="invokeTarget" :show-overflow-tooltip="true" />
@@ -227,7 +227,7 @@
                   v-for="dict in dict.type.sys_job_status"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

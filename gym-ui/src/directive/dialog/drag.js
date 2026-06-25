@@ -38,10 +38,10 @@ export default {
       } else {
         styL = +sty.left.replace(/\px/g, '');
         styT = +sty.top.replace(/\px/g, '');
-      };
+      }
 
       // 鼠标拖拽事件
-      document.onmousemove = function (e) {
+      document.onmousemove = function(e) {
         // 通过事件委托，计算移动的距离 （开始拖拽至结束拖拽的距离）
         const l = e.clientX - disX;
         const t = e.clientY - disY;
@@ -55,7 +55,7 @@ export default {
 
       };
 
-      document.onmouseup = function (e) {
+      document.onmouseup = function(e) {
         document.onmousemove = null;
         document.onmouseup = null;
       };

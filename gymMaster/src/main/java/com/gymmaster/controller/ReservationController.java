@@ -35,16 +35,18 @@ public class ReservationController {
     @GetMapping("/page/username")
     public BackMsg<Page<Reservation>> pageUsername(int page, int pageSize, String name) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Customer> queryWrapper0 = new LambdaQueryWrapper<>();
-            queryWrapper0.like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
-
-            Customer customer = customerService.getOne(queryWrapper0);
-
-            LambdaQueryWrapper<Reservation> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.like(StringUtils.isNotEmpty(name), Reservation::getRuid, customer.getUid());
-            queryWrapper.orderByDesc(Reservation::getRdate);
-            reservationService.page(pageInfo, queryWrapper);
+        LambdaQueryWrapper<Customer> cqw = new LambdaQueryWrapper<Customer>()
+                .like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
+        Customer customer = customerService.getOne(cqw);
+        if (customer == null) {
+            // No matching customer — return empty page rather than NPE.
             return BackMsg.success(pageInfo);
+        }
+        LambdaQueryWrapper<Reservation> rqw = new LambdaQueryWrapper<Reservation>()
+                .eq(Reservation::getRuid, customer.getUid())
+                .orderByDesc(Reservation::getRdate);
+        reservationService.page(pageInfo, rqw);
+        return BackMsg.success(pageInfo);
     }
     @GetMapping("/page/date")
     public BackMsg<Page<Reservation>> pageDate(int page, int pageSize, Date date) {

@@ -1,13 +1,13 @@
 <template>
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item :label="$tr('profile.oldPassword')" prop="oldPassword">
-      <el-input v-model="user.oldPassword" :placeholder="$tr('profile.oldPasswordRequired')" type="password" show-password/>
+      <el-input v-model="user.oldPassword" :placeholder="$tr('profile.oldPasswordRequired')" type="password" show-password />
     </el-form-item>
     <el-form-item :label="$tr('profile.newPassword')" prop="newPassword">
-      <el-input v-model="user.newPassword" :placeholder="$tr('profile.newPasswordRequired')" type="password" show-password/>
+      <el-input v-model="user.newPassword" :placeholder="$tr('profile.newPasswordRequired')" type="password" show-password />
     </el-form-item>
     <el-form-item :label="$tr('profile.confirmPassword')" prop="confirmPassword">
-      <el-input v-model="user.confirmPassword" :placeholder="$tr('profile.confirmPassword')" type="password" show-password/>
+      <el-input v-model="user.confirmPassword" :placeholder="$tr('profile.confirmPassword')" type="password" show-password />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" size="mini" @click="submit">{{ $tr('common.save') }}</el-button>

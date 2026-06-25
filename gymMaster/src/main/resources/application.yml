@@ -10,8 +10,8 @@ server:
 #      enabled: true
 #      key-store: classpath:gymmaster.site.jks
 #      key-store-type: JKS
-#      key-store-password: u94o75bztm
-#      key-password: u94o75bztm
+#      key-store-password: CHANGE_ME
+#      key-password: CHANGE_ME
 
 # spring boot configuration
 spring:
@@ -51,7 +51,7 @@ spring:
         debug: false
 
   thymeleaf:
-    cache:false
+    cache: false
 
   mvc:
     static-path-pattern: /static/**
@@ -76,6 +76,34 @@ mybatis-plus:
 # resource configuration
 gym:
   path: src/main/resources/static/
+
+# Spring Boot Actuator — expose health and info endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+# App info surfaced at /actuator/info
+info:
+  app:
+    name: GymMaster API
+    description: Gym management & booking backend
+    version: '@project.version@'
+
+# SpringDoc OpenAPI / Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
 
 
 # logging configuration

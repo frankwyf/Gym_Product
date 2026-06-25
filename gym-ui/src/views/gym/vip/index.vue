@@ -53,7 +53,7 @@
           v-hasPermi="['gym:vip:export']"
         >导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="vipList" @selection-change="handleSelectionChange">
@@ -121,7 +121,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item v-if="!checkFormTime(form.effective)" label="续费时间" prop="effective">
-          <el-input-number  v-model="form.renewal"  :min="1" :max="100" />
+          <el-input-number v-model="form.renewal" :min="1" :max="100" />
         </el-form-item>
         <el-form-item v-else label="到期日期" prop="effective">
           <el-date-picker clearable size="small"

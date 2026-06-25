@@ -19,7 +19,6 @@ export default class DictMeta {
   }
 }
 
-
 /**
  * 解析字典元数据
  * @param {Object} options

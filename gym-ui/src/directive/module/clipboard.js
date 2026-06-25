@@ -36,7 +36,7 @@ export default {
     } else if (binding.arg === 'error') {
       el._vClipBoard_error = binding.value;
     } else {
-      el._vClipBoard.text = function () { return binding.value; };
+      el._vClipBoard.text = function() { return binding.value; };
       el._vClipBoard.action = () => binding.arg === 'cut' ? 'cut' : 'copy';
     }
   },

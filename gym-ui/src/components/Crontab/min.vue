@@ -1,32 +1,32 @@
 <template>
 	<el-form size="small">
 		<el-form-item>
-			<el-radio v-model='radioValue' :label="1">
+			<el-radio v-model="radioValue" :label="1">
 				分钟，允许的通配符[, - * /]
 			</el-radio>
 		</el-form-item>
 
 		<el-form-item>
-			<el-radio v-model='radioValue' :label="2">
+			<el-radio v-model="radioValue" :label="2">
 				周期从
-				<el-input-number v-model='cycle01' :min="0" :max="58" /> -
-				<el-input-number v-model='cycle02' :min="cycle01 ? cycle01 + 1 : 1" :max="59" /> 分钟
+				<el-input-number v-model="cycle01" :min="0" :max="58" /> -
+				<el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : 1" :max="59" /> 分钟
 			</el-radio>
 		</el-form-item>
 
 		<el-form-item>
-			<el-radio v-model='radioValue' :label="3">
+			<el-radio v-model="radioValue" :label="3">
 				从
-				<el-input-number v-model='average01' :min="0" :max="58" /> 分钟开始，每
-				<el-input-number v-model='average02' :min="1" :max="59 - average01 || 0" /> 分钟执行一次
+				<el-input-number v-model="average01" :min="0" :max="58" /> 分钟开始，每
+				<el-input-number v-model="average02" :min="1" :max="59 - average01 || 0" /> 分钟执行一次
 			</el-radio>
 		</el-form-item>
 
 		<el-form-item>
-			<el-radio v-model='radioValue' :label="4">
+			<el-radio v-model="radioValue" :label="4">
 				指定
 				<el-select clearable v-model="checkboxList" placeholder="可多选" multiple style="width:100%">
-					<el-option v-for="item in 60" :key="item" :value="item-1">{{item-1}}</el-option>
+					<el-option v-for="item in 60" :key="item" :value="item-1">{{ item-1 }}</el-option>
 				</el-select>
 			</el-radio>
 		</el-form-item>
@@ -47,7 +47,7 @@ export default {
 			checkNum: this.$options.propsData.check
 		}
 	},
-	name: 'crontab-min',
+	name: 'CrontabMin',
 	props: ['check', 'cron'],
 	methods: {
 		// 单选按钮值变化时
@@ -95,19 +95,19 @@ export default {
 	},
 	computed: {
 		// 计算两个周期值
-		cycleTotal: function () {
+		cycleTotal: function() {
 			const cycle01 = this.checkNum(this.cycle01, 0, 58)
 			const cycle02 = this.checkNum(this.cycle02, cycle01 ? cycle01 + 1 : 1, 59)
 			return cycle01 + '-' + cycle02;
 		},
 		// 计算平均用到的值
-		averageTotal: function () {
+		averageTotal: function() {
 			const average01 = this.checkNum(this.average01, 0, 58)
 			const average02 = this.checkNum(this.average02, 1, 59 - average01 || 0)
 			return average01 + '/' + average02;
 		},
 		// 计算勾选的checkbox值合集
-		checkboxString: function () {
+		checkboxString: function() {
 			let str = this.checkboxList.join();
 			return str == '' ? '*' : str;
 		}

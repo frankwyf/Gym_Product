@@ -41,7 +41,6 @@ export function updateTeacher(data) {
   })
 }
 
-
 // 删除学员信息
 export function deleteTeacher(studentId) {
   return request({

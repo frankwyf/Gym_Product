@@ -191,11 +191,11 @@ export default {
   },
   watch: {
     // eslint-disable-next-line func-names
-    'activeData.label': function (val, oldVal) {
+    'activeData.label': function(val, oldVal) {
       if (
-        this.activeData.placeholder === undefined
-        || !this.activeData.tag
-        || oldActiveId !== this.activeId
+        this.activeData.placeholder === undefined ||
+        !this.activeData.tag ||
+        oldActiveId !== this.activeId
       ) {
         return
       }
@@ -348,8 +348,8 @@ export default {
       delete this.activeData.tagIcon
       delete this.activeData.document
       Object.keys(newTag).forEach(key => {
-        if (this.activeData[key] !== undefined
-          && typeof this.activeData[key] === typeof newTag[key]) {
+        if (this.activeData[key] !== undefined &&
+          typeof this.activeData[key] === typeof newTag[key]) {
           newTag[key] = this.activeData[key]
         }
       })

@@ -2,7 +2,7 @@
  * v-hasRole 角色权限处理
  * Copyright (c) 2023 GymMaster
  */
- 
+
 import store from '@/store'
 
 export default {

@@ -16,6 +16,12 @@
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
         <lombok.version>1.18.38</lombok.version>
+        <!-- CVE security overrides for BOM-managed dependencies -->
+        <spring-framework.version>5.3.42</spring-framework.version>
+        <tomcat.version>9.0.118</tomcat.version>
+        <spring-security.version>5.7.14</spring-security.version>
+        <jackson-bom.version>2.18.9</jackson-bom.version>
+        <log4j2.version>2.25.4</log4j2.version>
     </properties>
     <dependencies>
         <dependency>
@@ -66,6 +72,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Actuator: /actuator/health, /actuator/info endpoints for monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- springdoc OpenAPI UI: auto-generates Swagger UI at /swagger-ui.html -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
         </dependency>
 
         <!--  springboot web since we are building a web application  -->

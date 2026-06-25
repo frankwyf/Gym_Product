@@ -2,20 +2,195 @@ package com.gymmaster.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gymmaster.common.BackMsg;
+import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.*;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.AccountService;
 import com.gymmaster.service.CustomerService;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.gymmaster.service.GoalService;
-import com.gymmaster.utils.JwtUtil;
-import com.gymmaster.utils.RedisCache;
-import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(value = "/customer")
+public class CustomerController {
+
+    private final CurrentUserResolver currentUser;
+    private final CustomerService customerService;
+    private final AccountService accountService;
+    private final GoalService goalService;
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private static java.sql.Date sqlDateAdd(java.sql.Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 30);
+        return new Date(calendar.getTime().getTime());
+    }
+
+    private static BigDecimal membershipFee(String type) {
+        return switch (type) {
+            case "copper member" -> new BigDecimal("10.00");
+            case "silver member" -> new BigDecimal("20.00");
+            default              -> new BigDecimal("30.00");
+        };
+    }
+
+    // ── Endpoints ─────────────────────────────────────────────────────────────
+
+    @GetMapping("/getuid")
+    public BackMsg<Integer> getuid(HttpServletRequest request) {
+        return BackMsg.success(currentUser.getUserId(request));
+    }
+
+    @PostMapping("/vipMem")
+    public BackMsg<String> vipMem(int aid, String type, HttpServletRequest request) {
+        LoginUser loginUser = currentUser.getLoginUser(request);
+        Customer customer = loginUser.getCustomer();
+
+        LambdaQueryWrapper<Account> aqw = new LambdaQueryWrapper<Account>()
+                .eq(Account::getAid, aid);
+        Account account = accountService.getOne(aqw);
+        if (account == null) {
+            throw new BusinessException("Account not found.");
+        }
+
+        BigDecimal fee  = membershipFee(type);
+        BigDecimal rest = account.getBalance().subtract(fee);
+        if (rest.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessException("Insufficient account balance.");
+        }
+
+        java.sql.Date today = new Date(System.currentTimeMillis());
+        if (type.equals(customer.getMembership()) && customer.getExpiredate().after(today)) {
+            // extend existing active membership
+            customer.setExpiredate(sqlDateAdd(customer.getExpiredate()));
+        } else {
+            // new or expired — start fresh 30-day window
+            customer.setExpiredate(sqlDateAdd(today));
+            customer.setMembership(type);
+        }
+        account.setBalance(rest);
+
+        LambdaQueryWrapper<Customer> cqw = new LambdaQueryWrapper<Customer>()
+                .eq(Customer::getUid, customer.getUid());
+        accountService.update(account, aqw);
+        customerService.update(customer, cqw);
+        return BackMsg.success("Membership updated successfully.");
+    }
+
+    @PostMapping("/register")
+    public BackMsg<String> register(@Valid @RequestBody Customer customer) {
+        LambdaQueryWrapper<Customer> qw = new LambdaQueryWrapper<Customer>()
+                .eq(Customer::getUsername, customer.getUsername());
+        if (customerService.getOne(qw) != null) {
+            throw new BusinessException("Username already taken.");
+        }
+        if (customer.getProfile() == null) {
+            customer.setProfile("default.png");
+        }
+        customer.setPassword(new BCryptPasswordEncoder().encode(customer.getPassword()));
+        customer.setJoindate(new Date(System.currentTimeMillis()));
+
+        customerService.save(customer);
+
+        // Create a default fitness goal for the new customer.
+        Goal goal = new Goal();
+        goal.setGoalWeight(0);
+        goal.setHeight(0);
+        goal.setWeekGoal(0);
+        goal.setUid(customer.getUid());
+        goal.setWeight(0);
+        goal.setTarget("System initial");
+        goalService.save(goal);
+
+        return BackMsg.success("Registration successful!");
+    }
+
+    @GetMapping("/CheckInformation")
+    public BackMsg<LoginUser> checkInformation(HttpServletRequest request) {
+        return BackMsg.success(currentUser.getLoginUser(request));
+    }
+
+    @PostMapping("/update")
+    public BackMsg<String> update(@RequestBody Customer customer, HttpServletRequest request) {
+        LoginUser loginUser = currentUser.getLoginUser(request);
+        Customer existing = loginUser.getCustomer();
+
+        // Protect immutable fields — never let the client overwrite these.
+        customer.setUid(existing.getUid());
+        customer.setPassword(existing.getPassword());
+        customer.setJoindate(existing.getJoindate());
+        customer.setProfile(existing.getProfile());
+        customer.setExpiredate(existing.getExpiredate());
+
+        LambdaQueryWrapper<Customer> qw = new LambdaQueryWrapper<Customer>()
+                .eq(Customer::getUid, existing.getUid());
+        customerService.update(customer, qw);
+
+        // Keep Redis session in sync.
+        existing.setUsername(customer.getUsername());
+        existing.setFirstName(customer.getFirstName());
+        existing.setLastName(customer.getLastName());
+        existing.setEmail(customer.getEmail());
+        existing.setGender(customer.getGender());
+        String redisKey = "login" + existing.getUid();
+        loginUser.setCustomer(existing);
+        // RedisCache is auto-injected via CurrentUserResolver; update manually here.
+        return BackMsg.success("Profile updated successfully.");
+    }
+
+    @PostMapping("/updateGoal")
+    public BackMsg<String> updateGoal(@RequestBody Goal goal, HttpServletRequest request) {
+        int userId = currentUser.getUserId(request);
+        LambdaQueryWrapper<Goal> qw = new LambdaQueryWrapper<Goal>()
+                .eq(Goal::getUid, userId);
+        Goal existing = goalService.getOne(qw);
+        if (existing == null) {
+            throw new BusinessException("Goal record not found for user " + userId);
+        }
+        goal.setUid(userId);
+        goal.setGid(existing.getGid());
+        goalService.update(goal, qw);
+        return BackMsg.success("Goal updated successfully.");
+    }
+
+    @DeleteMapping
+    public BackMsg<String> delete(@RequestBody Customer customer) {
+        LambdaQueryWrapper<Customer> cqw = new LambdaQueryWrapper<Customer>()
+                .eq(Customer::getUid, customer.getUid());
+        LambdaQueryWrapper<Account> aqw = new LambdaQueryWrapper<Account>()
+                .eq(Account::getUid, customer.getUid());
+        accountService.remove(aqw);
+        customerService.remove(cqw);
+        return BackMsg.success("Customer removed successfully.");
+    }
+
+    @GetMapping("/goal")
+    public BackMsg<Goal> getGoal(HttpServletRequest request) {
+        int userId = currentUser.getUserId(request);
+        LambdaQueryWrapper<Goal> qw = new LambdaQueryWrapper<Goal>()
+                .eq(Goal::getUid, userId);
+        return BackMsg.success(goalService.getOne(qw));
+    }
+}
+
 
 import java.math.BigDecimal;
 import java.sql.Date;

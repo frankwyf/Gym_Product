@@ -6,7 +6,7 @@
           v-model="queryParams.ipaddr"
           placeholder="Please enter the IP address"
           clearable
-		  size="small"
+          size="small"
           style="width: 240px;"
           @keyup.enter.native="handleQuery"
         />
@@ -16,7 +16,7 @@
           v-model="queryParams.userName"
           placeholder="Please enter the username"
           clearable
-		  size="small"
+          size="small"
           style="width: 240px;"
           @keyup.enter.native="handleQuery"
         />
@@ -87,7 +87,7 @@
           v-hasPermi="['monitor:logininfor:export']"
         >Download</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange" :default-sort="defaultSort" @sort-change="handleSortChange">
@@ -100,7 +100,7 @@
       <el-table-column label="OS" align="center" prop="os" />
       <el-table-column label="Status" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="Information" align="center" prop="msg" />

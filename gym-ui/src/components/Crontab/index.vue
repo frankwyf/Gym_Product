@@ -70,33 +70,33 @@
         <p class="title">时间表达式</p>
         <table>
           <thead>
-            <th v-for="item of tabTitles" width="40" :key="item">{{item}}</th>
+            <th v-for="item of tabTitles" width="40" :key="item">{{ item }}</th>
             <th>Cron 表达式</th>
           </thead>
           <tbody>
             <td>
-              <span>{{crontabValueObj.second}}</span>
+              <span>{{ crontabValueObj.second }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.min}}</span>
+              <span>{{ crontabValueObj.min }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.hour}}</span>
+              <span>{{ crontabValueObj.hour }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.day}}</span>
+              <span>{{ crontabValueObj.day }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.month}}</span>
+              <span>{{ crontabValueObj.month }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.week}}</span>
+              <span>{{ crontabValueObj.week }}</span>
             </td>
             <td>
-              <span>{{crontabValueObj.year}}</span>
+              <span>{{ crontabValueObj.year }}</span>
             </td>
             <td>
-              <span>{{crontabValueString}}</span>
+              <span>{{ crontabValueString }}</span>
             </td>
           </tbody>
         </table>
@@ -139,7 +139,7 @@ export default {
       },
     };
   },
-  name: "vcrontab",
+  name: "Vcrontab",
   props: ["expression", "hideComponent"],
   methods: {
     shouldHide(key) {
@@ -188,9 +188,9 @@ export default {
     },
     // 赋值到组件
     changeRadio(name, value) {
-      let arr = ["second", "min", "hour", "month"],
-        refName = "cron" + name,
-        insValue;
+      let arr = ["second", "min", "hour", "month"];
+        let refName = "cron" + name;
+        let insValue;
 
       if (!this.$refs[refName]) return;
 

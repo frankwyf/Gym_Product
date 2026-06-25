@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="8" :offset="2">
           <el-form-item label="Account" prop="userName">
-            <el-input  v-model="form.userName" disabled />
+            <el-input v-model="form.userName" disabled />
           </el-form-item>
         </el-col>
       </el-row>
@@ -31,14 +31,14 @@
     <el-table v-loading="loading" :row-key="getRowKey" @row-click="clickRow" ref="table" @selection-change="handleSelectionChange" :data="students.slice((pageNum-1)*pageSize,pageNum*pageSize)">
       <el-table-column label="ID" type="index" align="center">
         <template slot-scope="scope">
-          <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
+          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="Name" align="center" prop="memberName" />
-      <el-table-column label="Gender" align="center" prop="memberSex" >
+      <el-table-column label="Gender" align="center" prop="memberSex">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex"/>
+          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex" />
         </template>
       </el-table-column>
       <el-table-column label="Phone" align="center" prop="memberPhone" />
@@ -66,14 +66,14 @@
       <el-table :data="selectStudents" @selection-change="handleStudentSelectionChange">
         <el-table-column label="ID" type="index" align="center">
           <template slot-scope="scope">
-            <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
+            <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="Name" align="center" prop="memberName" />
-        <el-table-column label="Gender" align="center" prop="memberSex" >
+        <el-table-column label="Gender" align="center" prop="memberSex">
           <template slot-scope="scope">
-            <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex"/>
+            <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex" />
           </template>
         </el-table-column>
         <el-table-column label="Phone" align="center" prop="memberPhone" />

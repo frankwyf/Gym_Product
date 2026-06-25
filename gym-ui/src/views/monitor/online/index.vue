@@ -32,7 +32,7 @@
     >
       <el-table-column label="No" type="index" align="center">
         <template slot-scope="scope">
-          <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
+          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column label="ID" align="center" prop="tokenId" :show-overflow-tooltip="true" />

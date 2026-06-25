@@ -15,7 +15,7 @@ export default {
       url: url,
       responseType: 'blob',
       headers: { 'Authorization': 'Bearer ' + getToken() }
-    }).then(async (res) => {
+    }).then(async(res) => {
       const isLogin = await blobValidate(res.data);
       if (isLogin) {
         const blob = new Blob([res.data])
@@ -32,7 +32,7 @@ export default {
       url: url,
       responseType: 'blob',
       headers: { 'Authorization': 'Bearer ' + getToken() }
-    }).then(async (res) => {
+    }).then(async(res) => {
       const isLogin = await blobValidate(res.data);
       if (isLogin) {
         const blob = new Blob([res.data])
@@ -49,7 +49,7 @@ export default {
       url: url,
       responseType: 'blob',
       headers: { 'Authorization': 'Bearer ' + getToken() }
-    }).then(async (res) => {
+    }).then(async(res) => {
       const isLogin = await blobValidate(res.data);
       if (isLogin) {
         const blob = new Blob([res.data], { type: 'application/zip' })

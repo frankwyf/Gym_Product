@@ -78,7 +78,7 @@
           v-hasPermi="['system:post:export']"
         >{{ $tr('post.download') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
@@ -89,7 +89,7 @@
       <el-table-column :label="$tr('post.sort')" align="center" prop="postSort" />
       <el-table-column :label="$tr('post.status')" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('post.time')" align="center" prop="createTime" width="180">
@@ -143,7 +143,7 @@
               v-for="dict in dict.type.sys_normal_disable"
               :key="dict.value"
               :label="dict.value"
-            >{{dict.label}}</el-radio>
+            >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$tr('post.remark')" prop="remark">

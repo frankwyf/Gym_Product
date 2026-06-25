@@ -6,7 +6,7 @@ el-form-item.price-parent(:label="label" :prop="prop" )
 
 <script>
 export default {
-  name: 'priceInput',
+  name: 'PriceInput',
   props: {
     label: {
       type: String,
@@ -35,13 +35,13 @@ export default {
       default: () => { },
     },
   },
-  data () {
+  data() {
     return {
       showFormatPrice: false, // 是否显示遮罩
     }
   },
   computed: {
-    formaterPrice () {
+    formaterPrice() {
       if (
         this.form.commodityPrice !== '' &&
         this.form.commodityPrice !== null
@@ -61,12 +61,12 @@ export default {
   },
   methods: {
     // 聚焦金额输入框
-    focusInput () {
+    focusInput() {
       this.showFormatPrice = false
       this.$refs.input.focus()
     },
     // 失焦金额输入框
-    blurInput () {
+    blurInput() {
       if (this.form.commodityPrice !== '') {
         // 去掉前面的0
         const integer = Number(this.form.commodityPrice.toString().split('.')[0])
@@ -77,8 +77,7 @@ export default {
           ? this.form.commodityPrice
           : `${integer}${decimal}`
         if (typeof this.rules[this.prop][0].pattern !== 'object') {
-          throw `请确保 rules[${this.prop}][0].pattern 为正则表达式`
-          return
+          throw new Error(`请确保 rules[${this.prop}][0].pattern 为正则表达式`)
         }
         this.showFormatPrice = this.rules[this.prop][0].pattern.test(
           this.form.commodityPrice,

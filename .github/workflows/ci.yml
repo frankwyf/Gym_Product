@@ -22,6 +22,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Type check
         run: npm run typecheck
+      - name: Unit tests
+        run: npm test -- --passWithNoTests
       - name: Expo dependency check
         run: npm run check:deps
 
@@ -62,6 +64,10 @@ jobs:
           fi
       - name: Install Playwright Chromium
         run: npx playwright install chromium
+      - name: Check i18n key parity
+        run: npm run i18n:check
+      - name: Lint
+        run: npm run lint
       - name: Run unit tests
         run: npm run test:unit
       - name: Run smoke e2e
@@ -113,6 +119,8 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
+      - name: Run unit tests
+        run: mvn -f gym-management-system-master/pom.xml test
       - name: Verify backend
         run: mvn -f gym-management-system-master/pom.xml -DskipTests verify
       - name: Package backend

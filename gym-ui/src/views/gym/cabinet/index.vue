@@ -76,22 +76,22 @@
           v-hasPermi="['gym:cabinet:export']"
         >Download</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="cabinetList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="GymNo" align="center" prop="cabinetNo"  />
+      <el-table-column label="GymNo" align="center" prop="cabinetNo" />
       <el-table-column label="User" align="center" prop="memberName" />
-      <el-table-column label="Due date" align="center" prop="cabinetDate" >
+      <el-table-column label="Due date" align="center" prop="cabinetDate">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.cabinetDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" align="center" >
+      <el-table-column label="Status" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.memberId==null" type="success">Available</el-tag>
-          <el-tag v-else-if="checkTime(scope.row)" >Used</el-tag>
+          <el-tag v-else-if="checkTime(scope.row)">Used</el-tag>
           <el-tag v-else type="danger">Expired</el-tag>
         </template>
       </el-table-column>
@@ -163,7 +163,7 @@
     <!-- 租柜续期对话框 -->
     <el-dialog :title="title" :visible.sync="renewal" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-input-number v-model="form.renewal"  :min="1" :max="10" label="Desc" />(per month)
+        <el-input-number v-model="form.renewal" :min="1" :max="10" label="Desc" />(per month)
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">Submit</el-button>

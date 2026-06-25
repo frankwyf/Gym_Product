@@ -55,8 +55,8 @@
                 </tr>
                 <tr>
                   <td class="el-table__cell is-leaf"><div class="cell">Used memory</div></td>
-                  <td class="el-table__cell is-leaf"><div class="cell" v-if="server.mem">{{ server.mem.used}}G</div></td>
-                  <td class="el-table__cell is-leaf"><div class="cell" v-if="server.jvm">{{ server.jvm.used}}M</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell" v-if="server.mem">{{ server.mem.used }}G</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell" v-if="server.jvm">{{ server.jvm.used }}M</div></td>
                 </tr>
                 <tr>
                   <td class="el-table__cell is-leaf"><div class="cell">Remaining memory</div></td>
