@@ -18,10 +18,23 @@ public class JwtUtil {
 
     //有效期为
     public static final Long JWT_TTL = 60 * 60 *1000L;// 60 * 60 *1000  一个小时
-    //设置秘阥明文（优先读取环境变量GYMMASERVER_JWT_KEY，未设置时使用内置默认展开到至少256bit）
-    public static final String JWT_KEY = System.getenv("GYMMASTER_JWT_KEY") != null
-            ? System.getenv("GYMMASTER_JWT_KEY")
-            : "CHANGE-THIS-SECRET-IN-PRODUCTION-MIN-32-CHARS";
+    /**
+     * JWT signing key.
+     * Must be set via GYMMASTER_JWT_KEY environment variable (Base64-encoded, ≥32 bytes).
+     * Application will fail to start if the variable is absent, preventing silent use of
+     * a weak default key in production.
+     */
+    public static final String JWT_KEY;
+
+    static {
+        String envKey = System.getenv("GYMMASTER_JWT_KEY");
+        if (envKey == null || envKey.isBlank()) {
+            throw new IllegalStateException(
+                "GYMMASTER_JWT_KEY environment variable is not set. "
+                + "Generate a Base64-encoded key of at least 32 bytes and set this variable.");
+        }
+        JWT_KEY = envKey;
+    }
 
     public static String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -78,14 +91,6 @@ public class JwtUtil {
     public static String createJWT(String id, String subject, Long ttlMillis) {
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id);// 设置过期时间
         return builder.compact();
-    }
-
-    public static void main(String[] args) throws Exception {
-        String jwt = createJWT("aaa");
-//        Claims claims = parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyOTY2ZGE3NGYyZGM0ZDAxOGU1OWYwNjBkYmZkMjZhMSIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTYzOTk2MjU1MCwiZXhwIjoxNjM5OTY2MTUwfQ.NluqZnyJ0gHz-2wBIari2r3XpPp06UMn4JS2sWHILs0");
-  //      String subject = claims.getSubject();
-        System.out.println(jwt);
-//        System.out.println(claims);
     }
 
     /**
