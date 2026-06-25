@@ -2,113 +2,73 @@ package com.gymmaster.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gymmaster.common.BackMsg;
+import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.Account;
-import com.gymmaster.entity.LoginUser;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.AccountService;
-import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
-import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/account")
+@RequiredArgsConstructor
 public class AccountController {
-    @Autowired
-    RedisCache redisCache;
-    @Autowired
-    private AccountService accountService;
-    @GetMapping("/add")
-    public BackMsg<Account> add(String method,Float balance,String isActive, HttpServletRequest request) throws ParseException {
+    private final RedisCache redisCache;
+    private final AccountService accountService;
+    private final CurrentUserResolver currentUser;
 
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("Failed to parse token in account add", e);
-            throw  new RuntimeException("illegal token");
-        }
-        String redisKey = "login"+userid;
-
-        // get information from redis
-        LoginUser user = redisCache.getCacheObject(redisKey);
+    /** Add a new payment account for the currently logged-in customer. */
+    @PostMapping("/add")
+    public BackMsg<Account> add(@RequestParam String method,
+                                @RequestParam Float balance,
+                                @RequestParam boolean isActive,
+                                HttpServletRequest request) {
+        int uid = currentUser.getUserId(request);
         Account account = new Account();
-        account.setUid(user.getCustomer().getUid());
-        account.setBalance(new BigDecimal(balance));
+        account.setUid(uid);
+        account.setBalance(new BigDecimal(balance.toString()));
         account.setMethod(method);
-        account.setActive(Boolean.parseBoolean(isActive));
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        Calendar c = Calendar.getInstance();
-        Date date = c.getTime();
-        java.sql.Date d = new java.sql.Date(date.getTime());
-
-        String time= df.format(d);
-
-        Timestamp ts= Timestamp.valueOf(time);
-        account.setLastUpdate(ts);
+        account.setActive(isActive);
+        account.setLastUpdate(new Timestamp(System.currentTimeMillis()));
         accountService.save(account);
         return BackMsg.success(account);
     }
-    @GetMapping("/edit")
-    public BackMsg<String> edit(int aid, int balance){
-        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Account::getAid,aid);
-        Account account = accountService.getOne(queryWrapper);
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        Calendar c = Calendar.getInstance();
-        Date date = c.getTime();
-        java.sql.Date d = new java.sql.Date(date.getTime());
-
-        String time= df.format(d);
-
-        Timestamp ts= Timestamp.valueOf(time);
-        account.setLastUpdate(ts);
-        BigDecimal remain = account.getBalance();
-        BigDecimal charge = new BigDecimal(balance);
-        account.setBalance(remain.add(charge));
-        // update the account
-        accountService.update(account,queryWrapper);
-
-        return BackMsg.success("success");
+    /** Top-up / adjust balance for an existing account. */
+    @PutMapping("/edit")
+    public BackMsg<String> edit(@RequestParam int aid, @RequestParam int balance) {
+        LambdaQueryWrapper<Account> qw = new LambdaQueryWrapper<Account>()
+                .eq(Account::getAid, aid);
+        Account account = accountService.getOne(qw);
+        if (account == null) throw new BusinessException("Account not found.");
+        account.setLastUpdate(new Timestamp(System.currentTimeMillis()));
+        account.setBalance(account.getBalance().add(new BigDecimal(balance)));
+        accountService.update(account, qw);
+        return BackMsg.success("Balance updated.");
     }
+
+    /** List all accounts belonging to the authenticated customer. */
     @GetMapping("/page")
-    public BackMsg<java.util.List<Account>> page(HttpServletRequest request){
-        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-
-        String token = request.getHeader("token");
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            log.error("Failed to parse token in account page", e);
-            throw  new RuntimeException("illegal token");
-        }
-        int uid = Integer.parseInt(userid);
-        queryWrapper.eq(Account::getUid, uid);
-        return BackMsg.success(accountService.list(queryWrapper));
+    public BackMsg<List<Account>> page(HttpServletRequest request) {
+        int uid = currentUser.getUserId(request);
+        LambdaQueryWrapper<Account> qw = new LambdaQueryWrapper<Account>()
+                .eq(Account::getUid, uid);
+        return BackMsg.success(accountService.list(qw));
     }
-    @GetMapping("/delete")
-    public BackMsg<String> delete(int aid){
-        LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Account::getAid,aid);
-        accountService.remove(queryWrapper);
-        return BackMsg.success("success");
+
+    @DeleteMapping("/delete")
+    public BackMsg<String> delete(@RequestParam int aid) {
+        LambdaQueryWrapper<Account> qw = new LambdaQueryWrapper<Account>()
+                .eq(Account::getAid, aid);
+        accountService.remove(qw);
+        return BackMsg.success("Account removed.");
     }
 }
