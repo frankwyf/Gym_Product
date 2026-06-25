@@ -1,6 +1,4 @@
 
-
-
 <template>
   <div class="app-container">
     <el-row :gutter="20">
@@ -38,7 +36,7 @@
           <el-table-column label="私教用户名" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column label="私教姓名" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" />
-          <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible" >
+          <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>

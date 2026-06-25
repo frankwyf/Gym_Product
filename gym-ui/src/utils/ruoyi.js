@@ -1,5 +1,4 @@
 
-
 /**
  * 通用js方法封装处理
  * Copyright (c) 2023 GymMaster
@@ -68,7 +67,7 @@ export function addDateRange(params, dateRange, propName) {
   return search;
 }
 
-// 回显数据字典 
+// 回显数据字典
 export function selectDictLabel(datas, value) {
   var actions = [];
   Object.keys(datas).some((key) => {
@@ -100,8 +99,8 @@ export function selectDictLabels(datas, value, separator) {
 
 // 字符串格式化(%s )
 export function sprintf(str) {
-  var args = arguments, flag = true, i = 1;
-  str = str.replace(/%s/g, function () {
+  var args = arguments; var flag = true; var i = 1;
+  str = str.replace(/%s/g, function() {
     var arg = args[i++];
     if (typeof arg === 'undefined') {
       flag = false;
@@ -134,7 +133,7 @@ export function mergeRecursive(source, target) {
     }
   }
   return source;
-};
+}
 
 /**
  * 构造树型结构数据

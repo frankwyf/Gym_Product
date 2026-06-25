@@ -2,8 +2,8 @@
 	<div class="popup-result">
 		<p class="title">最近5次运行时间</p>
 		<ul class="popup-result-scroll">
-			<template v-if='isShow'>
-				<li v-for='item in resultList' :key="item">{{item}}</li>
+			<template v-if="isShow">
+				<li v-for="item in resultList" :key="item">{{ item }}</li>
 			</template>
 			<li v-else>计算结果中...</li>
 		</ul>
@@ -21,7 +21,7 @@ export default {
 			isShow: false
 		}
 	},
-	name: 'crontab-result',
+	name: 'CrontabResult',
 	methods: {
 		// 表达式值变化时，开始去计算结果
 		expressionChange() {
@@ -65,26 +65,26 @@ export default {
 			let MIdx = this.getIndex(MDate, nMonth);
 			let YIdx = this.getIndex(YDate, nYear);
 			// 重置月日时分秒的函数(后面用的比较多)
-			const resetSecond = function () {
+			const resetSecond = function() {
 				sIdx = 0;
 				nSecond = sDate[sIdx]
 			}
-			const resetMin = function () {
+			const resetMin = function() {
 				mIdx = 0;
 				nMin = mDate[mIdx]
 				resetSecond();
 			}
-			const resetHour = function () {
+			const resetHour = function() {
 				hIdx = 0;
 				nHour = hDate[hIdx]
 				resetMin();
 			}
-			const resetDay = function () {
+			const resetDay = function() {
 				DIdx = 0;
 				nDay = DDate[DIdx]
 				resetHour();
 			}
-			const resetMonth = function () {
+			const resetMonth = function() {
 				MIdx = 0;
 				nMonth = MDate[MIdx]
 				resetDay();
@@ -289,7 +289,7 @@ export default {
 									continue;
 								}
 								// 循环"秒"数组
-								goSecond: for (let si = sIdx; si <= sDate.length - 1; si++) {
+								for (let si = sIdx; si <= sDate.length - 1; si++) {
 									let ss = sDate[si] < 10 ? '0' + sDate[si] : sDate[si];
 									// 添加当前时间（时间合法性在日期循环时已经判断）
 									if (MM !== '00' && DD !== '00') {
@@ -336,7 +336,6 @@ export default {
 			}
 			// 计算完成-显示结果
 			this.isShow = true;
-
 
 		},
 		// 用于计算某位数字在数组中的索引
@@ -550,7 +549,7 @@ export default {
 		'ex': 'expressionChange'
 	},
 	props: ['ex'],
-	mounted: function () {
+	mounted: function() {
 		// 初始化 获取一次结果
 		this.expressionChange();
 	}

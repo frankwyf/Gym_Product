@@ -2,7 +2,7 @@
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item :label="$tr('profile.nickname')" prop="nickName">
       <el-input v-model="user.nickName" maxlength="30" />
-    </el-form-item> 
+    </el-form-item>
     <el-form-item :label="$tr('profile.phone')" prop="phonenumber">
       <el-input v-model="user.phonenumber" maxlength="11" />
     </el-form-item>

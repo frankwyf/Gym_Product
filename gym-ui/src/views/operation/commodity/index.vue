@@ -77,7 +77,7 @@
           v-hasPermi="['operation:commodity:export']"
         >{{ $tr('commodity.export') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="commodityList" @selection-change="handleSelectionChange">
@@ -153,7 +153,7 @@
           <el-input v-model="form.commodityName" :placeholder="$tr('commodity.placeholderName')" />
         </el-form-item>
         <el-form-item :label="$tr('commodity.price')" required prop="commodityPrice">
-          <price-input :form.sync = "form" :width = "150" prop = "commodityPrice" :rules = "rules"></price-input>
+          <price-input :form.sync="form" :width="150" prop="commodityPrice" :rules="rules"></price-input>
         </el-form-item>
         <el-form-item :label="$tr('commodity.quantity')" prop="commodityNumber">
           <el-input-number v-model="form.commodityNumber" :min="0"></el-input-number>

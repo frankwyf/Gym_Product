@@ -34,7 +34,7 @@
         <el-table-column :label="$tr('roleSelect.phone')" prop="phonenumber" :show-overflow-tooltip="true" />
         <el-table-column :label="$tr('roleSelect.status')" align="center" prop="status">
           <template slot-scope="scope">
-            <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+            <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column :label="$tr('roleSelect.createTime')" align="center" prop="createTime" width="180">

@@ -116,11 +116,9 @@ service.interceptors.response.use(res => {
     let { message } = error;
     if (message == "Network Error") {
       message = "The back-end interface is improperly connected. Procedure";
-    }
-    else if (message.includes("timeout")) {
+    } else if (message.includes("timeout")) {
       message = "The system interface request timed out";
-    }
-    else if (message.includes("Request failed with status code")) {
+    } else if (message.includes("Request failed with status code")) {
       message = "system interface" + message.substr(message.length - 3) + "Exception";
     }
     Message({
@@ -139,7 +137,7 @@ export function download(url, params, filename) {
     transformRequest: [(params) => { return tansParams(params) }],
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     responseType: 'blob'
-  }).then(async (data) => {
+  }).then(async(data) => {
     const isLogin = await blobValidate(data);
     if (isLogin) {
       const blob = new Blob([data])

@@ -68,7 +68,7 @@
           v-hasPermi="['system:notice:remove']"
         >{{ $tr('notice.delete') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
@@ -82,12 +82,12 @@
       />
       <el-table-column :label="$tr('notice.type')" align="center" prop="noticeType" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>
+          <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('notice.status')" align="center" prop="status" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_notice_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_notice_status" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('notice.creator')" align="center" prop="createBy" width="100" />
@@ -152,13 +152,13 @@
                   v-for="dict in dict.type.sys_notice_status"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item :label="$tr('notice.content')">
-              <editor v-model="form.noticeContent" :min-height="192"/>
+              <editor v-model="form.noticeContent" :min-height="192" />
             </el-form-item>
           </el-col>
         </el-row>

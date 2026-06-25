@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <el-table :data="coaches" style="width: 100%">
       <el-table-column width="20"></el-table-column>
@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+const GYM_API = process.env.VUE_APP_GYMMASTER_API || ''
 
 export default {
   data() {
@@ -22,7 +23,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://localhost:8087/until/coaches').then((response) => {
+    axios.get(`${GYM_API}/until/coaches`).then((response) => {
       this.coaches = response.data.data;
     });
   },

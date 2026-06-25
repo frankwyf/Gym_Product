@@ -18,8 +18,10 @@ public class JwtUtil {
 
     //有效期为
     public static final Long JWT_TTL = 60 * 60 *1000L;// 60 * 60 *1000  一个小时
-    //设置秘钥明文
-    public static final String JWT_KEY = "sangeng";
+    //设置秘阥明文（优先读取环境变量GYMMASERVER_JWT_KEY，未设置时使用内置默认展开到至少256bit）
+    public static final String JWT_KEY = System.getenv("GYMMASTER_JWT_KEY") != null
+            ? System.getenv("GYMMASTER_JWT_KEY")
+            : "CHANGE-THIS-SECRET-IN-PRODUCTION-MIN-32-CHARS";
 
     public static String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");

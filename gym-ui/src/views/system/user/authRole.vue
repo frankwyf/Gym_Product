@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="8" :offset="2">
           <el-form-item :label="$tr('user.username')" prop="userName">
-            <el-input  v-model="form.userName" disabled />
+            <el-input v-model="form.userName" disabled />
           </el-form-item>
         </el-col>
       </el-row>
@@ -20,7 +20,7 @@
     <el-table v-loading="loading" :row-key="getRowKey" @row-click="clickRow" ref="table" @selection-change="handleSelectionChange" :data="roles.slice((pageNum-1)*pageSize,pageNum*pageSize)">
       <el-table-column :label="$tr('authRole.index')" type="index" align="center">
         <template slot-scope="scope">
-          <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
+          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
@@ -33,7 +33,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
 
     <el-form label-width="100px">

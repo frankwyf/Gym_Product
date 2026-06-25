@@ -46,7 +46,7 @@
           @click="toggleExpandAll"
         >{{ $tr('menu.expandFold') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table
@@ -68,7 +68,7 @@
       <el-table-column prop="component" :label="$tr('menu.component')" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="status" :label="$tr('menu.status')" width="80">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('menu.time')" align="center" prop="createTime">
@@ -78,7 +78,7 @@
       </el-table-column>
       <el-table-column :label="$tr('menu.operation')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button 
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -244,7 +244,7 @@
                   v-for="dict in dict.type.sys_show_hide"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -261,7 +261,7 @@
                   v-for="dict in dict.type.sys_normal_disable"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

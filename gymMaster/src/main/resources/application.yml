@@ -10,8 +10,8 @@ server:
 #      enabled: true
 #      key-store: classpath:gymmaster.site.jks
 #      key-store-type: JKS
-#      key-store-password: u94o75bztm
-#      key-password: u94o75bztm
+#      key-store-password: CHANGE_ME
+#      key-password: CHANGE_ME
 
 # spring boot configuration
 spring:
@@ -51,7 +51,7 @@ spring:
         debug: false
 
   thymeleaf:
-    cache:false
+    cache: false
 
   mvc:
     static-path-pattern: /static/**

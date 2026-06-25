@@ -135,7 +135,7 @@
               v-hasPermi="['system:user:export']"
             >{{ $tr('user.download') }}</el-button>
           </el-col>
-          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
+          <right-toolbar :show-search.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
         </el-row>
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
@@ -241,7 +241,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.userId == undefined" :label="$tr('user.password')" prop="password">
-              <el-input v-model="form.password" :placeholder="$tr('user.password')" type="password" maxlength="20" show-password/>
+              <el-input v-model="form.password" :placeholder="$tr('user.password')" type="password" maxlength="20" show-password />
             </el-form-item>
           </el-col>
         </el-row>
@@ -265,7 +265,7 @@
                   v-for="dict in dict.type.sys_normal_disable"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

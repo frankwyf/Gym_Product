@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <div id="t1"  class="text item" :style="{width: '600px', height: '300px'}" />
+        <div id="t1" class="text item" :style="{width: '600px', height: '300px'}" />
       </el-col>
     </el-row>
   </div>

@@ -103,7 +103,7 @@
           v-hasPermi="['monitor:operlog:export']"
         >Download</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange" :default-sort="defaultSort" @sort-change="handleSortChange">
@@ -112,7 +112,7 @@
       <el-table-column label="Module" align="center" prop="title" />
       <el-table-column label="Type" align="center" prop="businessType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType"/>
+          <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType" />
         </template>
       </el-table-column>
       <el-table-column label="Methods" align="center" prop="requestMethod" />
@@ -121,7 +121,7 @@
       <el-table-column label="Place" align="center" prop="operLocation" :show-overflow-tooltip="true" />
       <el-table-column label="Status" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="Time" align="center" prop="operTime" sortable="custom" :sort-orders="['descending', 'ascending']" width="180">
@@ -240,7 +240,7 @@ export default {
     /** 查询登录日志 */
     getList() {
       this.loading = true;
-      list(this.addDateRange(this.queryParams, this.dateRange)).then( response => {
+      list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.list = response.rows;
           this.total = response.total;
           this.loading = false;

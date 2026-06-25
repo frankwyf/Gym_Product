@@ -46,7 +46,7 @@
           @click="toggleExpandAll"
         >{{ $tr('dept.foldUnfold') }}</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table
@@ -61,7 +61,7 @@
       <el-table-column prop="orderNum" :label="$tr('dept.sort')" width="200"></el-table-column>
       <el-table-column prop="status" :label="$tr('dept.status')" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column :label="$tr('dept.time')" align="center" prop="createTime" width="200">
@@ -144,7 +144,7 @@
                   v-for="dict in dict.type.sys_normal_disable"
                   :key="dict.value"
                   :label="dict.value"
-                >{{dict.label}}</el-radio>
+                >{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

@@ -94,16 +94,16 @@
           v-hasPermi="['gym:member:export']"
         >导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="memberList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="会员姓名" align="center" prop="memberName" />
       <el-table-column label="会员年龄" align="center" prop="memberAge" />
-      <el-table-column label="会员性别" align="center" prop="memberSex" >
+      <el-table-column label="会员性别" align="center" prop="memberSex">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex"/>
+          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.memberSex" />
         </template>
       </el-table-column>
       <el-table-column label="会员手机号" align="center" prop="memberPhone" />
@@ -133,7 +133,7 @@
             size="mini"
             type="text"
             icon="el-icon-document-checked"
-            v-if = "scope.row.vipId==null"
+            v-if="scope.row.vipId==null"
             @click="openApplyCard(scope.row)"
           >会员开卡
           </el-button>
@@ -186,7 +186,7 @@
       </div>
     </el-dialog>
     <el-dialog title="请选择开卡时间" :visible.sync="apply" width="500px" append-to-body>
-      <el-input-number v-model="applyTime"  :min="1" :max="100" label="描述文字" /> （月）
+      <el-input-number v-model="applyTime" :min="1" :max="100" label="描述文字" /> （月）
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleApplyCard">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>

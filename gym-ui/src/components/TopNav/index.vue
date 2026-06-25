@@ -91,7 +91,7 @@ export default {
       if (path.lastIndexOf("/") > 0) {
         const tmpPath = path.substring(1, path.length);
         activePath = "/" + tmpPath.substring(0, tmpPath.indexOf("/"));
-      } else if ("/index" == path || "" == path) {
+      } else if (path == "/index" || path == "") {
         if (!this.isFrist) {
           this.isFrist = true;
         } else {
@@ -151,7 +151,7 @@ export default {
       var routes = [];
       if (this.childrenMenus && this.childrenMenus.length > 0) {
         this.childrenMenus.map((item) => {
-          if (key == item.parentPath || (key == "index" && "" == item.path)) {
+          if (key == item.parentPath || (key == "index" && item.path == "")) {
             routes.push(item);
           }
         });
