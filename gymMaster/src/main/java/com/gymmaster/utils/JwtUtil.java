@@ -21,20 +21,27 @@ public class JwtUtil {
     /**
      * JWT signing key.
      * Must be set via GYMMASTER_JWT_KEY environment variable (Base64-encoded, ≥32 bytes).
-     * Application will fail to start if the variable is absent, preventing silent use of
-     * a weak default key in production.
+     * The key is resolved lazily on first use so that unit tests that mock the classes
+     * depending on JwtUtil are not broken by a missing environment variable.
      */
-    public static final String JWT_KEY;
+    private static volatile String JWT_KEY_CACHE;
 
-    static {
-        String envKey = System.getenv("GYMMASTER_JWT_KEY");
-        if (envKey == null || envKey.isBlank()) {
-            throw new IllegalStateException(
-                "GYMMASTER_JWT_KEY environment variable is not set. "
-                + "Generate a Base64-encoded key of at least 32 bytes and set this variable.");
+    static String getJwtKey() {
+        if (JWT_KEY_CACHE == null) {
+            String envKey = System.getenv("GYMMASTER_JWT_KEY");
+            if (envKey == null || envKey.isBlank()) {
+                throw new IllegalStateException(
+                    "GYMMASTER_JWT_KEY environment variable is not set. "
+                    + "Generate a Base64-encoded key of at least 32 bytes and set this variable.");
+            }
+            JWT_KEY_CACHE = envKey;
         }
-        JWT_KEY = envKey;
+        return JWT_KEY_CACHE;
     }
+
+    /** @deprecated use {@link #getJwtKey()} */
+    @Deprecated
+    public static final String JWT_KEY = null;
 
     public static String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -98,7 +105,7 @@ public class JwtUtil {
      * @return
      */
     public static SecretKey generalKey() {
-        byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);
+        byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.getJwtKey());
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
         return key;
     }
