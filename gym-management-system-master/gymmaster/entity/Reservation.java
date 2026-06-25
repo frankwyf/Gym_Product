@@ -12,7 +12,8 @@ import java.sql.Date;
 public class Reservation implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer rid;
-    private int Ruid;
+    /** Customer user ID. Field renamed ruid (was Ruid — PascalCase breaks Lombok getter/column mapping). */
+    private int ruid;
     private Date rdate;
     private int facility;
     private int venue;

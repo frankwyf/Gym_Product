@@ -30,9 +30,9 @@ public class ResourcesConfig implements WebMvcConfigurer
         registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
                 .addResourceLocations("file:" + RuoYiConfig.getProfile() + "/");
 
-        /** swagger配置 */
+        /** swagger-ui / springdoc static resources */
         registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/");
     }
 
     /**
@@ -52,12 +52,25 @@ public class ResourcesConfig implements WebMvcConfigurer
     {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        // 设置访问源地址
-        config.addAllowedOriginPattern("*");
+        // Allowed origins read from env var GYM_CORS_ORIGINS (comma-separated).
+        // Falls back to localhost:8080 (Vue dev server) — never wildcard in production.
+        String origins = System.getenv("GYM_CORS_ORIGINS");
+        if (origins != null && !origins.isBlank()) {
+            for (String origin : origins.split(",")) {
+                config.addAllowedOriginPattern(origin.strip());
+            }
+        } else {
+            config.addAllowedOriginPattern("http://localhost:8080");
+        }
         // 设置访问源请求头
         config.addAllowedHeader("*");
         // 设置访问源请求方法
-        config.addAllowedMethod("*");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("PATCH");
+        config.addAllowedMethod("OPTIONS");
         // 有效期 1800秒
         config.setMaxAge(1800L);
         // 添加映射路径，拦截一切请求
