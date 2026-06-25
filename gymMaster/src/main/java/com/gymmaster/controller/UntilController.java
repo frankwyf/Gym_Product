@@ -7,8 +7,10 @@ import com.gymmaster.entity.untils.SearchResult;
 import com.gymmaster.entity.untils.VenueSlides;
 import com.gymmaster.service.*;
 import com.gymmaster.entity.untils.HomeSlides;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,27 +21,15 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/until")
+@RequiredArgsConstructor
 public class UntilController {
-    @Autowired
-    FacilityService facilityService;
-
-    @Autowired
-    VenueService venueService;
-
-    @Autowired
-    CoachService coachService;
-
-    @Autowired
-    NoticeService noticeService;
-
-    @Autowired
-    CourseService courseService;
-
-    @Autowired
-    PostsService postsService;
-
-    @Autowired
-    CommentService commentService;
+    private final FacilityService facilityService;
+    private final VenueService venueService;
+    private final CoachService coachService;
+    private final NoticeService noticeService;
+    private final CourseService courseService;
+    private final PostsService postsService;
+    private final CommentService commentService;
 
     // get the slides pictures for the home page
     @GetMapping("/homeslides")
@@ -59,36 +49,31 @@ public class UntilController {
     }
 
     // get the slides pictures and information for all the facilities
+    @Cacheable("facilities")
     @GetMapping("/facilities")
     public BackMsg<ArrayList<Facility>> DisplayFacilities() {
-        // get all the facilities from the database
         LambdaQueryWrapper<Facility> allFacilities = new LambdaQueryWrapper<>();
-        // order the facilities by the 'sales' column
         allFacilities.orderByDesc(Facility::getSales);
-        // return the facilities
         ArrayList<Facility> facilities = new ArrayList<>(facilityService.list(allFacilities));
-
         log.info("get the slides pictures and information for all the facilities");
         return BackMsg.success(facilities);
     }
 
     // get all the coaches information
+    @Cacheable("coaches")
     @GetMapping("/coaches")
     public BackMsg<ArrayList<Coach>> DisplayCoaches() {
-        // get all the coaches from the database
         LambdaQueryWrapper<Coach> allCoaches = new LambdaQueryWrapper<>();
-        // return the coaches
         ArrayList<Coach> coaches = new ArrayList<>(coachService.list(allCoaches));
-       log.info("get all the coaches information");
-       return BackMsg.success(coaches);
+        log.info("get all the coaches information");
+        return BackMsg.success(coaches);
     }
 
     // get all notices
+    @Cacheable("notices")
     @GetMapping("/notices")
     public BackMsg<ArrayList<Notice>> DisplayNotices() {
-        // get all the notices from the database
         LambdaQueryWrapper<Notice> allNotices = new LambdaQueryWrapper<>();
-        // return the notices
         ArrayList<Notice> notices = new ArrayList<>(noticeService.list(allNotices));
         log.info("get all notices");
         return BackMsg.success(notices);

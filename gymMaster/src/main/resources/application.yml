@@ -77,6 +77,34 @@ mybatis-plus:
 gym:
   path: src/main/resources/static/
 
+# Spring Boot Actuator — expose health and info endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+# App info surfaced at /actuator/info
+info:
+  app:
+    name: GymMaster API
+    description: Gym management & booking backend
+    version: '@project.version@'
+
+# SpringDoc OpenAPI / Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
 
 # logging configuration
 logging:

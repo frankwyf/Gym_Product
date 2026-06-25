@@ -52,8 +52,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // use loginCus to login
-                .antMatchers("/loginCus/**").permitAll()
+                .antMatchers("/loginCus/login").permitAll()
+                .antMatchers("/loginCus/requestPasswordReset").permitAll()
+                .antMatchers("/loginCus/resetPassword").permitAll()
                 .antMatchers("/health/**").permitAll()
+                .antMatchers("/actuator/health", "/actuator/info").permitAll()
+                .antMatchers("/swagger-ui.html", "/swagger-ui/**",
+                             "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 .antMatchers("/customer/register").anonymous()
                 .antMatchers("/getCaptcha").anonymous()
                 .antMatchers("/venue/**").permitAll()

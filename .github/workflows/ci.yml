@@ -22,6 +22,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Type check
         run: npm run typecheck
+      - name: Unit tests
+        run: npm test -- --passWithNoTests
       - name: Expo dependency check
         run: npm run check:deps
 

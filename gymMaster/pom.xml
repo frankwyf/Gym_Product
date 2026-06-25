@@ -74,6 +74,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Actuator: /actuator/health, /actuator/info endpoints for monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- springdoc OpenAPI UI: auto-generates Swagger UI at /swagger-ui.html -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+
         <!--  springboot web since we are building a web application  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
