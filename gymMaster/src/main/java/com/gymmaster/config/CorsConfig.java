@@ -1,25 +1,32 @@
 package com.gymmaster.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * CORS configuration.
+ *
+ * <p>Allowed origins are read from the {@code GYMMASTER_CORS_ORIGINS} environment variable
+ * (comma-separated) so that production deployments can restrict access without code changes.
+ * If the variable is not set, {@code http://localhost:8080} (the default Vue dev server) is
+ * used as a safe fallback — wildcard {@code *} is intentionally never the default.
+ */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    @Value("${cors.allowed-origins:http://localhost:8080}")
+    private String[] allowedOrigins;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-      // allow cross regin requests from all domains
         registry.addMapping("/**")
-                // set the domain name that is allowed to access, * means all domains
-                .allowedOriginPatterns("*")
-                //  allow cookies to be passed from the front end
+                .allowedOriginPatterns(allowedOrigins)
                 .allowCredentials(true)
-                // allowed methods
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
-                // allowed headers
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
-                // set the cache time for preflight requests
+                .exposedHeaders("token")   // allow the frontend to read the token header
                 .maxAge(3600);
     }
 }

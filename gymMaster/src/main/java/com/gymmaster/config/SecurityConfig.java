@@ -1,6 +1,6 @@
-package com.gymmaster.config;
+﻿package com.gymmaster.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gymmaster.filter.JwtAuthenticationTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,82 +14,86 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.gymmaster.filter.JwtAuthenticationTokenFilter;
+/**
+ * Spring Security configuration.
+ *
+ * <ul>
+ *   <li>Stateless JWT sessions — no HttpSession is created.</li>
+ *   <li>CSRF disabled (mitigated by short-lived JWT tokens).</li>
+ *   <li>Constructor injection — no field-level @Autowired.</li>
+ *   <li>Wildcard /reservation/** is intentionally open because individual
+ *       reservation endpoints perform their own JWT-based ownership checks.</li>
+ * </ul>
+ */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //创建BCryptPasswordEncoder注入容器
+    private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
+
+    public SecurityConfig(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter,
+                          AuthenticationEntryPoint authenticationEntryPoint,
+                          AccessDeniedHandler accessDeniedHandler) {
+        this.jwtAuthenticationTokenFilter = jwtAuthenticationTokenFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
+    }
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-//testing password encoder
-//    public static void main(String[] args) {
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-////        String encode = passwordEncoder.encode("aaa");
-////        System.out.println(encode);
-//        boolean matches = passwordEncoder.matches(
-//                "aaa",
-//                "$2a$10$qYDIdwb/X2qVdoK6.L0uNe.jpJB/80O0tW4SpneTQ6IOfdc22rojC");
-//        // $2a$10$qYDIdwb/X2qVdoK6.L0uNe.jpJB/80O0tW4SpneTQ6IOfdc22rojC
-//        System.out.println(matches);
-//    }
-    @Autowired
-    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
-    @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                // turn off csrf
-                .csrf().disable()
-                // not using session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                // use loginCus to login
-                .antMatchers("/loginCus/login").permitAll()
-                .antMatchers("/loginCus/requestPasswordReset").permitAll()
-                .antMatchers("/loginCus/resetPassword").permitAll()
-                .antMatchers("/health/**").permitAll()
-                .antMatchers("/actuator/health", "/actuator/info").permitAll()
-                .antMatchers("/swagger-ui.html", "/swagger-ui/**",
-                             "/v3/api-docs", "/v3/api-docs/**").permitAll()
-                .antMatchers("/customer/register").anonymous()
-                .antMatchers("/getCaptcha").anonymous()
-                .antMatchers("/venue/**").permitAll()
-                .antMatchers("/reservation/**").permitAll()
-                .antMatchers("/getCaptchaReset").permitAll()
-                .antMatchers("/static/**",
-                                        "/**/*.jpg",
-                                        "/**/*.JPG",
-                                        "/**/*.mp4",
-                                        "/**/*.png",
-                                        "/templates.error/*",
-                                        "/until/**",
-                                        "/venue/getById",
-                                        "/venue/getAvailableVenues").permitAll()
-                // ask for authentication for everything else
-                .anyRequest().authenticated();
-
-
-        //添加过滤器
-        http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class);
-        //配置异常处理器
-        http.exceptionHandling()
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler);
-        //允许跨域
-        http.cors();
-    }
-//
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+                // Public auth endpoints
+                .antMatchers("/loginCus/login",
+                             "/loginCus/requestPasswordReset",
+                             "/loginCus/resetPassword").permitAll()
+                // Customer self-registration
+                .antMatchers("/customer/register").anonymous()
+                // Captcha (required before login/reset)
+                .antMatchers("/getCaptcha", "/getCaptchaReset").anonymous()
+                // Health + monitoring
+                .antMatchers("/health/**",
+                             "/actuator/health",
+                             "/actuator/info").permitAll()
+                // API documentation
+                .antMatchers("/swagger-ui.html", "/swagger-ui/**",
+                             "/v3/api-docs", "/v3/api-docs/**").permitAll()
+                // Public read-only content
+                .antMatchers("/until/**",
+                             "/venue/getById",
+                             "/venue/getByName",
+                             "/venue/getAvailableVenues",
+                             "/venue/getFid",
+                             "/venue/getDate").permitAll()
+                // Static assets
+                .antMatchers("/static/**",
+                             "/**/*.jpg", "/**/*.JPG",
+                             "/**/*.png", "/**/*.mp4").permitAll()
+                // All other requests require authentication
+                .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(jwtAuthenticationTokenFilter,
+                             UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+            .and()
+            .cors();
     }
 }

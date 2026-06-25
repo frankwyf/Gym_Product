@@ -27,9 +27,9 @@ spring:
       password: ${GYMMASTER_DB_PASSWORD:change-me}
   redis:
     #host: 162.14.64.131
-    host: localhost
-    password:
-    port: 6379
+    host: ${GYMMASTER_REDIS_HOST:localhost}
+    password: ${GYMMASTER_REDIS_PASSWORD:}
+    port: ${GYMMASTER_REDIS_PORT:6379}
     database: 3
   mail:
     host: smtp.qq.com
@@ -68,10 +68,17 @@ mybatis-plus:
   configuration:
     # when mapping variable name and column name, use underscore to Uppercase camel case
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # SQL logging: set to org.apache.ibatis.logging.stdout.StdOutImpl for local debug only.
+    # In production, remove this line or set to org.apache.ibatis.logging.slf4j.Slf4jImpl.
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   global-config:
     db-config:
       id-type: ASSIGN_ID
+
+# CORS — set GYMMASTER_CORS_ORIGINS to a comma-separated list of allowed origins.
+# Example: http://yourdomain.com,https://yourdomain.com
+cors:
+  allowed-origins: ${GYMMASTER_CORS_ORIGINS:http://localhost:8080}
 
 # resource configuration
 gym:

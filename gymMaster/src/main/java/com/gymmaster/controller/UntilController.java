@@ -5,6 +5,7 @@ import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.*;
 import com.gymmaster.entity.untils.SearchResult;
 import com.gymmaster.entity.untils.VenueSlides;
+import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.*;
 import com.gymmaster.entity.untils.HomeSlides;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -116,42 +118,24 @@ public class UntilController {
     }
 
     // add a course
-    @GetMapping(value = "/addCourse", params = {"newCourse"})
-    public BackMsg<String> addCourse(@RequestBody Course newCourse){
-        try{
-            courseService.save(newCourse);
-        }catch (Exception e){
-            log.error("Failed to add course", e);
-            return BackMsg.error(e.toString());
-        }
+    @PostMapping("/addCourse")
+    public BackMsg<String> addCourse(@RequestBody @Valid Course newCourse){
+        courseService.save(newCourse);
         return BackMsg.success("Successfully add course");
     }
 
     // delete course by course ID
     @DeleteMapping("/Course/Delete/{couid}")
     public BackMsg<String> deleteCourse(@PathVariable int couid){
-        try{
-            LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Course::getCouid, couid);
-            courseService.remove(queryWrapper);
-        }catch (Exception e){
-            log.error("Failed to delete course {}", couid, e);
-            return BackMsg.error(e.toString());
-        }
-        return BackMsg.success("Successfully delete course" + couid);
+        courseService.remove(new LambdaQueryWrapper<Course>().eq(Course::getCouid, couid));
+        return BackMsg.success("Successfully delete course " + couid);
     }
 
     // update information of course by course ID
     @PutMapping(value = "/updateCourse")
-    public BackMsg<String> updateCourse(@RequestBody Course newCourse){
-        try{
-            LambdaQueryWrapper<Course> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Course::getCouid,newCourse.getCouid());
-            courseService.update(newCourse,queryWrapper);
-        }catch (Exception e){
-            log.error("Failed to update course {}", newCourse.getCouid(), e);
-            return BackMsg.error(e.toString());
-        }
+    public BackMsg<String> updateCourse(@RequestBody @Valid Course newCourse){
+        courseService.update(newCourse,
+                new LambdaQueryWrapper<Course>().eq(Course::getCouid, newCourse.getCouid()));
         return BackMsg.success("Successfully update course message!");
     }
 
@@ -195,13 +179,12 @@ public class UntilController {
         return BackMsg.success(courses);
     }
 
-    // get information of a specific course by course id
+    // get a specific course by course id
     @GetMapping(value = "/specificCourse", params = {"courseID"})
     public BackMsg<CourseCoach> getSpecificCourse(int courseID) {
         Course course = courseService.getById(courseID);
-        // also get the coach information
+        if (course == null) throw new com.gymmaster.exception.BusinessException("Course not found.");
         Coach coach = coachService.getById(course.getCoaid());
-        // put the course and coach information into the entity
         CourseCoach map = new CourseCoach();
         map.setCourse(course);
         map.setCoach(coach);
