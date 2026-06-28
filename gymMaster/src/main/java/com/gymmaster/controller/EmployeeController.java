@@ -1,20 +1,27 @@
 package com.gymmaster.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.entity.Employee;
 import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.EmployeeService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -22,9 +29,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
-
-    @Value("${gym.path}")
-    private String basePath;
 
     @PostMapping("/register")
     public BackMsg<String> register(@Valid @RequestBody Employee employee) {

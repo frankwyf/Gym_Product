@@ -1,27 +1,34 @@
 package com.gymmaster.controller;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gymmaster.common.BackMsg;
 import com.gymmaster.common.CurrentUserResolver;
 import com.gymmaster.entity.Account;
 import com.gymmaster.exception.BusinessException;
 import com.gymmaster.service.AccountService;
-import com.gymmaster.utils.RedisCache;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
 public class AccountController {
-    private final RedisCache redisCache;
     private final AccountService accountService;
     private final CurrentUserResolver currentUser;
 

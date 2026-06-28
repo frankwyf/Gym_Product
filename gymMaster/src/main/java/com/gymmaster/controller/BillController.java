@@ -1,5 +1,26 @@
 package com.gymmaster.controller;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gymmaster.common.BackMsg;
@@ -17,27 +38,9 @@ import com.gymmaster.service.BillService;
 import com.gymmaster.service.FacilityService;
 import com.gymmaster.service.ReservationService;
 import com.gymmaster.service.VenueService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -128,7 +131,12 @@ public class BillController {
 
             reservationService.save(reservation);
             String destPath = qrReservationDir + reservation.getRid() + ".jpg";
-            QrCodeUtils.encode(reservation.toString(), qrLogoPath, destPath, true);
+            try {
+                QrCodeUtils.encode(reservation.toString(), qrLogoPath, destPath, true);
+            } catch (Exception e) {
+                log.error("Failed to generate reservation QR for rid={}", reservation.getRid(), e);
+                throw new BusinessException("Failed to generate reservation QR code.");
+            }
             good.setReservation(reservation);
         }
 
