@@ -1,4 +1,4 @@
-﻿package com.gymmaster.controller;
+package com.gymmaster.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,18 +16,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.List;
 
-/**
- * Reservation management — customer reservation lifecycle and admin overrides.
- *
- * <p>JWT user extraction is centralised via {@link CurrentUserResolver};
- * capacity calculation is delegated to {@link com.gymmaster.service.impl.VenueServiceImpl}.
- */
 @Slf4j
 @RestController
 @RequestMapping("/reservation")
@@ -45,38 +44,38 @@ public class ReservationController {
     @Value("${qr.reservation.dir:src/main/resources/static/reservationQR/}")
     private String qrReservationDir;
 
-    // ─── Admin queries ────────────────────────────────────────────────────────
-
     @GetMapping("/page/username")
     public BackMsg<Page<Reservation>> pageUsername(int page, int pageSize, String name) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Customer> cqw = new LambdaQueryWrapper<Customer>()
+        LambdaQueryWrapper<Customer> customerQuery = new LambdaQueryWrapper<Customer>()
                 .like(StringUtils.isNotEmpty(name), Customer::getUsername, name);
-        Customer customer = customerService.getOne(cqw);
+        Customer customer = customerService.getOne(customerQuery);
         if (customer == null) {
-            return BackMsg.success(pageInfo);   // no match → empty page
+            return BackMsg.success(pageInfo);
         }
-        LambdaQueryWrapper<Reservation> rqw = new LambdaQueryWrapper<Reservation>()
+
+        LambdaQueryWrapper<Reservation> reservationQuery = new LambdaQueryWrapper<Reservation>()
                 .eq(Reservation::getRuid, customer.getUid())
                 .orderByDesc(Reservation::getRdate);
-        reservationService.page(pageInfo, rqw);
+        reservationService.page(pageInfo, reservationQuery);
         return BackMsg.success(pageInfo);
     }
 
     @GetMapping("/page/date")
     public BackMsg<Page<Reservation>> pageDate(int page, int pageSize, Date date) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Reservation> qw = new LambdaQueryWrapper<Reservation>()
+        LambdaQueryWrapper<Reservation> query = new LambdaQueryWrapper<Reservation>()
                 .like(Reservation::getRdate, date)
-                .orderByDesc(Reservation::getRdate);   // was Ruid — wrong sort key
-        reservationService.page(pageInfo, qw);
+                .orderByDesc(Reservation::getRdate);
+        reservationService.page(pageInfo, query);
         return BackMsg.success(pageInfo);
     }
 
     @GetMapping("/page/id")
     public BackMsg<Page<Reservation>> pageId(int page, int pageSize, int id) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        reservationService.page(pageInfo,
+        reservationService.page(
+                pageInfo,
                 new LambdaQueryWrapper<Reservation>().eq(Reservation::getRuid, id));
         return BackMsg.success(pageInfo);
     }
@@ -84,18 +83,15 @@ public class ReservationController {
     @GetMapping("/page")
     public BackMsg<Page<Reservation>> page(int page, int pageSize) {
         Page<Reservation> pageInfo = new Page<>(page, pageSize);
-        reservationService.page(pageInfo,
+        reservationService.page(
+                pageInfo,
                 new LambdaQueryWrapper<Reservation>().orderByAsc(Reservation::getRid));
         return BackMsg.success(pageInfo);
     }
 
-    // ─── Admin: block/unblock a time slot ────────────────────────────────────
-
     @PutMapping("/ban")
     public BackMsg<String> ban(@RequestBody Reservation reservation, int x) {
         if (x == 0) {
-            // Block: compute remaining capacity for this slot and create a
-            // blocking reservation (ruid=0) that consumes it all.
             Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>()
                     .eq(Venue::getVid, reservation.getVenue())
                     .eq(Venue::getFid, reservation.getFacility()));
@@ -103,37 +99,34 @@ public class ReservationController {
                 throw new BusinessException("Venue not found.");
             }
             int[] remaining = venueService.remainingCapacity(venue, reservation.getRdate());
-            int periodIdx;
+            int periodIndex;
             try {
-                periodIdx = Integer.parseInt(reservation.getPeriod());
+                periodIndex = Integer.parseInt(reservation.getPeriod());
             } catch (NumberFormatException e) {
                 throw new BusinessException("Invalid period: " + reservation.getPeriod());
             }
-            if (periodIdx < 1 || periodIdx > remaining.length) {
-                throw new BusinessException("Period out of range: " + periodIdx);
+            if (periodIndex < 1 || periodIndex > remaining.length) {
+                throw new BusinessException("Period out of range: " + periodIndex);
             }
-            reservation.setAmount(remaining[periodIdx - 1]);
+            reservation.setAmount(remaining[periodIndex - 1]);
             reservation.setRuid(0);
             reservationService.save(reservation);
         } else {
-            // Unblock: mark the blocking reservation as 'unable'
-            LambdaQueryWrapper<Reservation> qw = new LambdaQueryWrapper<Reservation>()
+            LambdaQueryWrapper<Reservation> query = new LambdaQueryWrapper<Reservation>()
                     .eq(Reservation::getRuid, 0)
                     .eq(Reservation::getPeriod, reservation.getPeriod())
                     .eq(Reservation::getVenue, reservation.getVenue())
                     .eq(Reservation::getFacility, reservation.getFacility())
                     .eq(Reservation::getRdate, reservation.getRdate());
-            Reservation blocking = reservationService.getOne(qw);
+            Reservation blocking = reservationService.getOne(query);
             if (blocking == null) {
                 throw new BusinessException("No blocking reservation found to unblock.");
             }
             blocking.setStatus("unable");
-            reservationService.update(blocking, qw);
+            reservationService.update(blocking, query);
         }
         return BackMsg.success("success");
     }
-
-    // ─── Look-ups ─────────────────────────────────────────────────────────────
 
     @GetMapping("/findId")
     public BackMsg<Reservation> findById(int id) {
@@ -149,8 +142,7 @@ public class ReservationController {
 
     @GetMapping("/findvname")
     public BackMsg<List<Reservation>> findByVenueName(String name1) {
-        Venue venue = venueService.getOne(
-                new LambdaQueryWrapper<Venue>().eq(Venue::getVname, name1));
+        Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>().eq(Venue::getVname, name1));
         if (venue == null) {
             throw new BusinessException("Venue not found: " + name1);
         }
@@ -158,13 +150,10 @@ public class ReservationController {
                 new LambdaQueryWrapper<Reservation>().eq(Reservation::getVenue, venue.getVid())));
     }
 
-    // ─── Customer: create reservation ────────────────────────────────────────
-
     @PostMapping("/add")
     public BackMsg<String> add(@RequestBody Reservation reservation, HttpServletRequest request)
             throws Exception {
         int userId = currentUserResolver.getUserId(request);
-
         Venue venue = venueService.getOne(new LambdaQueryWrapper<Venue>()
                 .eq(Venue::getVid, reservation.getVenue())
                 .eq(Venue::getFid, reservation.getFacility()));
@@ -185,8 +174,6 @@ public class ReservationController {
         return BackMsg.success("reservation added successfully!");
     }
 
-    // ─── Customer: list their own reservations ────────────────────────────────
-
     @GetMapping("/getUnpaid")
     public BackMsg<List<Reservation>> getUnpaid(HttpServletRequest request) {
         int uid = currentUserResolver.getUserId(request);
@@ -205,24 +192,14 @@ public class ReservationController {
                         .eq(Reservation::getStatus, "valid")));
     }
 
-    // ─── General update ──────────────────────────────────────────────────────
-
     @PutMapping("/update")
     public BackMsg<String> edit(@RequestBody Reservation reservation) {
-        reservationService.update(reservation,
+        reservationService.update(
+                reservation,
                 new LambdaQueryWrapper<Reservation>().eq(Reservation::getRid, reservation.getRid()));
         return BackMsg.success("updated successfully!");
     }
 
-    // ─── Private helpers ─────────────────────────────────────────────────────
-
-    /**
-     * Validates all requested periods against the available capacity array.
-     *
-     * @param reservation target reservation (period + amount must be set)
-     * @param remaining   per-period remaining capacity (index = period - 1)
-     * @throws BusinessException on invalid period or insufficient capacity
-     */
     private static void validatePeriods(Reservation reservation, int[] remaining) {
         for (String part : reservation.getPeriod().split(",")) {
             int period;
