@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/bill")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class BillController {
 
     private final BillService billService;

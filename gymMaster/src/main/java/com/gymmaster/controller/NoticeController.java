@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/notice")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class NoticeController {
     private final NoticeService noticeService;
 

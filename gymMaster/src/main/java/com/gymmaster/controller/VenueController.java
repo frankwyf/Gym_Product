@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/venue")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class VenueController {
     private final VenueService venueService;
 

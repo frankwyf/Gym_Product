@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/reservation")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ReservationController {
 
     private final ReservationService reservationService;
