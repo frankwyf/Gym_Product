@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/reservation")
+@SuppressWarnings("null")
 public class ReservationController {
     @Autowired
     ReservationService reservationService;

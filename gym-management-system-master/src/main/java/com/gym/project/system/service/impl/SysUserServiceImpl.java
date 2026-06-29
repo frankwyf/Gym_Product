@@ -36,6 +36,7 @@ import com.gym.project.system.service.ISysUserService;
  * @author ruoyi
  */
 @Service
+@SuppressWarnings({"null", "unused"})
 public class SysUserServiceImpl implements ISysUserService
 {
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
@@ -385,7 +386,7 @@ public class SysUserServiceImpl implements ISysUserService
         if (StringUtils.isNotNull(roles))
         {
             // 新增用户与角色管理
-            List<SysUserRole> list = new ArrayList<SysUserRole>();
+            List<SysUserRole> list = new ArrayList<>();
             for (Long roleId : roles)
             {
                 SysUserRole ur = new SysUserRole();
@@ -393,7 +394,7 @@ public class SysUserServiceImpl implements ISysUserService
                 ur.setRoleId(roleId);
                 list.add(ur);
             }
-            if (list.size() > 0)
+            if (!list.isEmpty())
             {
                 userRoleMapper.batchUserRole(list);
             }
@@ -411,7 +412,7 @@ public class SysUserServiceImpl implements ISysUserService
         if (StringUtils.isNotNull(posts))
         {
             // 新增用户与岗位管理
-            List<SysUserPost> list = new ArrayList<SysUserPost>();
+            List<SysUserPost> list = new ArrayList<>();
             for (Long postId : posts)
             {
                 SysUserPost up = new SysUserPost();
@@ -419,7 +420,7 @@ public class SysUserServiceImpl implements ISysUserService
                 up.setPostId(postId);
                 list.add(up);
             }
-            if (list.size() > 0)
+            if (!list.isEmpty())
             {
                 userPostMapper.batchUserPost(list);
             }
@@ -437,7 +438,7 @@ public class SysUserServiceImpl implements ISysUserService
         if (StringUtils.isNotNull(roleIds))
         {
             // 新增用户与角色管理
-            List<SysUserRole> list = new ArrayList<SysUserRole>();
+            List<SysUserRole> list = new ArrayList<>();
             for (Long roleId : roleIds)
             {
                 SysUserRole ur = new SysUserRole();
@@ -445,7 +446,7 @@ public class SysUserServiceImpl implements ISysUserService
                 ur.setRoleId(roleId);
                 list.add(ur);
             }
-            if (list.size() > 0)
+            if (!list.isEmpty())
             {
                 userRoleMapper.batchUserRole(list);
             }
@@ -501,7 +502,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName)
     {
-        if (StringUtils.isNull(userList) || userList.size() == 0)
+        if (StringUtils.isNull(userList) || userList.isEmpty())
         {
             throw new ServiceException("导入用户数据不能为空！");
         }
@@ -523,7 +524,7 @@ public class SysUserServiceImpl implements ISysUserService
                     user.setCreateBy(operName);
                     this.insertUser(user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
+                    successMsg.append("<br/>").append(successNum).append("、账号 ").append(user.getUserName()).append(" 导入成功");
                 }
                 else if (isUpdateSupport)
                 {
@@ -531,19 +532,19 @@ public class SysUserServiceImpl implements ISysUserService
                     user.setUpdateBy(operName);
                     this.updateUser(user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 更新成功");
+                    successMsg.append("<br/>").append(successNum).append("、账号 ").append(user.getUserName()).append(" 更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、账号 " + user.getUserName() + " 已存在");
+                    failureMsg.append("<br/>").append(failureNum).append("、账号 ").append(user.getUserName()).append(" 已存在");
                 }
             }
-            catch (Exception e)
+            catch (RuntimeException e)
             {
                 failureNum++;
                 String msg = "<br/>" + failureNum + "、账号 " + user.getUserName() + " 导入失败：";
-                failureMsg.append(msg + e.getMessage());
+                failureMsg.append(msg).append(e.getMessage());
                 log.error(msg, e);
             }
         }

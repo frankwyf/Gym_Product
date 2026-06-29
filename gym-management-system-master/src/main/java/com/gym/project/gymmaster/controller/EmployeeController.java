@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/employee")
+@SuppressWarnings("null")
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;

@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/manager")
+@SuppressWarnings("null")
 public class ManagerController {
     @Autowired
     private ManagerService managerService;

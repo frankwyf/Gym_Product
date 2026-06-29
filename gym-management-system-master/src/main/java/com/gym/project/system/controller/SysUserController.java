@@ -38,6 +38,7 @@ import com.gym.project.system.service.ISysUserService;
  */
 @RestController
 @RequestMapping("/system/user")
+@SuppressWarnings("null")
 public class SysUserController extends BaseController
 {
     @Autowired

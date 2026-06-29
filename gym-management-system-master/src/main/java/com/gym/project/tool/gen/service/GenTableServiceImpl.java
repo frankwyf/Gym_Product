@@ -43,6 +43,7 @@ import com.gym.project.tool.gen.util.VelocityUtils;
  * @author ruoyi
  */
 @Service
+@SuppressWarnings("null")
 public class GenTableServiceImpl implements IGenTableService
 {
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);

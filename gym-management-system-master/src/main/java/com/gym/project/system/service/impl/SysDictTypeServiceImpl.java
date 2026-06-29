@@ -24,6 +24,7 @@ import com.gym.project.system.service.ISysDictTypeService;
  * @author ruoyi
  */
 @Service
+@SuppressWarnings("null")
 public class SysDictTypeServiceImpl implements ISysDictTypeService
 {
     @Autowired

@@ -12,6 +12,7 @@ import com.gym.project.gymmaster.entity.Logs;
 import com.gym.project.gymmaster.service.LogService;
 
 @RequestMapping("/logs")
+@SuppressWarnings("null")
 public class LogsController {
     @Autowired
     LogService logService;

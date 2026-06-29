@@ -19,6 +19,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequestMapping("/venue")
+@SuppressWarnings("null")
 public class VenueController {
     @Autowired
     VenueService venueService;

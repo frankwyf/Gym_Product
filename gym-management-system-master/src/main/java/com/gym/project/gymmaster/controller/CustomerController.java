@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping(value = "/customer")
+@SuppressWarnings("null")
 public class CustomerController {
 
     @Autowired

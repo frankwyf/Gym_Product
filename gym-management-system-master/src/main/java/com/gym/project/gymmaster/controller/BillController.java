@@ -25,6 +25,7 @@ import com.gym.project.gymmaster.service.BillService;
 
 @RestController
 @RequestMapping("/bill")
+@SuppressWarnings("null")
 public class BillController {
     /* implement the following interface */
     @Autowired

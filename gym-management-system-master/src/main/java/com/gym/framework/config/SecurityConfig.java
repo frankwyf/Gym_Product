@@ -24,6 +24,7 @@ import com.gym.framework.security.handle.LogoutSuccessHandlerImpl;
  * @author ruoyi
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
     /**

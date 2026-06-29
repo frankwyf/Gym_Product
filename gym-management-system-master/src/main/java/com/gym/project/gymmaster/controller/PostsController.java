@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/posts")
+@SuppressWarnings("null")
 public class PostsController {
     @Autowired
     PostsService postsService;

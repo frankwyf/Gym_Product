@@ -16,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/until")
+@SuppressWarnings("null")
 public class UntilController {
     @Autowired
     FacilityService facilityService;
