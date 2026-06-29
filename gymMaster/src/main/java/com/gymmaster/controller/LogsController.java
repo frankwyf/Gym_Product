@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/logs")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class LogsController {
     private final LogService logService;
     @PostMapping("/page")

@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/until")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UntilController {
     private final FacilityService facilityService;
     private final VenueService venueService;

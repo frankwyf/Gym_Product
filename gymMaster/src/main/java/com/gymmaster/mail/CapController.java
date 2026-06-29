@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@SuppressWarnings("null")
 public class CapController {
 
     @Value("${spring.mail.username:example@example.com}")

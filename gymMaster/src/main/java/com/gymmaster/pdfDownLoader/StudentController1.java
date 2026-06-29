@@ -30,6 +30,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/student")
+@SuppressWarnings("null")
 public class StudentController1 {
 
     @Autowired

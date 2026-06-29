@@ -9,7 +9,6 @@ import com.gymmaster.service.CoachService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +18,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/coach")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CoachController {
     private final CoachService coachService;
-    @Value("${gym.path}")
-    private String basePath;
 
     @PostMapping("/register")
     public BackMsg<String> register(@Valid @RequestBody Coach coach) {

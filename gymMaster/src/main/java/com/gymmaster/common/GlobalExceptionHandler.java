@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestControllerAdvice
+@SuppressWarnings("null")
 public class GlobalExceptionHandler {
 
     /** Handles @Valid / @Validated constraint violations on request bodies. */

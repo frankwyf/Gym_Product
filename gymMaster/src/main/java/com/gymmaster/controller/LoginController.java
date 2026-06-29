@@ -10,9 +10,8 @@ import com.gymmaster.utils.JwtUtil;
 import com.gymmaster.utils.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/loginCus")
+@SuppressWarnings("null")
 public class LoginController {
 
     private final CustomerService customerService;
@@ -50,11 +50,9 @@ public class LoginController {
             Map<String, String> map = new HashMap<>();
             map.put("token", jwt);
             return BackMsg.success(map);
-        } catch (BadCredentialsException e) {
+        } catch (AuthenticationException e) {
             return BackMsg.error("Invalid username or password.");
-        } catch (DisabledException e) {
-            return BackMsg.error("Account is disabled.");
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.warn("Login failed for user '{}': {}", customer.getUsername(), e.getMessage());
             return BackMsg.error("Login failed. Please try again.");
         }

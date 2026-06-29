@@ -39,6 +39,7 @@ import java.util.UUID;
 @RequestMapping("/file")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class FileController {
 
     private static final Set<String> ALLOWED_IMAGE_EXTENSIONS =

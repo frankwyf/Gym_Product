@@ -16,6 +16,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class VenueServiceImpl extends ServiceImpl<VenueMapper, Venue> implements VenueService {
 
     private static final int TIME_PERIODS = 8;

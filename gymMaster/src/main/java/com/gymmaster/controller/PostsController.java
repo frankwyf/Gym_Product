@@ -21,6 +21,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PostsController {
     private final PostsService postsService;
     private final CommentService commentService;

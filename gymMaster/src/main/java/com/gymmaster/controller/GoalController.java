@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/goal")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class GoalController {
 
     private final GoalService goalService;

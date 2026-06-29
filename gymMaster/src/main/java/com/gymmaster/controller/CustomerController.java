@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/customer")
+@SuppressWarnings("null")
 public class CustomerController {
 
     private final CurrentUserResolver currentUser;

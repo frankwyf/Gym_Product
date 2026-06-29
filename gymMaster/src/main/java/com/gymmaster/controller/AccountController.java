@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AccountController {
     private final AccountService accountService;
     private final CurrentUserResolver currentUser;

@@ -17,6 +17,7 @@ import com.gymmaster.filter.JwtAuthenticationTokenFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;

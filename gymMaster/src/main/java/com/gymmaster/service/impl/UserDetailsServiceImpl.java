@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@SuppressWarnings("null")
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private CustomerService customerService;
